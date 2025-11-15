@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<Pane prefHeight="768.0" prefWidth="1366.0" styleClass="login-container" stylesheets="@login.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.LoginController">
+    <children>
+        <!-- Header Section -->
+        <VBox alignment="TOP_CENTER" layoutX="30.0" layoutY="30.0" spacing="8">
+            <children>
+                <ImageView fitHeight="80.0" fitWidth="80.0" preserveRatio="true" styleClass="logo">
+                    <image>
+                        <Image url="@../icon/logo.png" />
+                    </image>
+                </ImageView>
+                <Label text="BISA GYM" styleClass="main-title">
+                    <font>
+                        <Font name="System Bold" size="36.0" />
+                    </font>
+                </Label>
+                <Label text="Management System" styleClass="subtitle">
+                    <font>
+                        <Font name="System Bold" size="18.0" />
+                    </font>
+                </Label>
+            </children>
+        </VBox>
+        
+        <!-- Login Form Container -->
+        <Pane layoutX="100.0" layoutY="200.0" prefHeight="400.0" prefWidth="400.0" styleClass="login-box">
+            <children>
+                <VBox alignment="TOP_CENTER" layoutX="50.0" layoutY="25.0" spacing="20" prefWidth="300.0">
+                    <children>
+                        <!-- Login Icon -->
+                        <ImageView fitHeight="60.0" fitWidth="60.0" preserveRatio="true">
+                            <image>
+                                <Image url="@../icon/icon gym.png" />
+                            </image>
+                        </ImageView>
+                        
+                        <!-- Login Title -->
+                        <Label text="LOGIN" styleClass="login-title" />
+                        
+                        <!-- Form Container -->
+                        <VBox spacing="15" prefWidth="280.0">
+                            <children>
+                                <!-- Username Field -->
+                                <VBox spacing="6">
+                                    <children>
+                                        <Label text="Username:" styleClass="form-label">
+                                            <font>
+                                                <Font name="System Bold" size="13.0" />
+                                            </font>
+                                        </Label>
+                                        <TextField fx:id="usernameField" prefHeight="35.0" prefWidth="280.0" 
+                                                  promptText="Masukkan username" styleClass="form-field" />
+                                    </children>
+                                </VBox>
+                                
+                                <!-- Password Field -->
+                                <VBox spacing="6">
+                                    <children>
+                                        <Label text="Password:" styleClass="form-label">
+                                            <font>
+                                                <Font name="System Bold" size="13.0" />
+                                            </font>
+                                        </Label>
+                                        <PasswordField fx:id="passwordField" prefHeight="35.0" prefWidth="280.0" 
+                                                      promptText="Masukkan password" styleClass="form-field" />
+                                        <TextField fx:id="plainPasswordField" prefHeight="35.0" prefWidth="280.0" 
+                                                  promptText="Masukkan password" styleClass="form-field" visible="false" />
+                                    </children>
+                                </VBox>
+                                
+                                <!-- Show Password Checkbox -->
+                                <CheckBox fx:id="showPasswordCheckBox" text="Tampilkan Password" 
+                                         styleClass="password-checkbox">
+                                    <font>
+                                        <Font size="13.0" />
+                                    </font>
+                                </CheckBox>
+                                
+                                <!-- Login Button -->
+                                <Button onAction="#handleLogin" prefHeight="40.0" prefWidth="280.0" 
+                                       styleClass="login-button" text="Login">
+                                    <font>
+                                        <Font name="System Bold" size="14.0" />
+                                    </font>
+                                    <VBox.margin>
+                                        <Insets top="10.0" />
+                                    </VBox.margin>
+                                </Button>
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+            </children>
+        </Pane>
+        
+        <!-- Background Image -->
+        <ImageView fitHeight="450.0" fitWidth="650.0" layoutX="650.0" layoutY="150.0" preserveRatio="true" styleClass="background-image">
+            <image>
+                <Image url="@../icon/gym.jpg" />
+            </image>
+        </ImageView>
+        
+        <!-- Footer -->
+        <Label layoutX="100.0" layoutY="650.0" text="© 2024 BISA GYM - Untuk Admin dan Penjaga Gym" 
+               styleClass="footer-text">
+            <font>
+                <Font size="11.0" />
+            </font>
+        </Label>
+    </children>
+</Pane>

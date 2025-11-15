@@ -1,0 +1,635 @@
+/* cctv.css - MODERN MEMBER MANAGEMENT SYSTEM (OPTIMIZED FOR 1366x768) */
+
+/* ===== VARIABLES & THEME ===== */
+.root {
+  -fx-font-family: "Segoe UI", "Arial", sans-serif;
+  -primary-dark: #1c2833;
+  -primary-blue: #1a5276;
+  -accent-orange: #e67e22;
+  -accent-teal: #16a085;
+  -danger-red: #e74c3c;
+  -warning-orange: #f39c12;
+  -success-green: #27ae60;
+  -text-light: #f8f9f9;
+  -text-dark: #2c3e50;
+  -shadow-light: rgba(255, 255, 255, 0.1);
+  -shadow-dark: rgba(0, 0, 0, 0.5);
+  -background-light: #f8f9fa;
+  -border-light: #e9ecef;
+}
+
+/* ===== MAIN BODY ===== */
+.body {
+  -fx-background-color: linear-gradient(
+    to bottom right,
+    #1c2833,
+    #1a5276,
+    #17202a
+  );
+  -fx-background-size: 400% 400%;
+}
+
+/* ===== HEADER SECTION ===== */
+.bagian_atas {
+  -fx-background-color: linear-gradient(to right, #1a5276, #1c2833, #1a5276);
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 15, 0, 0, 6);
+  -fx-border-color: -accent-orange;
+  -fx-border-width: 0 0 3 0;
+}
+
+.bagian_atas .label {
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.7), 6, 0, 0, 2);
+  -fx-text-fill: -text-light;
+  -fx-font-weight: bold;
+}
+
+/* Header Title Styling */
+.bagian_atas Label {
+  -fx-font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+.bagian_atas Label[text="Teman Fitness"] {
+  -fx-font-size: 22px;
+  -fx-font-weight: bold;
+}
+
+.bagian_atas Label[text="Daftar Member"] {
+  -fx-font-size: 16px;
+  -fx-font-weight: normal;
+}
+
+/* ===== PANEL TOOLBAR ===== */
+.panel-toolbar {
+  -fx-background-color: rgba(255, 255, 255, 0.95);
+  -fx-background-radius: 12px;
+  -fx-border-radius: 12px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 12, 0, 0, 6);
+  -fx-border-color: -success-green;
+  -fx-border-width: 2px;
+  -fx-padding: 12px;
+}
+
+.panel-toolbar .label {
+  -fx-text-fill: -text-dark;
+  -fx-font-weight: bold;
+  -fx-font-size: 13px;
+  -fx-font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+/* ===== SCROLLPANE STYLING ===== */
+.scroll-pane-tabel {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-padding: 0;
+  -fx-background: transparent;
+}
+
+.scroll-pane-tabel .viewport {
+  -fx-background-color: transparent;
+}
+
+.scroll-pane-tabel .scroll-bar:vertical {
+  -fx-background-color: transparent;
+  -fx-pref-width: 10px;
+}
+
+.scroll-pane-tabel .scroll-bar:horizontal {
+  -fx-background-color: transparent;
+  -fx-pref-height: 10px;
+}
+
+.scroll-pane-tabel .scroll-bar:vertical .track {
+  -fx-background-color: rgba(255, 255, 255, 0.1);
+  -fx-border-color: transparent;
+  -fx-background-radius: 5px;
+}
+
+.scroll-pane-tabel .scroll-bar:horizontal .track {
+  -fx-background-color: rgba(255, 255, 255, 0.1);
+  -fx-border-color: transparent;
+  -fx-background-radius: 5px;
+}
+
+.scroll-pane-tabel .scroll-bar:vertical .thumb {
+  -fx-background-color: linear-gradient(to bottom, #1a5276, #154360);
+  -fx-background-radius: 5px;
+  -fx-border-radius: 5px;
+}
+
+.scroll-pane-tabel .scroll-bar:horizontal .thumb {
+  -fx-background-color: linear-gradient(to right, #1a5276, #154360);
+  -fx-background-radius: 5px;
+  -fx-border-radius: 5px;
+}
+
+.scroll-pane-tabel .scroll-bar:vertical .thumb:hover {
+  -fx-background-color: linear-gradient(to bottom, #154360, #1a5276);
+}
+
+.scroll-pane-tabel .scroll-bar:horizontal .thumb:hover {
+  -fx-background-color: linear-gradient(to right, #154360, #1a5276);
+}
+
+.scroll-pane-tabel .scroll-bar .increment-button,
+.scroll-pane-tabel .scroll-bar .decrement-button {
+  -fx-background-color: transparent;
+  -fx-padding: 1px;
+}
+
+.scroll-pane-tabel .scroll-bar .increment-arrow,
+.scroll-pane-tabel .scroll-bar .decrement-arrow {
+  -fx-background-color: #1a5276;
+  -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
+}
+
+.scroll-pane-tabel .scroll-bar:vertical .increment-arrow {
+  -fx-rotate: 0;
+}
+
+.scroll-pane-tabel .scroll-bar:vertical .decrement-arrow {
+  -fx-rotate: 180;
+}
+
+.scroll-pane-tabel .scroll-bar:horizontal .increment-arrow {
+  -fx-rotate: 90;
+}
+
+.scroll-pane-tabel .scroll-bar:horizontal .decrement-arrow {
+  -fx-rotate: 270;
+}
+
+.scroll-pane-tabel .corner {
+  -fx-background-color: transparent;
+}
+
+/* ===== FORM CONTROLS ===== */
+.text-field {
+  -fx-background-color: #f8f9f9;
+  -fx-border-color: #bdc3c7;
+  -fx-border-radius: 8px;
+  -fx-background-radius: 8px;
+  -fx-padding: 6px 10px;
+  -fx-font-size: 12px;
+  -fx-effect: innershadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 0);
+  -fx-border-width: 1.5px;
+  -fx-pref-height: 30px;
+  -fx-font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+.text-field:focused {
+  -fx-border-color: -accent-orange;
+  -fx-border-width: 2px;
+  -fx-effect: dropshadow(three-pass-box, rgba(230, 126, 34, 0.3), 4, 0, 0, 2);
+}
+
+.text-field:hover {
+  -fx-border-color: #3498db;
+}
+
+/* Search Field Specific */
+#fieldPencarian {
+  -fx-prompt-text-fill: #6c757d;
+}
+
+/* ===== COMBO BOX STYLES ===== */
+.combo-box {
+  -fx-background-color: #f8f9f9;
+  -fx-border-color: #bdc3c7;
+  -fx-border-radius: 8px;
+  -fx-background-radius: 8px;
+  -fx-border-width: 1.5px;
+  -fx-font-size: 12px;
+  -fx-pref-height: 30px;
+  -fx-cursor: hand;
+  -fx-font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+.combo-box:hover {
+  -fx-border-color: #3498db;
+}
+
+.combo-box:focused {
+  -fx-border-color: -accent-orange;
+  -fx-border-width: 2px;
+  -fx-effect: dropshadow(three-pass-box, rgba(230, 126, 34, 0.3), 4, 0, 0, 2);
+}
+
+.combo-box .list-cell {
+  -fx-background-color: white;
+  -fx-text-fill: #2c3e50;
+  -fx-padding: 6px 10px;
+  -fx-font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+.combo-box .list-cell:filled:selected {
+  -fx-background-color: #1a5276;
+  -fx-text-fill: white;
+}
+
+.combo-box .list-cell:filled:hover {
+  -fx-background-color: #3498db;
+  -fx-text-fill: white;
+}
+
+.combo-box .arrow-button {
+  -fx-background-color: #1a5276;
+  -fx-background-radius: 0 8px 8px 0;
+}
+
+.combo-box .arrow-button:hover {
+  -fx-background-color: #154360;
+}
+
+.combo-box .arrow {
+  -fx-background-color: white;
+}
+
+.combo-box .list-view {
+  -fx-background-color: white;
+  -fx-background-radius: 8px;
+  -fx-border-radius: 8px;
+  -fx-border-color: #bdc3c7;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 6, 0, 0, 2);
+}
+
+/* ===== BUTTON STYLES ===== */
+.button-reset {
+  -fx-background-color: linear-gradient(to bottom, #1a5276, #154360);
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-font-size: 12px;
+  -fx-background-radius: 10px;
+  -fx-border-radius: 10px;
+  -fx-cursor: hand;
+  -fx-padding: 8px 16px;
+  -fx-effect: dropshadow(three-pass-box, rgba(26, 82, 118, 0.3), 6, 0, 0, 3);
+  -fx-transition: all 0.3s ease;
+  -fx-border-color: #5dade2;
+  -fx-border-width: 2px;
+  -fx-pref-height: 35px;
+  -fx-pref-width: 110px;
+  -fx-font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+.button-reset:hover {
+  -fx-background-color: linear-gradient(to bottom, #154360, #1a5276);
+  -fx-effect: dropshadow(three-pass-box, rgba(26, 82, 118, 0.5), 8, 0, 0, 4);
+  -fx-scale-x: 1.03;
+  -fx-scale-y: 1.03;
+}
+
+.button-reset:pressed {
+  -fx-scale-x: 0.95;
+  -fx-scale-y: 0.95;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 4, 0, 0, 2);
+}
+
+/* Action Buttons for Table */
+.button-delete {
+  -fx-background-color: linear-gradient(to bottom, #e74c3c, #c0392b);
+  -fx-text-fill: white;
+  -fx-font-size: 10px;
+  -fx-font-weight: bold;
+  -fx-padding: 5px 10px;
+  -fx-border-radius: 6px;
+  -fx-background-radius: 6px;
+  -fx-cursor: hand;
+  -fx-font-family: "Segoe UI", "Arial", sans-serif;
+  -fx-effect: dropshadow(three-pass-box, rgba(231, 76, 60, 0.3), 3, 0, 0, 1);
+  -fx-transition: all 0.3s ease;
+  -fx-border-color: #e74c3c;
+  -fx-border-width: 1px;
+  -fx-min-width: 55px;
+}
+
+.button-delete:hover {
+  -fx-background-color: linear-gradient(to bottom, #c0392b, #e74c3c);
+  -fx-effect: dropshadow(three-pass-box, rgba(231, 76, 60, 0.4), 4, 0, 0, 2);
+  -fx-scale-x: 1.03;
+  -fx-scale-y: 1.03;
+}
+
+.button-delete:pressed {
+  -fx-background-color: linear-gradient(to bottom, #a93226, #c0392b);
+  -fx-scale-x: 0.95;
+  -fx-scale-y: 0.95;
+}
+
+.button-edit {
+  -fx-background-color: linear-gradient(to bottom, #1a5276, #154360);
+  -fx-text-fill: white;
+  -fx-font-size: 10px;
+  -fx-font-weight: bold;
+  -fx-padding: 5px 10px;
+  -fx-border-radius: 6px;
+  -fx-background-radius: 6px;
+  -fx-cursor: hand;
+  -fx-font-family: "Segoe UI", "Arial", sans-serif;
+  -fx-effect: dropshadow(three-pass-box, rgba(26, 82, 118, 0.3), 3, 0, 0, 1);
+  -fx-transition: all 0.3s ease;
+  -fx-border-color: #1a5276;
+  -fx-border-width: 1px;
+  -fx-min-width: 55px;
+}
+
+.button-edit:hover {
+  -fx-background-color: linear-gradient(to bottom, #154360, #1a5276);
+  -fx-effect: dropshadow(three-pass-box, rgba(26, 82, 118, 0.4), 4, 0, 0, 2);
+  -fx-scale-x: 1.03;
+  -fx-scale-y: 1.03;
+}
+
+.button-view {
+  -fx-background-color: linear-gradient(to bottom, #16a085, #138d75);
+  -fx-text-fill: white;
+  -fx-font-size: 10px;
+  -fx-font-weight: bold;
+  -fx-padding: 5px 10px;
+  -fx-border-radius: 6px;
+  -fx-background-radius: 6px;
+  -fx-cursor: hand;
+  -fx-font-family: "Segoe UI", "Arial", sans-serif;
+  -fx-effect: dropshadow(three-pass-box, rgba(22, 160, 133, 0.3), 3, 0, 0, 1);
+  -fx-transition: all 0.3s ease;
+  -fx-border-color: #16a085;
+  -fx-border-width: 1px;
+  -fx-min-width: 55px;
+}
+
+.button-view:hover {
+  -fx-background-color: linear-gradient(to bottom, #138d75, #16a085);
+  -fx-effect: dropshadow(three-pass-box, rgba(22, 160, 133, 0.4), 4, 0, 0, 2);
+  -fx-scale-x: 1.03;
+  -fx-scale-y: 1.03;
+}
+
+/* ===== TABLE STYLES ===== */
+.tabel-member {
+  -fx-background-color: rgba(255, 255, 255, 0.95);
+  -fx-background-radius: 12px;
+  -fx-border-radius: 12px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 12, 0, 0, 6);
+  -fx-border-color: -accent-teal;
+  -fx-border-width: 2px;
+  -fx-padding: 0;
+}
+
+/* Table Header */
+.tabel-member .column-header {
+  -fx-background-color: linear-gradient(to bottom, #1a5276, #154360);
+  -fx-text-fill: -text-light;
+  -fx-font-weight: bold;
+  -fx-font-size: 12px;
+  -fx-border-color: #1a5276;
+  -fx-alignment: CENTER;
+  -fx-padding: 10px 6px;
+  -fx-font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+.tabel-member .column-header .label {
+  -fx-text-fill: -text-light;
+  -fx-font-weight: bold;
+  -fx-font-family: "Segoe UI", "Arial", sans-serif;
+  -fx-alignment: CENTER;
+}
+
+/* Table Rows */
+.tabel-member .table-row-cell {
+  -fx-border-color: #f1f2f6;
+  -fx-table-cell-border-color: #f1f2f6;
+  -fx-alignment: CENTER-LEFT;
+  -fx-font-family: "Segoe UI", "Arial", sans-serif;
+  -fx-font-size: 12px;
+  -fx-background-color: white;
+}
+
+.tabel-member .table-row-cell:even {
+  -fx-background-color: #f8f9fa;
+}
+
+.tabel-member .table-row-cell:odd {
+  -fx-background-color: white;
+}
+
+.tabel-member .table-row-cell:selected {
+  -fx-background-color: linear-gradient(to bottom, #1a5276, #154360);
+  -fx-text-fill: -text-light;
+}
+
+.tabel-member .table-row-cell:hover {
+  -fx-background-color: #e3f2fd;
+}
+
+/* Table Cells */
+.tabel-member .table-cell {
+  -fx-padding: 8px 6px;
+  -fx-border-color: transparent;
+  -fx-alignment: CENTER-LEFT;
+  -fx-font-family: "Segoe UI", "Arial", sans-serif;
+  -fx-text-fill: -text-dark;
+  -fx-font-size: 12px;
+}
+
+/* Center alignment for specific columns */
+.tabel-member .table-cell:first-child, /* No */
+.tabel-member .table-cell:nth-child(2), /* Foto */
+.tabel-member .table-cell:nth-child(4), /* Jenis Kelamin */
+.tabel-member .table-cell:nth-child(7), /* Durasi */
+.tabel-member .table-cell:nth-child(10), /* Status */
+.tabel-member .table-cell:last-child /* Aksi */ {
+  -fx-alignment: CENTER;
+}
+
+/* ===== STATUS BADGES ===== */
+.status-aktif {
+  -fx-text-fill: #27ae60;
+  -fx-font-weight: bold;
+  -fx-font-size: 10px;
+  -fx-background-color: #e8f5e9;
+  -fx-background-radius: 8px;
+  -fx-padding: 3px 6px;
+  -fx-border-color: #27ae60;
+  -fx-border-width: 1px;
+  -fx-border-radius: 8px;
+  -fx-alignment: CENTER;
+}
+
+.status-nonaktif {
+  -fx-text-fill: #e74c3c;
+  -fx-font-weight: bold;
+  -fx-font-size: 10px;
+  -fx-background-color: #fdeaea;
+  -fx-background-radius: 8px;
+  -fx-padding: 3px 6px;
+  -fx-border-color: #e74c3c;
+  -fx-border-width: 1px;
+  -fx-border-radius: 8px;
+  -fx-alignment: CENTER;
+}
+
+.status-pending {
+  -fx-text-fill: #f39c12;
+  -fx-font-weight: bold;
+  -fx-font-size: 10px;
+  -fx-background-color: #fef9e7;
+  -fx-background-radius: 8px;
+  -fx-padding: 3px 6px;
+  -fx-border-color: #f39c12;
+  -fx-border-width: 1px;
+  -fx-border-radius: 8px;
+  -fx-alignment: CENTER;
+}
+
+/* ===== IMAGE VIEW STYLES ===== */
+.image-view {
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 6, 0, 0, 2);
+  -fx-transition: all 0.3s ease;
+}
+
+.image-view:hover {
+  -fx-opacity: 0.8;
+  -fx-effect: dropshadow(three-pass-box, rgba(230, 126, 34, 0.4), 8, 0, 0, 3);
+  -fx-scale-x: 1.05;
+  -fx-scale-y: 1.05;
+}
+
+/* Profile Image in Table */
+.tabel-member .image-view {
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 3, 0, 0, 1);
+  -fx-border-radius: 4px;
+}
+
+/* ===== FOCUS EFFECTS ===== */
+.button:focused {
+  -fx-border-color: -accent-orange;
+  -fx-border-width: 2px;
+  -fx-border-radius: 8px;
+  -fx-effect: dropshadow(three-pass-box, rgba(230, 126, 34, 0.3), 4, 0, 0, 2);
+}
+
+.text-field:focused {
+  -fx-border-color: -accent-orange;
+  -fx-border-width: 2px;
+}
+
+.combo-box:focused {
+  -fx-border-color: -accent-orange;
+  -fx-border-width: 2px;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+  from {
+    -fx-opacity: 0;
+  }
+  to {
+    -fx-opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    -fx-translate-y: 15px;
+    -fx-opacity: 0;
+  }
+  to {
+    -fx-translate-y: 0;
+    -fx-opacity: 1;
+  }
+}
+
+/* Apply animations */
+.tabel-member {
+  -fx-animation: fadeIn 0.8s ease, slideIn 0.6s ease;
+}
+
+.panel-toolbar {
+  -fx-animation: fadeIn 0.6s ease;
+}
+
+.scroll-pane-tabel {
+  -fx-animation: fadeIn 0.7s ease;
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+@media (max-width: 1366px) {
+  .tabel-member .table-cell {
+    -fx-padding: 6px 4px;
+    -fx-font-size: 11px;
+  }
+
+  .button-delete,
+  .button-edit,
+  .button-view {
+    -fx-font-size: 9px;
+    -fx-padding: 4px 8px;
+    -fx-min-width: 50px;
+  }
+
+  .panel-toolbar {
+    -fx-padding: 8px;
+  }
+
+  .button-reset {
+    -fx-font-size: 11px;
+    -fx-padding: 6px 12px;
+    -fx-pref-width: 100px;
+  }
+}
+
+/* ===== TOOLTIP STYLING ===== */
+.tooltip {
+  -fx-background-color: rgba(28, 40, 51, 0.9);
+  -fx-text-fill: white;
+  -fx-background-radius: 4px;
+  -fx-border-color: -accent-teal;
+  -fx-border-width: 1px;
+  -fx-border-radius: 4px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 4, 0, 0, 1);
+  -fx-font-family: "Segoe UI", "Arial", sans-serif;
+  -fx-font-size: 11px;
+}
+
+/* ===== GLASS MORPHISM EFFECT ===== */
+.glass-pane {
+  -fx-background-color: rgba(255, 255, 255, 0.1);
+  -fx-background-radius: 12px;
+  -fx-border-color: rgba(255, 255, 255, 0.2);
+  -fx-border-width: 1px;
+  -fx-border-radius: 12px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 8, 0, 0, 4);
+}
+
+/* ===== LABEL STYLES ===== */
+.label {
+  -fx-font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+/* Header Labels */
+.bagian_atas .label {
+  -fx-text-fill: -text-light;
+}
+
+/* Toolbar Labels */
+.panel-toolbar .label {
+  -fx-text-fill: -text-dark;
+}
+
+/* ===== PROGRESS INDICATORS ===== */
+.progress-indicator {
+  -fx-progress-color: -accent-teal;
+}
+
+/* ===== EMPTY TABLE STYLING ===== */
+.tabel-member .placeholder .label {
+  -fx-text-fill: #6c757d;
+  -fx-font-size: 13px;
+  -fx-font-style: italic;
+}
+
+/* ===== COLUMN RESIZE HANDLE ===== */
+.tabel-member .column-resize-line {
+  -fx-background-color: #1a5276;
+  -fx-pref-width: 1px;
+}

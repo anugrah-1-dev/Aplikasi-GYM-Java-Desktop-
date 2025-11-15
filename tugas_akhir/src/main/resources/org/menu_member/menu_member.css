@@ -1,0 +1,275 @@
+/* menu_member.css - Enhanced BISA GYM Member Management Theme (OPTIMIZED FOR 1366x768) */
+
+/* ===== VARIABLES & THEME ===== */
+.root {
+  -primary-dark: #1c2833;
+  -primary-blue: #1a5276;
+  -accent-orange: #e67e22;
+  -accent-teal: #16a085;
+  -danger-red: #e74c3c;
+  -warning-orange: #f39c12;
+  -success-green: #27ae60;
+  -purple: #9b59b6;
+  -text-light: #f8f9f9;
+  -text-dark: #2c3e50;
+  -shadow-light: rgba(255, 255, 255, 0.1);
+  -shadow-dark: rgba(0, 0, 0, 0.5);
+}
+
+/* ===== MAIN BODY ===== */
+.body {
+  -fx-background-color: linear-gradient(
+    to bottom right,
+    #1c2833,
+    #1a5276,
+    #17202a
+  );
+  -fx-background-size: 400% 400%;
+}
+
+/* ===== HEADER SECTION ===== */
+.dashboard-header {
+  -fx-background-color: linear-gradient(to right, #1a5276, #1c2833, #1a5276);
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 15, 0, 0, 6);
+  -fx-border-color: -accent-orange;
+  -fx-border-width: 0 0 3 0;
+}
+
+.header-logo {
+  -fx-effect: dropshadow(three-pass-box, rgba(230, 126, 34, 0.5), 8, 0, 0, 2);
+}
+
+.company-name {
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.7), 6, 0, 0, 2);
+  -fx-text-fill: -text-light;
+  -fx-font-weight: bold;
+}
+
+.company-subtitle {
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 4, 0, 0, 1);
+  -fx-text-fill: -accent-orange;
+  -fx-font-weight: bold;
+}
+
+/* ===== DATE & TIME ===== */
+.date-time {
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 4, 0, 0, 1);
+  -fx-font-weight: bold;
+  -fx-text-fill: -text-light;
+  -fx-font-size: 12px;
+  -fx-background-color: rgba(26, 82, 118, 0.8);
+  -fx-background-radius: 8;
+  -fx-padding: 4 12 4 12;
+  -fx-border-color: -accent-orange;
+  -fx-border-width: 1;
+  -fx-border-radius: 8;
+}
+
+/* ===== USER INFO ===== */
+.user-name {
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 3, 0, 0, 1);
+  -fx-font-weight: bold;
+  -fx-text-fill: -text-light;
+  -fx-font-size: 13px;
+}
+
+.user-role {
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 3, 0, 0, 1);
+  -fx-font-style: italic;
+  -fx-text-fill: #bdc3c7;
+  -fx-font-size: 11px;
+}
+
+/* ===== MENU BUTTONS ===== */
+.button-menu {
+  -fx-background-radius: 15;
+  -fx-border-radius: 15;
+  -fx-border-width: 2;
+  -fx-text-fill: white;
+  -fx-font-size: 13px;
+  -fx-font-weight: bold;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 12, 0, 0, 6);
+  -fx-cursor: hand;
+  -fx-transition: all 0.3s ease;
+  -fx-background-color: linear-gradient(to bottom, #1a5276, #1c2833);
+}
+
+.button-menu:hover {
+  -fx-scale-x: 1.05;
+  -fx-scale-y: 1.05;
+  -fx-effect: dropshadow(three-pass-box, rgba(230, 126, 34, 0.6), 15, 0, 0, 8);
+  -fx-border-width: 3;
+}
+
+.button-menu:pressed {
+  -fx-scale-x: 0.95;
+  -fx-scale-y: 0.95;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 6, 0, 0, 3);
+}
+
+/* Specific button colors for member management */
+.member-button {
+  -fx-background-color: linear-gradient(to bottom, #27ae60, #229954);
+  -fx-border-color: #2ecc71;
+}
+
+.member-button:hover {
+  -fx-background-color: linear-gradient(to bottom, #229954, #27ae60);
+  -fx-border-color: #27ae60;
+}
+
+.update-button {
+  -fx-background-color: linear-gradient(to bottom, #e67e22, #d35400);
+  -fx-border-color: #f39c12;
+}
+
+.update-button:hover {
+  -fx-background-color: linear-gradient(to bottom, #d35400, #e67e22);
+  -fx-border-color: #e67e22;
+}
+
+.absen-button {
+  -fx-background-color: linear-gradient(to bottom, #9b59b6, #8e44ad);
+  -fx-border-color: #a569bd;
+}
+
+.absen-button:hover {
+  -fx-background-color: linear-gradient(to bottom, #8e44ad, #9b59b6);
+  -fx-border-color: #9b59b6;
+}
+
+/* ===== MENU LABELS ===== */
+.menu-label {
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 4, 0, 0, 2);
+  -fx-text-fill: -text-light;
+  -fx-font-weight: bold;
+  -fx-font-size: 14px;
+  -fx-background-color: rgba(26, 82, 118, 0.7);
+  -fx-background-radius: 8;
+  -fx-padding: 6 12 6 12;
+  -fx-border-color: rgba(230, 126, 34, 0.3);
+  -fx-border-width: 1;
+  -fx-border-radius: 8;
+  -fx-alignment: CENTER;
+}
+
+/* ===== LOGOUT SECTION ===== */
+.logout-container {
+  -fx-background-color: rgba(26, 82, 118, 0.3);
+  -fx-background-radius: 12;
+  -fx-border-color: rgba(230, 126, 34, 0.5);
+  -fx-border-width: 2;
+  -fx-border-radius: 12;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 8, 0, 0, 4);
+}
+
+.logout-button {
+  -fx-background-color: linear-gradient(to bottom, #e74c3c, #c0392b);
+  -fx-background-radius: 10;
+  -fx-border-radius: 10;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-font-size: 13px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 6, 0, 0, 3);
+  -fx-cursor: hand;
+  -fx-border-color: #ec7063;
+  -fx-border-width: 2;
+  -fx-transition: all 0.3s ease;
+  -fx-padding: 0 0 0 30;
+}
+
+.logout-button:hover {
+  -fx-background-color: linear-gradient(to bottom, #c0392b, #e74c3c);
+  -fx-scale-x: 1.03;
+  -fx-scale-y: 1.03;
+  -fx-effect: dropshadow(three-pass-box, rgba(231, 76, 60, 0.5), 8, 0, 0, 4);
+  -fx-border-color: #e74c3c;
+}
+
+.logout-button:pressed {
+  -fx-background-color: linear-gradient(to bottom, #a93226, #922b21);
+  -fx-scale-x: 0.95;
+  -fx-scale-y: 0.95;
+}
+
+.logout-icon {
+  -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.3), 4, 0, 0, 1);
+}
+
+/* ===== STATUS BAR ===== */
+.status-bar {
+  -fx-background-color: linear-gradient(to right, #1a5276, #1c2833, #1a5276);
+  -fx-border-color: -accent-orange;
+  -fx-border-width: 1 0 0 0;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 4, 0, 0, -1);
+}
+
+.status-text {
+  -fx-text-fill: -text-light;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 2, 0, 0, 1);
+}
+
+/* ===== ICON STYLING ===== */
+.image-view {
+  -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.3), 6, 0, 0, 2);
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+  from {
+    -fx-opacity: 0;
+  }
+  to {
+    -fx-opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    -fx-translate-y: 20;
+    -fx-opacity: 0;
+  }
+  to {
+    -fx-translate-y: 0;
+    -fx-opacity: 1;
+  }
+}
+
+/* Apply animations to buttons */
+.button-menu {
+  -fx-animation: fadeIn 0.8s ease, slideIn 0.6s ease;
+}
+
+/* ===== FOCUS EFFECTS ===== */
+.button-menu:focused {
+  -fx-border-color: #f1c40f;
+  -fx-border-width: 3;
+  -fx-effect: dropshadow(three-pass-box, rgba(241, 196, 15, 0.7), 15, 0, 0, 6);
+}
+
+/* ===== GLASS MORPHISM EFFECT ===== */
+.glass-card {
+  -fx-background-color: rgba(255, 255, 255, 0.1);
+  -fx-background-radius: 12;
+  -fx-border-color: rgba(255, 255, 255, 0.2);
+  -fx-border-width: 1;
+  -fx-border-radius: 12;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 8, 0, 0, 4);
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+@media (max-width: 1366px) {
+  .button-menu {
+    -fx-pref-width: 200px;
+    -fx-pref-height: 150px;
+  }
+
+  .menu-label {
+    -fx-font-size: 13px;
+  }
+
+  .logout-button {
+    -fx-font-size: 12px;
+    -fx-pref-width: 140px;
+  }
+}

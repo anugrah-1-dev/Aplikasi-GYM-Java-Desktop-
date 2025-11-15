@@ -1,0 +1,111 @@
+/* ==========================================================================
+   MODERN GYM MEMBER CARD STYLES - CLEAN & SIMPLE
+   ========================================================================== */
+
+/* Root Container */
+.root {
+  -fx-font-family: "Arial", "Segoe UI", sans-serif;
+}
+
+/* Buttons Hover Effects */
+.button:hover {
+  -fx-opacity: 0.9;
+  -fx-scale-x: 1.02;
+  -fx-scale-y: 1.02;
+  -fx-cursor: hand;
+}
+
+.button:pressed {
+  -fx-opacity: 0.8;
+  -fx-scale-x: 0.98;
+  -fx-scale-y: 0.98;
+}
+
+/* ScrollPane */
+.scroll-pane {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+}
+
+.scroll-pane .viewport {
+  -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical {
+  -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical .track {
+  -fx-background-color: #f0f0f0;
+  -fx-background-radius: 5px;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb {
+  -fx-background-color: #bdc3c7;
+  -fx-background-radius: 5px;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb:hover {
+  -fx-background-color: #95a5a6;
+}
+
+.scroll-pane .scroll-bar:vertical .increment-button,
+.scroll-pane .scroll-bar:vertical .decrement-button {
+  -fx-background-color: transparent;
+  -fx-padding: 0;
+}
+
+/* Card Hover Effect */
+#modernCard:hover {
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 25, 0, 0, 8);
+}
+
+/* Image Views */
+.image-view {
+  -fx-smooth: true;
+}
+
+/* Photo Circle Effect */
+#imgFotoDiri {
+  -fx-background-radius: 55px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 2);
+}
+
+/* QR Code Container */
+#imgBarcodeFront {
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 2);
+}
+
+/* Button Transitions */
+.button {
+  -fx-transition: all 0.3s ease;
+}
+
+/* Print Styles */
+@media print {
+  #buttonContainer {
+    -fx-visible: false;
+  }
+
+  .scroll-pane .scroll-bar {
+    -fx-visible: false;
+  }
+}
+
+/* Accessibility - Focus Indicator */
+.button:focused {
+  -fx-border-color: #3498db;
+  -fx-border-width: 2px;
+  -fx-border-radius: 8px;
+}
+
+/* Label Selection */
+.label {
+  -fx-cursor: default;
+}
+
+/* Smooth Animations */
+* {
+  -fx-smooth: true;
+  -fx-font-smoothing-type: gray;
+}

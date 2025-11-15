@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="mainPane" prefHeight="768.0" prefWidth="1366.0" style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.MemberCardFlipController">
+   
+   <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" 
+               style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;"
+               AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <content>
+         <VBox fx:id="mainContent" alignment="TOP_CENTER" spacing="20" style="-fx-background-color: #f5f5f5;">
+            <padding>
+               <Insets top="30.0" right="20.0" bottom="30.0" left="20.0" />
+            </padding>
+            
+            <!-- Title Section -->
+            <VBox alignment="CENTER" spacing="8">
+               <Label text="KARTU MEMBER BISA GYM" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;">
+                  <font>
+                     <Font name="Arial Bold" size="28.0" />
+                  </font>
+               </Label>
+               <Label text="Your Premium Fitness Pass" style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d; -fx-font-style: italic;">
+                  <font>
+                     <Font name="Arial" size="14.0" />
+                  </font>
+               </Label>
+            </VBox>
+
+            <!-- Modern Card Container -->
+            <VBox alignment="CENTER">
+               <AnchorPane fx:id="modernCard" prefHeight="500.0" prefWidth="750.0" 
+                          style="-fx-background-color: white; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0, 0, 4);">
+                  
+                  <VBox layoutX="0" layoutY="0" prefHeight="500.0" prefWidth="750.0" spacing="0">
+                     
+                     <!-- Top Section - Header with Logo and Photo -->
+                     <HBox prefHeight="120.0" prefWidth="750.0" spacing="25" 
+                           style="-fx-background-color: white; -fx-background-radius: 15 15 0 0; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 2 0;">
+                        <padding>
+                           <Insets top="20.0" right="30.0" bottom="15.0" left="30.0" />
+                        </padding>
+                        <children>
+                           <!-- Logo and Branding -->
+                           <VBox alignment="CENTER_LEFT" spacing="5" HBox.hgrow="ALWAYS">
+                              <children>
+                                 <HBox spacing="15" alignment="CENTER_LEFT">
+                                    <!-- Logo Placeholder - Gradient Background -->
+                                    <StackPane prefHeight="70.0" prefWidth="70.0" 
+                                               style="-fx-background-color: linear-gradient(to bottom right, #3498db, #2980b9); -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 6, 0, 0, 2);">
+                                       <children>
+                                          <Label text="💪" style="-fx-font-size: 35px;" />
+                                       </children>
+                                    </StackPane>
+                                    
+                                    <VBox spacing="0">
+                                       <Label text="BISA GYM" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;">
+                                          <font>
+                                             <Font name="Arial Bold" size="32.0" />
+                                          </font>
+                                       </Label>
+                                       <Label text="PREMIUM MEMBER" 
+                                              style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #3498db; -fx-background-color: #ecf0f1; -fx-padding: 2 8 2 8; -fx-background-radius: 3;">
+                                          <font>
+                                             <Font name="Arial Bold" size="11.0" />
+                                          </font>
+                                       </Label>
+                                    </VBox>
+                                 </HBox>
+                              </children>
+                           </VBox>
+                           
+                           <!-- Member Photo - KOTAK dengan rounded corners -->
+                           <VBox alignment="TOP_RIGHT" prefWidth="100.0">
+                              <children>
+                                 <!-- Border Luar -->
+                                 <StackPane prefHeight="96.0" prefWidth="96.0" 
+                                            style="-fx-background-color: linear-gradient(to bottom right, #3498db, #2980b9); -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 2);">
+                                    <children>
+                                       <!-- Border Dalam Putih -->
+                                       <StackPane prefHeight="90.0" prefWidth="90.0" 
+                                                  style="-fx-background-color: white; -fx-background-radius: 10;">
+                                          <children>
+                                             <!-- Foto Diri dengan Clip Rectangle (Kotak) -->
+                                             <StackPane prefHeight="84.0" prefWidth="84.0">
+                                                <children>
+                                                   <ImageView fx:id="imgFotoDiri" fitHeight="84.0" fitWidth="84.0" preserveRatio="false">
+                                                      <clip>
+                                                         <Rectangle width="84.0" height="84.0" arcWidth="15.0" arcHeight="15.0" />
+                                                      </clip>
+                                                   </ImageView>
+                                                </children>
+                                             </StackPane>
+                                          </children>
+                                       </StackPane>
+                                    </children>
+                                 </StackPane>
+                              </children>
+                           </VBox>
+                        </children>
+                     </HBox>
+                     
+                     <!-- Main Content Area -->
+                     <HBox prefHeight="300.0" prefWidth="750.0" spacing="0">
+                        <padding>
+                           <Insets top="20.0" right="30.0" bottom="20.0" left="30.0" />
+                        </padding>
+                        <children>
+                           <!-- Left Side - QR Code -->
+                           <VBox alignment="TOP_CENTER" prefWidth="220.0" spacing="12">
+                              <children>
+                                 <Label text="SCAN TO CHECK-IN" 
+                                        style="-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: #7f8c8d; -fx-letter-spacing: 1;">
+                                    <font>
+                                       <Font name="Arial Bold" size="10.0" />
+                                    </font>
+                                 </Label>
+                                 <VBox alignment="CENTER" 
+                                       style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 2; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 12;">
+                                    <ImageView fx:id="imgBarcodeFront" fitHeight="150.0" fitWidth="150.0" preserveRatio="true" />
+                                 </VBox>
+                                 <Label fx:id="lblMemberIdFront" text="MEM-VIP-123456" 
+                                        style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #2c3e50; -fx-background-color: #ecf0f1; -fx-padding: 6 12 6 12; -fx-background-radius: 4;">
+                                    <font>
+                                       <Font name="Arial Bold" size="11.0" />
+                                    </font>
+                                 </Label>
+                              </children>
+                           </VBox>
+                           
+                           <!-- Right Side - Member Details -->
+                           <VBox prefWidth="480.0" spacing="12">
+                              <padding>
+                                 <Insets left="25.0" />
+                              </padding>
+                              <children>
+                                 <!-- Name Section -->
+                                 <VBox spacing="4">
+                                    <Label fx:id="lblNamaBack" text="NAMA MEMBER" 
+                                           style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;">
+                                       <font>
+                                          <Font name="Arial Bold" size="28.0" />
+                                       </font>
+                                    </Label>
+                                 </VBox>
+                                 
+                                 <!-- Personal Info Grid -->
+                                 <HBox spacing="40" prefHeight="180.0">
+                                    <!-- Left Column -->
+                                    <VBox spacing="15" prefWidth="200.0">
+                                       <!-- Tempat Lahir -->
+                                       <VBox spacing="4">
+                                          <Label text="TEMPAT LAHIR" 
+                                                 style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #7f8c8d;">
+                                             <font>
+                                                <Font name="Arial Bold" size="9.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="lblTempatLahir" text="Jakarta" 
+                                                 style="-fx-font-size: 13px; -fx-text-fill: #2c3e50;">
+                                             <font>
+                                                <Font name="Arial" size="13.0" />
+                                             </font>
+                                          </Label>
+                                       </VBox>
+                                       
+                                       <!-- Jenis Kelamin -->
+                                       <VBox spacing="4">
+                                          <Label text="JENIS KELAMIN" 
+                                                 style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #7f8c8d;">
+                                             <font>
+                                                <Font name="Arial Bold" size="9.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="lblJenisKelamin" text="Laki-laki" 
+                                                 style="-fx-font-size: 13px; -fx-text-fill: #2c3e50;">
+                                             <font>
+                                                <Font name="Arial" size="13.0" />
+                                             </font>
+                                          </Label>
+                                       </VBox>
+                                       
+                                       <!-- No HP -->
+                                       <VBox spacing="4">
+                                          <Label text="NOMOR HP" 
+                                                 style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #7f8c8d;">
+                                             <font>
+                                                <Font name="Arial Bold" size="9.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="lblNoHp" text="08123456789" 
+                                                 style="-fx-font-size: 13px; -fx-text-fill: #2c3e50;">
+                                             <font>
+                                                <Font name="Arial" size="13.0" />
+                                             </font>
+                                          </Label>
+                                       </VBox>
+                                    </VBox>
+                                    
+                                    <!-- Right Column -->
+                                    <VBox spacing="15" prefWidth="200.0">
+                                       <!-- Email -->
+                                       <VBox spacing="4">
+                                          <Label text="EMAIL" 
+                                                 style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #7f8c8d;">
+                                             <font>
+                                                <Font name="Arial Bold" size="9.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="lblEmail" text="member@bisagym.com" 
+                                                 style="-fx-font-size: 13px; -fx-text-fill: #2c3e50;">
+                                             <font>
+                                                <Font name="Arial" size="13.0" />
+                                             </font>
+                                          </Label>
+                                       </VBox>
+                                       
+                                       <!-- Bergabung -->
+                                       <VBox spacing="4">
+                                          <Label text="BERGABUNG" 
+                                                 style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #7f8c8d;">
+                                             <font>
+                                                <Font name="Arial Bold" size="9.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="lblTanggalDaftar" text="06 November 2025" 
+                                                 style="-fx-font-size: 13px; -fx-text-fill: #2c3e50;">
+                                             <font>
+                                                <Font name="Arial" size="13.0" />
+                                             </font>
+                                          </Label>
+                                       </VBox>
+                                       
+                                       <!-- Berlaku Hingga -->
+                                       <VBox spacing="4">
+                                          <Label text="BERLAKU HINGGA" 
+                                                 style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #7f8c8d;">
+                                             <font>
+                                                <Font name="Arial Bold" size="9.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="lblBerlakuHingga" text="06 Februari 2026" 
+                                                 style="-fx-font-size: 13px; -fx-text-fill: #2c3e50;">
+                                             <font>
+                                                <Font name="Arial" size="13.0" />
+                                             </font>
+                                          </Label>
+                                       </VBox>
+                                    </VBox>
+                                 </HBox>
+                              </children>
+                           </VBox>
+                        </children>
+                     </HBox>
+                     
+                     <!-- Bottom Section - Footer -->
+                     <HBox prefHeight="70.0" prefWidth="750.0" alignment="CENTER" spacing="25" 
+                           style="-fx-background-color: #f8f9fa; -fx-background-radius: 0 0 15 15; -fx-border-color: #e0e0e0; -fx-border-width: 2 0 0 0;">
+                        <padding>
+                           <Insets top="15.0" right="30.0" bottom="15.0" left="30.0" />
+                        </padding>
+                        <children>
+                           <!-- Contact Info -->
+                           <VBox spacing="4" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                              <Label text="📍 Jl. Dr. Ir. H. Soekamo Merr No.678, Surabaya" 
+                                     style="-fx-font-size: 10px; -fx-text-fill: #7f8c8d;">
+                                 <font>
+                                    <Font name="Arial" size="10.0" />
+                                 </font>
+                              </Label>
+                              <Label text="📞 123-456-7890  |  ✉ info@bisagym.com" 
+                                     style="-fx-font-size: 10px; -fx-text-fill: #7f8c8d;">
+                                 <font>
+                                    <Font name="Arial" size="10.0" />
+                                 </font>
+                              </Label>
+                           </VBox>
+                           
+                           <!-- Website -->
+                           <VBox alignment="CENTER_RIGHT">
+                              <Label text="www.bisagym.com" 
+                                     style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #3498db;">
+                                 <font>
+                                    <Font name="Arial Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label text="24 HOURS FITNESS" 
+                                     style="-fx-font-size: 9px; -fx-text-fill: #95a5a6;">
+                                 <font>
+                                    <Font name="Arial" size="9.0" />
+                                 </font>
+                              </Label>
+                           </VBox>
+                        </children>
+                     </HBox>
+                     
+                  </VBox>
+               </AnchorPane>
+            </VBox>
+
+            <!-- Action Buttons -->
+            <HBox fx:id="buttonContainer" alignment="CENTER" spacing="15">
+               <padding>
+                  <Insets top="15.0" />
+               </padding>
+               <children>
+                  <Button mnemonicParsing="false" onAction="#handlePrint" prefWidth="120" 
+                          style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 10 20; -fx-background-radius: 6; -fx-cursor: hand;" 
+                          text="🖨 Print Card">
+                     <font>
+                        <Font name="Arial Bold" size="12.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#handleSave" prefWidth="120" 
+                          style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 10 20; -fx-background-radius: 6; -fx-cursor: hand;" 
+                          text="💾 Save Image">
+                     <font>
+                        <Font name="Arial Bold" size="12.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#handleClose" prefWidth="120" 
+                          style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 10 20; -fx-background-radius: 6; -fx-cursor: hand;" 
+                          text="✕ Close">
+                     <font>
+                        <Font name="Arial Bold" size="12.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
+
+            <!-- Info Section -->
+            <VBox alignment="CENTER" spacing="12" 
+                  style="-fx-background-color: white; -fx-background-radius: 12; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 12; -fx-max-width: 650; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);">
+               <padding>
+                  <Insets top="20.0" right="25.0" bottom="20.0" left="25.0" />
+               </padding>
+               <Label text="💪 Informasi Kartu Member" 
+                      style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;">
+                  <font>
+                     <Font name="Arial Bold" size="16.0" />
+                  </font>
+               </Label>
+               <VBox spacing="8" alignment="CENTER_LEFT">
+                  <Label text="✓ Kartu ini berlaku selama masa keanggotaan aktif" 
+                         style="-fx-font-size: 12px; -fx-text-fill: #34495e;">
+                     <font>
+                        <Font name="Arial" size="12.0" />
+                     </font>
+                  </Label>
+                  <Label text="✓ Tunjukkan QR code untuk check-in otomatis" 
+                         style="-fx-font-size: 12px; -fx-text-fill: #34495e;">
+                     <font>
+                        <Font name="Arial" size="12.0" />
+                     </font>
+                  </Label>
+                  <Label text="✓ Simpan kartu dengan baik dan jangan bagikan ke orang lain" 
+                         style="-fx-font-size: 12px; -fx-text-fill: #34495e;">
+                     <font>
+                        <Font name="Arial" size="12.0" />
+                     </font>
+                  </Label>
+                  <Label text="✓ Hubungi customer service untuk perpanjangan: 123-456-7890" 
+                         style="-fx-font-size: 12px; -fx-text-fill: #34495e;">
+                     <font>
+                        <Font name="Arial" size="12.0" />
+                     </font>
+                  </Label>
+               </VBox>
+            </VBox>
+            
+            <!-- Additional Spacing for Better Scroll -->
+            <VBox prefHeight="30.0" />
+         </VBox>
+      </content>
+   </ScrollPane>
+</AnchorPane>

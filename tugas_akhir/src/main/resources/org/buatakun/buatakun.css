@@ -1,0 +1,112 @@
+/* ===== LATAR UTAMA ===== */
+.Body {
+    -fx-background-color: linear-gradient(to bottom, #f9fbfc, #e8f0f8);
+}
+
+/* ===== HEADER ===== */
+.header {
+    -fx-background-color: #4d96c7;
+    -fx-padding: 10px;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+#backIcon:hover {
+    -fx-cursor: hand;
+    -fx-opacity: 0.8;
+}
+
+/* ===== FORM LOGIN BOX ===== */
+.box {
+       -fx-background-color: #4d96c7;;
+
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0.4, 0, 4);
+}
+
+/* ===== TOMBOL LOGOUT ===== */
+.btnkeluar {
+    -fx-background-color: #4d96c7;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-padding: 8px 16px;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 8;
+}
+
+/* ===== GAYA UMUM TOMBOL ===== */
+.Button {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 8px 18px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 6, 0.4, 0, 2);
+}
+
+/* ===== HOVER EFEK UNTUK SEMUA TOMBOL ===== */
+.Button:hover {
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+    -fx-opacity: 0.9;
+}
+
+/* ===== TOMBOL KHUSUS (warna berbeda) ===== */
+.tombol { /* Hapus */
+    -fx-background-color: #e53935;
+}
+.cari {
+    -fx-background-color: #546e7a;
+}
+.perbaruhi {
+    -fx-background-color: #0a4171;
+}
+.buatakun {
+    -fx-background-color: #43a047;
+}
+
+/* ===== INPUT FIELD (USERNAME & PASSWORD) ===== */
+.-fietextld, .password-field {
+    -fx-background-color: #f1f3f4;
+    -fx-background-radius: 6;
+    -fx-font-size: 13px;
+    -fx-padding: 10px;
+    -fx-border-color: #cfd8dc;
+    -fx-border-radius: 6;
+}
+
+/* ===== LABEL FORM ===== */
+.label-form {
+    -fx-text-fill: #4d4d4d;
+    -fx-font-size: 23px;
+    -fx-font-weight: bold;
+    -fx-padding: 4px 0;
+}
+
+/* ===== TABLE VIEW ===== */
+.table-view {
+    -fx-border-color: #ccc;
+    -fx-background-radius: 6;
+}
+.table-view .column-header-background {
+    -fx-background-color: #4d96c7;
+}
+.table-view .column-header {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+.table-view .cell {
+    -fx-text-fill: #333;
+    -fx-font-size: 13px;
+}
+.table-view .cell:hover {
+    -fx-background-color: #f1f8ff;
+}
+.baruu {
+    -fx-background-color: #74a0cb; /* biru lembut */
+    -fx-background-radius: 12;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0.4, 0, 4);
+}

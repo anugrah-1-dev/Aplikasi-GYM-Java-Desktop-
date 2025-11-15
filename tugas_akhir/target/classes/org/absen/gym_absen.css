@@ -1,0 +1,450 @@
+/* gym_absen_riwayat.css - MODERN GYM THEME WITH HISTORY */
+
+/* ===== VARIABLES & THEME ===== */
+.root {
+  -fx-font-family: "Segoe UI", "Arial", sans-serif;
+  -primary-dark: #1c2833;
+  -primary-blue: #1a5276;
+  -accent-orange: #e67e22;
+  -accent-teal: #16a085;
+  -danger-red: #e74c3c;
+  -warning-orange: #f39c12;
+  -success-green: #27ae60;
+  -text-light: #f8f9f9;
+  -text-dark: #2c3e50;
+}
+
+/* ===== MAIN BODY ===== */
+.pane {
+  -fx-background-color: linear-gradient(
+    to bottom right,
+    #1c2833,
+    #1a5276,
+    #17202a
+  );
+}
+
+/* ===== HEADER ===== */
+.dashboard-header {
+  -fx-background-color: linear-gradient(to right, #1a5276, #1c2833, #1a5276);
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 15, 0, 0, 6);
+  -fx-border-color: -accent-orange;
+  -fx-border-width: 0 0 3 0;
+}
+
+.company-name {
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.7), 6, 0, 0, 2);
+  -fx-text-fill: -text-light;
+  -fx-font-weight: bold;
+  -fx-font-size: 24px;
+}
+
+/* ===== SCROLLPANE ===== */
+.scroll-pane {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+}
+
+.scroll-pane .viewport {
+  -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical .track {
+  -fx-background-color: rgba(255, 255, 255, 0.1);
+  -fx-background-radius: 2em;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb {
+  -fx-background-color: linear-gradient(to bottom, #1a5276, #154360);
+  -fx-background-radius: 2em;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  -fx-background-color: transparent;
+  -fx-padding: 15px;
+}
+
+/* ===== INPUT BOX (SCAN AREA) ===== */
+.input-box {
+  -fx-background-color: rgba(255, 255, 255, 0.98);
+  -fx-background-radius: 15px;
+  -fx-border-radius: 15px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 15, 0, 0, 8);
+  -fx-border-color: #3498db;
+  -fx-border-width: 3px;
+  -fx-padding: 12px;
+}
+
+.input-title {
+  -fx-text-fill: -primary-dark;
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+}
+
+.input-field-large {
+  -fx-background-color: #f8f9f9;
+  -fx-border-color: #3498db;
+  -fx-border-radius: 10px;
+  -fx-background-radius: 10px;
+  -fx-padding: 12px 15px;
+  -fx-font-size: 16px;
+  -fx-effect: innershadow(three-pass-box, rgba(0, 0, 0, 0.1), 3, 0, 0, 0);
+  -fx-border-width: 2px;
+}
+
+.input-field-large:focused {
+  -fx-border-color: -accent-orange;
+  -fx-border-width: 3px;
+  -fx-effect: dropshadow(three-pass-box, rgba(230, 126, 34, 0.4), 6, 0, 0, 3);
+}
+
+.scan-status {
+  -fx-font-size: 13px;
+  -fx-text-fill: #7f8c8d;
+}
+
+/* ===== STATUS BOX ===== */
+.status-box {
+  -fx-background-color: rgba(255, 255, 255, 0.98);
+  -fx-background-radius: 15px;
+  -fx-border-radius: 15px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 12, 0, 0, 6);
+  -fx-border-color: -accent-orange;
+  -fx-border-width: 2px;
+}
+
+.status-title {
+  -fx-text-fill: -primary-dark;
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-padding: 0 0 10px 0;
+}
+
+.status-container {
+  -fx-background-color: #f8f9fa;
+  -fx-background-radius: 10px;
+  -fx-border-radius: 10px;
+  -fx-border-color: #e9ecef;
+  -fx-border-width: 2px;
+  -fx-padding: 20px;
+  -fx-spacing: 15px;
+}
+
+.status-waiting {
+  -fx-text-fill: -warning-orange;
+  -fx-font-size: 20px;
+  -fx-font-weight: bold;
+}
+
+.status-success {
+  -fx-text-fill: -success-green;
+  -fx-font-size: 20px;
+  -fx-font-weight: bold;
+}
+
+.status-error {
+  -fx-text-fill: -danger-red;
+  -fx-font-size: 20px;
+  -fx-font-weight: bold;
+}
+
+.time-label {
+  -fx-text-fill: #7f8c8d;
+  -fx-font-size: 14px;
+  -fx-font-style: italic;
+}
+
+.status-info-box {
+  -fx-padding: 15px;
+  -fx-background-color: rgba(52, 152, 219, 0.1);
+  -fx-background-radius: 8px;
+  -fx-border-radius: 8px;
+  -fx-border-color: #3498db;
+  -fx-border-width: 1px;
+}
+
+.stat-label {
+  -fx-text-fill: #2c3e50;
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+}
+
+/* ===== INFO BOX ===== */
+.info-box {
+  -fx-background-color: rgba(255, 255, 255, 0.98);
+  -fx-background-radius: 15px;
+  -fx-border-radius: 15px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 12, 0, 0, 6);
+  -fx-border-color: -success-green;
+  -fx-border-width: 2px;
+}
+
+.info-title {
+  -fx-text-fill: -primary-dark;
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-padding: 0 0 10px 0;
+}
+
+.member-data {
+  -fx-padding: 15px;
+  -fx-background-color: #f8f9fa;
+  -fx-background-radius: 10px;
+  -fx-border-radius: 10px;
+  -fx-border-color: #e9ecef;
+  -fx-border-width: 2px;
+  -fx-spacing: 12px;
+}
+
+.data-label {
+  -fx-text-fill: #34495e;
+  -fx-font-weight: bold;
+  -fx-font-size: 13px;
+  -fx-min-width: 130px;
+}
+
+.data-value {
+  -fx-text-fill: #2c3e50;
+  -fx-font-size: 13px;
+}
+
+.data-value-large {
+  -fx-text-fill: -primary-blue;
+  -fx-font-size: 15px;
+  -fx-font-weight: bold;
+}
+
+/* ===== VALIDITY BOX (SISA HARI) ===== */
+.validity-box {
+  -fx-padding: 15px;
+  -fx-background-color: linear-gradient(
+    to right,
+    rgba(39, 174, 96, 0.15),
+    rgba(46, 204, 113, 0.15)
+  );
+  -fx-background-radius: 10px;
+  -fx-border-radius: 10px;
+  -fx-border-color: -success-green;
+  -fx-border-width: 2px;
+  -fx-alignment: center;
+}
+
+.validity-title {
+  -fx-text-fill: -success-green;
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-alignment: center;
+}
+
+.validity-days {
+  -fx-text-fill: -success-green;
+  -fx-font-size: 48px;
+  -fx-font-weight: bold;
+  -fx-effect: dropshadow(three-pass-box, rgba(39, 174, 96, 0.3), 4, 0, 0, 2);
+}
+
+.validity-label {
+  -fx-text-fill: -success-green;
+  -fx-font-size: 20px;
+  -fx-font-weight: bold;
+}
+
+.validity-status-normal {
+  -fx-text-fill: -success-green;
+  -fx-font-size: 13px;
+  -fx-font-weight: bold;
+}
+
+.validity-status-warning {
+  -fx-text-fill: -warning-orange;
+  -fx-font-size: 13px;
+  -fx-font-weight: bold;
+}
+
+.validity-status-danger {
+  -fx-text-fill: -danger-red;
+  -fx-font-size: 13px;
+  -fx-font-weight: bold;
+}
+
+/* Warning & Danger States untuk Validity Box */
+.validity-box-warning {
+  -fx-background-color: linear-gradient(
+    to right,
+    rgba(243, 156, 18, 0.15),
+    rgba(241, 196, 15, 0.15)
+  );
+  -fx-border-color: -warning-orange;
+}
+
+.validity-box-warning .validity-days,
+.validity-box-warning .validity-label,
+.validity-box-warning .validity-title {
+  -fx-text-fill: -warning-orange;
+}
+
+.validity-box-danger {
+  -fx-background-color: linear-gradient(
+    to right,
+    rgba(231, 76, 60, 0.15),
+    rgba(192, 57, 43, 0.15)
+  );
+  -fx-border-color: -danger-red;
+}
+
+.validity-box-danger .validity-days,
+.validity-box-danger .validity-label,
+.validity-box-danger .validity-title {
+  -fx-text-fill: -danger-red;
+}
+
+/* ===== STATS BOX ===== */
+.stats-box {
+  -fx-background-color: rgba(255, 255, 255, 0.98);
+  -fx-background-radius: 15px;
+  -fx-border-radius: 15px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 12, 0, 0, 6);
+  -fx-border-color: #9b59b6;
+  -fx-border-width: 2px;
+  -fx-padding: 12px;
+}
+
+.stats-title {
+  -fx-text-fill: -primary-dark;
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+}
+
+.stat-card {
+  -fx-background-color: linear-gradient(to bottom, #ecf0f1, #bdc3c7);
+  -fx-background-radius: 10px;
+  -fx-border-radius: 10px;
+  -fx-border-color: #95a5a6;
+  -fx-border-width: 2px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 6, 0, 0, 3);
+  -fx-padding: 15px;
+  -fx-spacing: 5px;
+}
+
+.stat-number {
+  -fx-text-fill: -primary-blue;
+  -fx-font-size: 36px;
+  -fx-font-weight: bold;
+  -fx-effect: dropshadow(three-pass-box, rgba(26, 82, 118, 0.3), 3, 0, 0, 2);
+}
+
+.stat-desc {
+  -fx-text-fill: #7f8c8d;
+  -fx-font-size: 13px;
+  -fx-font-weight: bold;
+}
+
+/* ===== HISTORY BOX & TABLE ===== */
+.history-box {
+  -fx-background-color: rgba(255, 255, 255, 0.98);
+  -fx-background-radius: 15px;
+  -fx-border-radius: 15px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 12, 0, 0, 6);
+  -fx-border-color: #16a085;
+  -fx-border-width: 2px;
+  -fx-padding: 12px;
+}
+
+.history-title {
+  -fx-text-fill: -primary-dark;
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+}
+
+/* TableView Styling */
+.table-view {
+  -fx-background-color: transparent;
+  -fx-border-color: #bdc3c7;
+  -fx-border-width: 2px;
+  -fx-border-radius: 8px;
+  -fx-background-radius: 8px;
+}
+
+.table-view .column-header-background {
+  -fx-background-color: linear-gradient(to bottom, #34495e, #2c3e50);
+  -fx-border-color: #1a252f;
+  -fx-border-width: 0 0 2 0;
+}
+
+.table-view .column-header {
+  -fx-background-color: transparent;
+  -fx-border-color: #1a252f;
+  -fx-border-width: 0 1 0 0;
+}
+
+.table-view .column-header .label {
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-font-size: 13px;
+  -fx-alignment: center;
+}
+
+.table-view .table-cell {
+  -fx-border-color: #ecf0f1;
+  -fx-border-width: 0 0 1 0;
+  -fx-padding: 8px 10px;
+  -fx-font-size: 12px;
+}
+
+.table-view .table-row-cell {
+  -fx-background-color: white;
+}
+
+.table-view .table-row-cell:odd {
+  -fx-background-color: #f8f9fa;
+}
+
+.table-view .table-row-cell:selected {
+  -fx-background-color: rgba(52, 152, 219, 0.2);
+  -fx-text-fill: -primary-dark;
+}
+
+.table-view .table-row-cell:hover {
+  -fx-background-color: rgba(52, 152, 219, 0.1);
+  -fx-cursor: hand;
+}
+
+/* ===== BUTTON ===== */
+.primary-button {
+  -fx-background-color: linear-gradient(to bottom, #1a5276, #154360);
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-font-size: 14px;
+  -fx-background-radius: 10px;
+  -fx-border-radius: 10px;
+  -fx-cursor: hand;
+  -fx-padding: 12px 25px;
+  -fx-effect: dropshadow(three-pass-box, rgba(26, 82, 118, 0.4), 8, 0, 0, 4);
+  -fx-border-color: #5dade2;
+  -fx-border-width: 2px;
+}
+
+.primary-button:hover {
+  -fx-background-color: linear-gradient(to bottom, #154360, #1a5276);
+  -fx-effect: dropshadow(three-pass-box, rgba(26, 82, 118, 0.6), 10, 0, 0, 5);
+  -fx-scale-x: 1.05;
+  -fx-scale-y: 1.05;
+}
+
+.primary-button:pressed {
+  -fx-scale-x: 0.95;
+  -fx-scale-y: 0.95;
+}
+
+/* ===== IMAGE VIEW (BACK BUTTON) ===== */
+.image-view {
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 4, 0, 0, 2);
+}
+
+.image-view:hover {
+  -fx-scale-x: 1.1;
+  -fx-scale-y: 1.1;
+  -fx-effect: dropshadow(three-pass-box, rgba(230, 126, 34, 0.5), 6, 0, 0, 3);
+}

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1570.0" stylesheets="@dashboard.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.DashboardControllerAdmin">
+   <children>
+      <Button fx:id="reportButton" layoutX="141.0" layoutY="268.0" mnemonicParsing="false" onAction="#handleReportButton" prefHeight="306.0" prefWidth="275.0" styleClass="buttonrprt" stylesheets="@dashboard.css" textFill="#4c70bf">
+         <opaqueInsets>
+            <Insets top="20.0" />
+         </opaqueInsets>
+      </Button>
+      <Button fx:id="revisiButton" layoutX="648.0" layoutY="268.0" mnemonicParsing="false" onAction="#handleRevisiButton" prefHeight="306.0" prefWidth="275.0" styleClass="buttonrevisi" stylesheets="@dashboard.css" />
+      <ImageView fitHeight="179.0" fitWidth="174.0" layoutX="192.0" layoutY="313.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../icon/icons8-purchase-order-64.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="179.0" fitWidth="197.0" layoutX="696.0" layoutY="300.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../icon/icons8-automatic-order-96.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="239.0" layoutY="504.0" text="Report" textFill="WHITE">
+         <font>
+            <Font name="Century Schoolbook" size="25.0" />
+         </font>
+      </Label>
+      <Label layoutX="749.0" layoutY="504.0" text="Revisi" textFill="WHITE">
+         <font>
+            <Font name="Century Schoolbook" size="25.0" />
+         </font>
+      </Label>
+      <Button fx:id="logoutButton" layoutX="47.0" layoutY="727.0" mnemonicParsing="false" onAction="#handleLogoutButton" prefHeight="60.0" prefWidth="206.0" styleClass="btnlogout" stylesheets="@dashboard.css" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+      <Pane prefHeight="118.0" prefWidth="1570.0" styleClass="body" stylesheets="@dashboard.css">
+         <children>
+            <Label layoutX="155.0" layoutY="37.0" text="PT NUSWANTORO INFORMASI" textFill="WHITE">
+               <font>
+                  <Font name="Dubai Regular" size="25.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="91.0" fitWidth="154.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" styleClass="header">
+               <image>
+                  <Image url="@../icon/LOGO_PT_NIT-removebg-preview-3.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="1348.0" layoutY="47.0" text="Selamat Datang Admin" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <Label layoutX="150.0" layoutY="735.0" text="LogOut">
+         <font>
+            <Font name="Dubai Regular" size="25.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="60.0" fitWidth="51.0" layoutX="78.0" layoutY="732.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../icon/icons8-logout-50.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="buatAkun" layoutX="1150.0" layoutY="268.0" mnemonicParsing="false" onAction="#handleRevisiButton" prefHeight="306.0" prefWidth="275.0" styleClass="buttonbuatakun" stylesheets="@dashboard.css" textFill="WHITE" />
+      <ImageView fitHeight="165.0" fitWidth="206.0" layoutX="1205.0" layoutY="300.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../icon/icons8-sign-in-50.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="1224.0" layoutY="504.0" text="Buat Akun" textFill="#fffefe">
+         <font>
+            <Font name="Century Schoolbook" size="25.0" />
+         </font>
+      </Label>
+   </children>
+   <styleClass>
+      <String fx:value="header" />
+      <String fx:value="body" />
+   </styleClass>
+</Pane>

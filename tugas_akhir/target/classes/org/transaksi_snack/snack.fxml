@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="768.0" prefWidth="1366.0" styleClass="pane" stylesheets="@snack.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.SnackController">
+   <children>
+      <Pane prefHeight="110.0" prefWidth="1366.0" styleClass="dashboard-header">
+         <children>
+            <ImageView fitHeight="60.0" fitWidth="95.0" layoutX="12.0" layoutY="25.0" preserveRatio="true">
+               <Image url="@../icon/logo.png" />
+            </ImageView>
+            
+            <Label layoutX="115.0" layoutY="25.0" styleClass="header-title" text="SNACK BAR SYSTEM" />
+            <Label layoutX="115.0" layoutY="60.0" styleClass="header-subtitle" text="Sistem Pembelian Snack &amp; Minuman" />
+            <Label fx:id="clockLabel" layoutX="1100.0" layoutY="40.0" styleClass="header-clock" />
+         </children>
+      </Pane>
+
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutY="110.0" prefHeight="658.0" prefWidth="1366.0" styleClass="scroll-pane" vbarPolicy="AS_NEEDED" pannable="true">
+         <content>
+            <VBox spacing="12" styleClass="main-content" style="-fx-padding: 15 20 30 20;">
+               <children>
+                  <Pane styleClass="gambar">
+                     <children>
+                        <Label layoutX="30.0" layoutY="25.0" styleClass="info-title" text="Snack Bar Fitness Center" />
+                        <Label layoutX="30.0" layoutY="55.0" styleClass="info-subtitle" text="Energi untuk Performa Terbaik" />
+                        <Label layoutX="30.0" layoutY="85.0" styleClass="info-description" text="• Protein bar, minuman energi, dan snack sehat&#10;• Pembayaran cepat dan mudah&#10;• Stok real-time dan rekomendasi produk&#10;• Sistem transaksi terintegrasi" wrapText="true" />
+                     </children>
+                  </Pane>
+
+                  <VBox spacing="15" styleClass="form-box">
+                     <children>
+                        <Label styleClass="form-box-label" text="Data Transaksi" />
+                        
+                        <GridPane hgap="12" vgap="8">
+                           <columnConstraints>
+                              <ColumnConstraints prefWidth="300" />
+                              <ColumnConstraints prefWidth="300" />
+                              <ColumnConstraints prefWidth="300" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints prefHeight="30.0" />
+                           </rowConstraints>
+                           
+                           <VBox spacing="3" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                              <Label styleClass="form-box-sublabel" text="ID Transaksi Snack" />
+                              <HBox spacing="6" alignment="CENTER_LEFT">
+                                 <TextField fx:id="transactionIdField" editable="false" prefHeight="32.0" prefWidth="240.0" styleClass="form-box-text-field-disabled" />
+                                 <Button fx:id="generateIdButton" styleClass="generate-id-btn" text="Generate" />
+                              </HBox>
+                           </VBox>
+                           
+                           <VBox spacing="3" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                              <Label styleClass="form-box-sublabel" text="Nama Pelanggan" />
+                              <TextField fx:id="customerNameField" prefHeight="32.0" prefWidth="300.0" promptText="Masukkan nama pelanggan" styleClass="form-box-text-field" />
+                           </VBox>
+                           
+                           <VBox spacing="3" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                              <Label styleClass="form-box-sublabel" text="Tanggal Pembelian" />
+                              <DatePicker fx:id="transactionDateField" prefHeight="32.0" prefWidth="300.0" styleClass="date-picker" />
+                           </VBox>
+                        </GridPane>
+                        
+                        <Label styleClass="form-box-label" text="Pilih Produk Snack" />
+                        
+                        <!-- Product Grid - Will be populated dynamically from Java -->
+                        <GridPane fx:id="productGrid" hgap="12" vgap="12" styleClass="product-grid">
+                           <columnConstraints>
+                              <ColumnConstraints prefWidth="200" />
+                              <ColumnConstraints prefWidth="200" />
+                              <ColumnConstraints prefWidth="200" />
+                              <ColumnConstraints prefWidth="200" />
+                           </columnConstraints>
+                        </GridPane>
+                        
+                        <VBox spacing="8" styleClass="summary-box">
+                           <Label styleClass="form-box-label" text="Ringkasan Pembelian" />
+                           <HBox spacing="30" alignment="CENTER_LEFT">
+                              <VBox prefWidth="160" spacing="3">
+                                 <Label styleClass="summary-label" text="Subtotal" />
+                                 <Label fx:id="subtotalLabel" styleClass="summary-value" text="Rp 0" />
+                              </VBox>
+                              <VBox prefWidth="160" spacing="3">
+                                 <Label styleClass="summary-label" text="Pajak (10%)" />
+                                 <Label fx:id="taxLabel" styleClass="summary-value" text="Rp 0" />
+                              </VBox>
+                              <VBox prefWidth="160" spacing="3">
+                                 <Label styleClass="summary-label" text="Total Item" />
+                                 <Label fx:id="totalItemsLabel" styleClass="summary-value" text="0 Item" />
+                              </VBox>
+                           </HBox>
+                        </VBox>
+                        
+                        <VBox spacing="6">
+                           <Label styleClass="form-box-label" text="Total Pembayaran" />
+                           <TextField fx:id="totalPaymentField" editable="false" prefHeight="40.0" prefWidth="300.0" styleClass="form-box-text-field-total" />
+                           <Label styleClass="payment-detail-label" text="Sudah termasuk pajak 10%" />
+                        </VBox>
+                        
+                        <VBox spacing="12" styleClass="payment-section">
+                           <Label styleClass="form-box-label" text="Pembayaran" />
+                           
+                           <HBox spacing="15" alignment="CENTER_LEFT">
+                              <VBox spacing="5" prefWidth="450">
+                                 <Label styleClass="form-box-sublabel" text="Uang Diberikan (Rp)" />
+                                 <TextField fx:id="cashGivenField" prefHeight="35.0" promptText="Masukkan jumlah uang" styleClass="form-box-text-field" />
+                              </VBox>
+                              
+                              <VBox spacing="5" prefWidth="450">
+                                 <Label styleClass="form-box-sublabel" text="Kembalian" />
+                                 <TextField fx:id="changeField" editable="false" prefHeight="35.0" styleClass="form-box-text-field-change" />
+                              </VBox>
+                           </HBox>
+                           
+                           <HBox spacing="15" alignment="CENTER_LEFT">
+                              <VBox spacing="5" prefWidth="450">
+                                 <Label styleClass="form-box-sublabel" text="Status Pembayaran" />
+                                 <Label fx:id="paymentStatusLabel" styleClass="payment-status-label" text="Menunggu Pembayaran" />
+                              </VBox>
+                              
+                              <VBox spacing="5" prefWidth="450">
+                                 <Label styleClass="form-box-sublabel" text="Aksi" />
+                                 <Button fx:id="calculateChangeButton" styleClass="calculate-change-btn" text="Hitung Kembalian" />
+                              </VBox>
+                           </HBox>
+                        </VBox>
+                        
+                        <HBox spacing="10" alignment="CENTER" styleClass="button-section">
+                           <Button fx:id="processButton" prefHeight="38.0" prefWidth="120.0" styleClass="form-box-bayar" text="Bayar" />
+                           <Button fx:id="resetButton" prefHeight="38.0" prefWidth="120.0" styleClass="form-box-reset" text="Reset" />
+                           <Button fx:id="backButton" prefHeight="38.0" prefWidth="120.0" styleClass="form-box-kembali" text="Kembali" />
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>

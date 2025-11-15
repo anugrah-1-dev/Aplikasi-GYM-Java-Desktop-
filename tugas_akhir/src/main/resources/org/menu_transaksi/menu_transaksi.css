@@ -1,0 +1,327 @@
+/* menu_transaksi.css - MODERN MENU TRANSACTION SYSTEM - 1366x768 */
+
+/* ===== VARIABLES & THEME ===== */
+.root {
+  -fx-font-family: "Segoe UI", "Arial", sans-serif;
+  -primary-dark: #1c2833;
+  -primary-blue: #1a5276;
+  -accent-orange: #e67e22;
+  -accent-teal: #16a085;
+  -accent-purple: #9b59b6;
+  -danger-red: #e74c3c;
+  -warning-orange: #f39c12;
+  -success-green: #27ae60;
+  -info-blue: #3498db;
+  -text-light: #f8f9f9;
+  -text-dark: #2c3e50;
+  -shadow-light: rgba(255, 255, 255, 0.1);
+  -shadow-dark: rgba(0, 0, 0, 0.5);
+}
+
+/* ===== MAIN BODY ===== */
+.body {
+  -fx-background-color: linear-gradient(
+    to bottom right,
+    #1c2833,
+    #1a5276,
+    #17202a
+  );
+  -fx-background-size: 400% 400%;
+}
+
+/* ===== HEADER SECTION ===== */
+.dashboard-header {
+  -fx-background-color: linear-gradient(to right, #1a5276, #1c2833, #1a5276);
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 15, 0, 0, 6);
+  -fx-border-color: -accent-orange;
+  -fx-border-width: 0 0 3 0;
+}
+
+.company-name {
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.7), 6, 0, 0, 2);
+  -fx-text-fill: -text-light;
+  -fx-font-weight: bold;
+  -fx-font-size: 22px;
+}
+
+/* ===== DATE & TIME ===== */
+.date-time {
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 0, 1);
+  -fx-font-weight: bold;
+  -fx-text-fill: -text-light;
+  -fx-font-size: 13px;
+  -fx-background-color: rgba(26, 82, 118, 0.7);
+  -fx-background-radius: 8;
+  -fx-padding: 4px 8px;
+  -fx-border-color: -accent-orange;
+  -fx-border-width: 1px;
+  -fx-border-radius: 8px;
+}
+
+/* ===== USER INFO ===== */
+.user-name {
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 0, 1);
+  -fx-font-weight: bold;
+  -fx-text-fill: -text-light;
+  -fx-font-size: 14px;
+}
+
+.user-role {
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 0, 1);
+  -fx-font-style: italic;
+  -fx-text-fill: -accent-orange;
+  -fx-font-size: 12px;
+}
+
+/* ===== MENU BUTTONS (TOP ROW) ===== */
+.button-menu {
+  -fx-background-color: linear-gradient(to bottom, #1a5276, #154360);
+  -fx-background-radius: 18px;
+  -fx-border-radius: 18px;
+  -fx-border-color: -accent-orange;
+  -fx-border-width: 2px;
+  -fx-text-fill: white;
+  -fx-font-size: 13px;
+  -fx-font-weight: bold;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 8, 0, 0, 4);
+  -fx-cursor: hand;
+  -fx-transition: all 0.3s ease;
+  -fx-pref-height: 160px;
+  -fx-pref-width: 200px;
+  -fx-content-display: top;
+  -fx-alignment: center;
+}
+
+.button-menu:hover {
+  -fx-background-color: linear-gradient(to bottom, #154360, #1a5276);
+  -fx-scale-x: 1.06;
+  -fx-scale-y: 1.06;
+  -fx-effect: dropshadow(three-pass-box, rgba(230, 126, 34, 0.5), 12, 0, 0, 6);
+  -fx-border-color: #d35400;
+  -fx-border-width: 2px;
+}
+
+.button-menu:pressed {
+  -fx-background-color: linear-gradient(to bottom, #154360, #1a5276);
+  -fx-scale-x: 0.95;
+  -fx-scale-y: 0.95;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 4, 0, 0, 2);
+}
+
+/* Specific button colors with gym theme */
+#btnTransaksiGym {
+  -fx-background-color: linear-gradient(to bottom, #1a5276, #154360);
+  -fx-border-color: -accent-orange;
+}
+
+#btnTransaksiGym:hover {
+  -fx-background-color: linear-gradient(to bottom, #154360, #1a5276);
+  -fx-border-color: #d35400;
+}
+
+#btnTransaksiSnack {
+  -fx-background-color: linear-gradient(to bottom, #27ae60, #229954);
+  -fx-border-color: #2ecc71;
+}
+
+#btnTransaksiSnack:hover {
+  -fx-background-color: linear-gradient(to bottom, #229954, #27ae60);
+  -fx-border-color: #27ae60;
+}
+
+#btnTambahSnack {
+  -fx-background-color: linear-gradient(to bottom, #9b59b6, #8e44ad);
+  -fx-border-color: #a569bd;
+}
+
+#btnTambahSnack:hover {
+  -fx-background-color: linear-gradient(to bottom, #8e44ad, #9b59b6);
+  -fx-border-color: #9b59b6;
+}
+
+/* ===== DATA TRANSAKSI BUTTON (SPECIAL STYLING) ===== */
+.button-menu-data {
+  -fx-background-color: linear-gradient(to bottom, #3498db, #2980b9);
+  -fx-background-radius: 18px;
+  -fx-border-radius: 18px;
+  -fx-border-color: #5dade2;
+  -fx-border-width: 3px;
+  -fx-text-fill: white;
+  -fx-font-size: 13px;
+  -fx-font-weight: bold;
+  -fx-effect: dropshadow(three-pass-box, rgba(52, 152, 219, 0.4), 10, 0, 0, 5);
+  -fx-cursor: hand;
+  -fx-transition: all 0.3s ease;
+  -fx-pref-height: 160px;
+  -fx-pref-width: 200px;
+  -fx-content-display: top;
+  -fx-alignment: center;
+}
+
+.button-menu-data:hover {
+  -fx-background-color: linear-gradient(to bottom, #2980b9, #3498db);
+  -fx-scale-x: 1.08;
+  -fx-scale-y: 1.08;
+  -fx-effect: dropshadow(three-pass-box, rgba(52, 152, 219, 0.7), 15, 0, 0, 8);
+  -fx-border-color: #3498db;
+  -fx-border-width: 3px;
+}
+
+.button-menu-data:pressed {
+  -fx-background-color: linear-gradient(to bottom, #2471a3, #21618c);
+  -fx-scale-x: 0.95;
+  -fx-scale-y: 0.95;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 6, 0, 0, 3);
+}
+
+#btnDataTransaksi {
+  -fx-background-color: linear-gradient(to bottom, #3498db, #2980b9);
+  -fx-border-color: #5dade2;
+}
+
+#btnDataTransaksi:hover {
+  -fx-background-color: linear-gradient(to bottom, #2980b9, #3498db);
+  -fx-border-color: #3498db;
+}
+
+/* ===== MENU LABELS ===== */
+.menu-label {
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 3, 0, 0, 1);
+  -fx-text-fill: -text-light;
+  -fx-font-weight: bold;
+  -fx-font-size: 18px;
+}
+
+.menu-label-data {
+  -fx-effect: dropshadow(three-pass-box, rgba(52, 152, 219, 0.7), 5, 0, 0, 2);
+  -fx-text-fill: #5dade2;
+  -fx-font-weight: bold;
+  -fx-font-size: 18px;
+}
+
+/* ===== LOGOUT SECTION ===== */
+.logout {
+  -fx-background-color: linear-gradient(to bottom, #e74c3c, #c0392b);
+  -fx-background-radius: 12px;
+  -fx-border-radius: 12px;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-font-size: 11px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 6, 0, 0, 3);
+  -fx-cursor: hand;
+  -fx-border-color: #ec7063;
+  -fx-border-width: 2px;
+  -fx-transition: all 0.3s ease;
+  -fx-pref-height: 45px;
+  -fx-pref-width: 150px;
+}
+
+.logout:hover {
+  -fx-background-color: linear-gradient(to bottom, #c0392b, #e74c3c);
+  -fx-scale-x: 1.04;
+  -fx-scale-y: 1.04;
+  -fx-effect: dropshadow(three-pass-box, rgba(231, 76, 60, 0.4), 10, 0, 0, 5);
+  -fx-border-color: #e74c3c;
+}
+
+.logout:pressed {
+  -fx-background-color: linear-gradient(to bottom, #a93226, #922b21);
+  -fx-scale-x: 0.95;
+  -fx-scale-y: 0.95;
+}
+
+/* ===== ICON STYLING ===== */
+.image-view {
+  -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.2), 4, 0, 0, 1);
+}
+
+/* ===== FOCUS EFFECTS ===== */
+.button-menu:focused,
+.button-menu-data:focused {
+  -fx-border-color: #f1c40f;
+  -fx-border-width: 3px;
+  -fx-effect: dropshadow(three-pass-box, rgba(241, 196, 15, 0.6), 12, 0, 0, 4);
+}
+
+/* ===== TOOLTIP STYLING ===== */
+.tooltip {
+  -fx-background-color: rgba(28, 40, 51, 0.9);
+  -fx-text-fill: white;
+  -fx-background-radius: 4px;
+  -fx-border-color: -accent-teal;
+  -fx-border-width: 1px;
+  -fx-border-radius: 4px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 4, 0, 0, 1);
+}
+
+/* ===== ADDITIONAL STYLING FOR BETTER VISIBILITY ===== */
+.label {
+  -fx-text-fill: -text-light;
+}
+
+/* ===== BUTTON TEXT STYLING ===== */
+.button-menu .text,
+.button-menu-data .text {
+  -fx-fill: white;
+  -fx-font-weight: bold;
+}
+
+/* ===== IMAGE VIEW STYLING IN BUTTONS ===== */
+.button-menu .image-view,
+.button-menu-data .image-view {
+  -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.3), 6, 0, 0, 2);
+}
+
+/* ===== HEADER IMAGE STYLING ===== */
+.dashboard-header .image-view {
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 6, 0, 0, 2);
+}
+
+/* ===== LOGOUT SECTION LABEL STYLING ===== */
+.logout-section .label {
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 3, 0, 0, 1);
+  -fx-text-fill: -text-light;
+  -fx-font-weight: bold;
+}
+
+/* ===== LOGOUT ICON STYLING ===== */
+.logout-section .image-view {
+  -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.3), 4, 0, 0, 1);
+}
+
+/* ===== PULSE ANIMATION FOR DATA TRANSAKSI BUTTON ===== */
+@keyframes pulse {
+  0% {
+    -fx-effect: dropshadow(
+      three-pass-box,
+      rgba(52, 152, 219, 0.4),
+      10,
+      0,
+      0,
+      5
+    );
+  }
+  50% {
+    -fx-effect: dropshadow(
+      three-pass-box,
+      rgba(52, 152, 219, 0.7),
+      15,
+      0,
+      0,
+      8
+    );
+  }
+  100% {
+    -fx-effect: dropshadow(
+      three-pass-box,
+      rgba(52, 152, 219, 0.4),
+      10,
+      0,
+      0,
+      5
+    );
+  }
+}
+.button-menu-data {
+  -fx-animation: pulse 3s infinite;
+}

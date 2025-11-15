@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<Pane fx:id="rootPane" prefHeight="800.0" prefWidth="1570.0" styleClass="body" stylesheets="@revisi.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.RevisiHargaParkirController">
+   <children>
+      <!-- Header Section -->
+      <Pane prefHeight="118.0" prefWidth="1570.0" styleClass="bagian_atas">
+         <children>
+            <ImageView fitHeight="101.0" fitWidth="113.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icon/LOGO_PT_NIT-removebg-preview-3.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="155.0" layoutY="37.0" text="PT Nuswantoro Informasi Teknologi" textFill="WHITE">
+               <font>
+                  <Font name="Dubai Regular" size="24.0" />
+               </font>
+            </Label>
+            <Button fx:id="backButton" layoutX="1396.0" layoutY="47.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="57.0" styleClass="kembali" stylesheets="@revisi.css" />
+            <ImageView fx:id="imgkembali" fitHeight="70.0" fitWidth="71.0" layoutX="1390.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icon/WhatsApp_Image_2025-05-18_at_22.45.11-removebg-preview.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+      
+      <!-- Main Content -->
+      <VBox layoutX="214.0" layoutY="150.0" spacing="20.0">
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+         
+         <!-- Jenis Kendaraan -->
+         <VBox spacing="5.0">
+            <Label text="Jenis Kendaraan">
+               <font>
+                  <Font name="Dubai Bold" size="20.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="jenisKendaraanComboBox" prefHeight="35.0" prefWidth="1119.0" promptText="Pilih Jenis Kendaraan" styleClass="cmbjenis" />
+         </VBox>
+         
+         <!-- Harga Parkir -->
+         <VBox spacing="5.0">
+            <Label prefHeight="35.0" prefWidth="125.0" text="Harga Parkir">
+               <font>
+                  <Font name="Dubai Bold" size="20.0" />
+               </font>
+            </Label>
+            <TextField fx:id="hargaParkirField" prefHeight="35.0" prefWidth="1119.0" promptText="Masukkan Harga" />
+         </VBox>
+         
+         <!-- Button Perbarui -->
+         <HBox alignment="CENTER_LEFT" spacing="10.0">
+            <Button fx:id="perbaruiButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="157.0" styleClass="btnperbarui" text="Perbarui" textFill="WHITE">
+               <font>
+                  <Font name="Dubai Bold" size="18.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../icon/icons8-ballpoint-66.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </HBox>
+      </VBox>
+   </children>
+</Pane>

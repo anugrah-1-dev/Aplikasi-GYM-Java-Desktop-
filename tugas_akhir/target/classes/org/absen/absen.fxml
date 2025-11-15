@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" styleClass="pane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.GymAbsenController">
+   <children>
+      <!-- Header -->
+      <Pane prefHeight="120.0" prefWidth="1366.0" styleClass="dashboard-header">
+         <children>
+            <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="20.0" layoutY="15.0">
+               <image>
+                  <Image url="@../icon/logo.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="125.0" layoutY="35.0" prefHeight="40.0" prefWidth="350.0" styleClass="company-name" text="Sistem Absensi Gym" />
+            <ImageView fx:id="imgkembali" fitHeight="50.0" fitWidth="50.0" layoutX="1250.0" layoutY="35.0" onMouseClicked="#kembaliKeMenuMember" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icon/WhatsApp_Image_2025-05-18_at_22.45.11-removebg-preview.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="jam" layoutX="1150.0" layoutY="35.0" prefHeight="40.0" prefWidth="90.0" text="01.02.03" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      
+      <!-- ScrollPane untuk Konten Utama -->
+      <ScrollPane fitToWidth="true" layoutY="120.0" prefHeight="648.0" prefWidth="1366.0" styleClass="scroll-pane">
+         <content>
+            <VBox prefHeight="1200.0" prefWidth="1346.0" spacing="15.0" styleClass="main-content">
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               
+               <!-- Panel Input Scan -->
+               <Pane prefHeight="140.0" prefWidth="1318.0" styleClass="input-box">
+                  <children>
+                     <Label layoutX="12.0" layoutY="8.0" styleClass="input-title" text="Scan / Input Member ID" />
+                     <HBox alignment="CENTER_LEFT" layoutX="12.0" layoutY="45.0" spacing="10.0">
+                        <children>
+                           <TextField fx:id="txtInputManual" prefHeight="45.0" prefWidth="400.0" promptText="Scan kartu atau ketik Member ID..." styleClass="input-field-large" />
+                           <Button fx:id="btnCariManual" mnemonicParsing="false" prefHeight="45.0" prefWidth="150.0" styleClass="primary-button" text="PROSES ABSEN" />
+                        </children>
+                     </HBox>
+                     <Label fx:id="lblScanStatus" layoutX="12.0" layoutY="100.0" styleClass="scan-status" text="Menunggu input..." textFill="#7f8c8d">
+                        <font>
+                           <Font name="Arial Italic" size="13.0" />
+                        </font>
+                     </Label>
+                  </children>
+               </Pane>
+               
+               <!-- Panel Status Absensi & Info Member -->
+               <HBox alignment="TOP_LEFT" prefHeight="320.0" prefWidth="1322.0" spacing="12.0">
+                  <!-- Status Absensi Hari Ini -->
+                  <VBox prefHeight="320.0" prefWidth="650.0" styleClass="status-box">
+                     <children>
+                        <Label styleClass="status-title" text="Status Absensi Hari Ini" />
+                        <VBox alignment="CENTER" prefHeight="260.0" prefWidth="626.0" styleClass="status-container">
+                           <children>
+                              <ImageView fx:id="imgStatusIcon" fitHeight="60.0" fitWidth="60.0" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icon/waiting-icon.png" />
+                                 </image>
+                              </ImageView>
+                              <Label fx:id="lblStatusAbsensi" styleClass="status-waiting" text="Belum Absen" />
+                              <Label fx:id="lblWaktuAbsensi" styleClass="time-label" text="-" />
+                              <VBox alignment="CENTER" spacing="8.0" styleClass="status-info-box">
+                                 <children>
+                                    <Label fx:id="lblTotalAbsenHariIni" styleClass="stat-label" text="Total Absen Hari Ini: 0" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
+                  
+                  <!-- Info Member & Masa Berlaku -->
+                  <VBox prefHeight="320.0" prefWidth="650.0" styleClass="info-box">
+                     <children>
+                        <Label styleClass="info-title" text="Informasi Member" />
+                        <VBox spacing="12.0" styleClass="member-data">
+                           <children>
+                              <HBox spacing="8.0">
+                                 <children>
+                                    <Label styleClass="data-label" text="ID Member:" />
+                                    <Label fx:id="lblIdMember" styleClass="data-value-large" text="-" />
+                                 </children>
+                              </HBox>
+                              <HBox spacing="8.0">
+                                 <children>
+                                    <Label styleClass="data-label" text="Nama:" />
+                                    <Label fx:id="lblNama" styleClass="data-value-large" text="-" />
+                                 </children>
+                              </HBox>
+                              <HBox spacing="8.0">
+                                 <children>
+                                    <Label styleClass="data-label" text="Status Member:" />
+                                    <Label fx:id="lblStatusMember" styleClass="data-value" text="-" />
+                                 </children>
+                              </HBox>
+                              <HBox spacing="8.0">
+                                 <children>
+                                    <Label styleClass="data-label" text="Berlaku Hingga:" />
+                                    <Label fx:id="lblMasaBerlaku" styleClass="data-value" text="-" />
+                                 </children>
+                              </HBox>
+                              
+                              <!-- Sisa Hari Masa Berlaku - HIGHLIGHT -->
+                              <VBox spacing="5.0" styleClass="validity-box">
+                                 <children>
+                                    <Label styleClass="validity-title" text="Sisa Masa Aktif" />
+                                    <HBox alignment="CENTER" spacing="10.0">
+                                       <children>
+                                          <Label fx:id="lblSisaHari" styleClass="validity-days" text="0" />
+                                          <Label styleClass="validity-label" text="Hari" />
+                                       </children>
+                                    </HBox>
+                                    <Label fx:id="lblValidityStatus" styleClass="validity-status-normal" text="Member Aktif" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
+               </HBox>
+               
+               <!-- Statistik Absensi Member -->
+               <Pane prefHeight="160.0" prefWidth="1322.0" styleClass="stats-box">
+                  <children>
+                     <Label layoutX="12.0" layoutY="8.0" styleClass="stats-title" text="Statistik Kehadiran Member" />
+                     <HBox alignment="CENTER" layoutX="12.0" layoutY="45.0" prefHeight="100.0" prefWidth="1290.0" spacing="20.0">
+                        <children>
+                           <!-- Total Absen Bulan Ini -->
+                           <VBox alignment="CENTER" prefHeight="100.0" prefWidth="250.0" styleClass="stat-card">
+                              <children>
+                                 <Label styleClass="stat-number" text="0" fx:id="lblTotalBulanIni" />
+                                 <Label styleClass="stat-desc" text="Absen Bulan Ini" />
+                              </children>
+                           </VBox>
+                           
+                           <!-- Total Absen Minggu Ini -->
+                           <VBox alignment="CENTER" prefHeight="100.0" prefWidth="250.0" styleClass="stat-card">
+                              <children>
+                                 <Label styleClass="stat-number" text="0" fx:id="lblTotalMingguIni" />
+                                 <Label styleClass="stat-desc" text="Absen Minggu Ini" />
+                              </children>
+                           </VBox>
+                           
+                           <!-- Total Absen Keseluruhan -->
+                           <VBox alignment="CENTER" prefHeight="100.0" prefWidth="250.0" styleClass="stat-card">
+                              <children>
+                                 <Label styleClass="stat-number" text="0" fx:id="lblTotalKeseluruhan" />
+                                 <Label styleClass="stat-desc" text="Total Keseluruhan" />
+                              </children>
+                           </VBox>
+                           
+                           <!-- Rata-rata per Minggu -->
+                           <VBox alignment="CENTER" prefHeight="100.0" prefWidth="250.0" styleClass="stat-card">
+                              <children>
+                                 <Label styleClass="stat-number" text="0" fx:id="lblRataRata" />
+                                 <Label styleClass="stat-desc" text="Rata-rata/Minggu" />
+                              </children>
+                           </VBox>
+                        </children>
+                     </HBox>
+                  </children>
+               </Pane>
+               
+               <!-- Riwayat Absensi Member -->
+               <Pane prefHeight="450.0" prefWidth="1322.0" styleClass="history-box">
+                  <children>
+                     <Label layoutX="12.0" layoutY="8.0" styleClass="history-title" text="Riwayat Absensi Member (30 Hari Terakhir)" />
+                     <TableView fx:id="tblRiwayatAbsensi" layoutX="14.0" layoutY="45.0" prefHeight="385.0" prefWidth="1286.0" styleClass="table-view">
+                        <columns>
+                           <TableColumn fx:id="colNo" prefWidth="50.0" text="No" />
+                           <TableColumn fx:id="colTanggal" prefWidth="150.0" text="Tanggal" />
+                           <TableColumn fx:id="colWaktu" prefWidth="120.0" text="Waktu" />
+                           <TableColumn fx:id="colHari" prefWidth="100.0" text="Hari" />
+                           <TableColumn fx:id="colStatus" prefWidth="120.0" text="Status" />
+                           <TableColumn fx:id="colKeterangan" prefWidth="746.0" text="Keterangan" />
+                        </columns>
+                     </TableView>
+                  </children>
+               </Pane>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+   <stylesheets>
+      <URL value="@gym_absen.css" />
+   </stylesheets>
+</Pane>

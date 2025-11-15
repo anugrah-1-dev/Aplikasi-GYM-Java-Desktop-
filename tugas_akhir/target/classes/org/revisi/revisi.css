@@ -1,0 +1,22 @@
+.body {
+  -fx-background-color:  #d1d8e0;
+
+}
+.bagian_atas {
+  -fx-background-color:#4d96c7;
+}
+.btnback {
+  -fx-background-color: #4d96c7;
+}
+.cmbjenis {
+  -fx-background-color: #fbfcff;
+  -fx-border-color: #b9b8b8;
+}
+.btnperbarui {
+    -fx-background-color: #2a56c7;
+  }
+  .kembali{
+   
+  -fx-background-color: #4d96c7;
+}
+  

@@ -1,0 +1,152 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  background-color: #222;
+}
+
+.container {
+  width: 700px;
+  margin: 40px auto;
+  background: linear-gradient(to bottom, #e8e8e8, #f1e0d6);
+  border-radius: 10px;
+  overflow: hidden;
+  padding-bottom: 30px;
+}
+
+header {
+  background-color: #a39b9b;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  height: 50px;
+  margin-right: 10px;
+}
+
+.logo span {
+  font-weight: bold;
+  font-size: 20px;
+  color: #222;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* Geser ke kanan */
+  margin-left: auto; /* Tambah ini supaya otomatis dorong ke kanan */
+  gap: 10px; /* Jarak antara foto dan tombol Admin */
+}
+
+.user-info img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: #eee;
+  object-fit: cover;
+}
+
+.admin-btn {
+  padding: 5px 12px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-right: 20px;
+}
+
+main {
+  padding: 30px 20px 0;
+  text-align: center;
+}
+
+.menu {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 40px;
+ bbackground: linear-gradient(to bottom, #ffffff, #7e7e7e);
+}
+
+.menu-item {
+  width: 160px;
+  height: 160px;
+bbackground: linear-gradient(to bottom, #ffffff, #7e7e7e);
+  border-radius: 10px;
+  position: relative;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transform: translateY(50px);
+  opacity: 0;
+  animation: slideUp 0.8s forwards;
+}
+
+.menu-item:nth-child(1) {
+  animation-delay: 0.2s;
+}
+.menu-item:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.menu-item:hover {
+  transform: scale(1.05);
+}
+
+.menu-item img {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 10px;
+}
+
+.menu-text {
+  font-size: 14px;
+  color: #222;
+}
+
+.menu-arrow {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  color: #333;
+}
+
+.logout-btn {
+  padding: 8px 20px;
+  background-color: #444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-right: 1000px;
+}
+
+.logout-btn:hover {
+  background-color: #666;
+}
+
+/* --- Animasi slide --- */
+@keyframes slideUp {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

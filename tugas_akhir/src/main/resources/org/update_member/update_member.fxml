@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" styleClass="body" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.GymUpdateController">
+   <children>
+      <!-- Header Section -->
+      <Pane prefHeight="120.0" prefWidth="1366.0" styleClass="dashboard-header">
+         <children>
+            <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="20.0" layoutY="15.0">
+               <image>
+                  <Image url="@../icon/logo.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="125.0" layoutY="30.0" prefHeight="40.0" prefWidth="400.0" styleClass="company-name" text="Form Update Data Member" />
+            <Label layoutX="125.0" layoutY="65.0" prefHeight="25.0" prefWidth="400.0" styleClass="company-subtitle" text="Member VIP Update" />
+            
+            <ImageView fx:id="imgkembali" fitHeight="50.0" fitWidth="50.0" layoutX="1250.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true" styleClass="back-image">
+               <image>
+                  <Image url="@../icon/WhatsApp_Image_2025-05-18_at_22.45.11-removebg-preview.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="jam" layoutX="1150.0" layoutY="40.0" styleClass="date-time" text="01.02.03" textAlignment="CENTER">
+               <font>
+                  <Font name="Segoe UI Bold" size="13.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      
+      <!-- ScrollPane untuk Konten Utama -->
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" 
+                  layoutX="0.0" layoutY="120.0" prefHeight="648.0" prefWidth="1366.0" 
+                  styleClass="scroll-pane" vbarPolicy="AS_NEEDED">
+         <content>
+            <VBox prefWidth="1346.0" spacing="15.0" styleClass="main-content">
+               <padding>
+                  <Insets bottom="20.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               
+               <!-- Panel Pencarian Member -->
+               <Pane prefHeight="90.0" prefWidth="1316.0" styleClass="search-box">
+                  <children>
+                     <Label layoutX="15.0" layoutY="12.0" styleClass="search-title" text="Cari Member" />
+                     <HBox alignment="CENTER_LEFT" layoutX="15.0" layoutY="40.0" spacing="12.0">
+                        <children>
+                           <TextField fx:id="txtCariMember" prefHeight="38.0" prefWidth="450.0" promptText="Masukkan ID Member, Nama, No. HP, Email, atau NIK" styleClass="search-field" />
+                           <Button fx:id="btnCari" mnemonicParsing="false" prefHeight="38.0" prefWidth="100.0" styleClass="search-button" text="CARI" />
+                        </children>
+                     </HBox>
+                     <Label fx:id="lblStatusCari" layoutX="15.0" layoutY="75.0" prefHeight="20.0" prefWidth="1286.0" styleClass="search-status" text="Silakan cari member terlebih dahulu" />
+                  </children>
+               </Pane>
+               
+               <!-- Panel Form dan Foto -->
+               <HBox alignment="TOP_LEFT" prefWidth="1316.0" spacing="15.0">
+                  <!-- Form Data Member -->
+                  <VBox prefHeight="640.0" prefWidth="800.0" styleClass="form-box">
+                     <children>
+                        <Label styleClass="form-title" text="Data Member" />
+                        <GridPane hgap="12.0" prefHeight="560.0" prefWidth="770.0" vgap="12.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="160.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="590.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="100.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <!-- Row 0: ID Member -->
+                              <Label styleClass="form-label" text="ID Member" />
+                              <TextField fx:id="txtIdMember" editable="false" styleClass="form-field" GridPane.columnIndex="1" />
+                              
+                              <!-- Row 1: Nama Lengkap -->
+                              <Label styleClass="form-label" text="Nama Lengkap" GridPane.rowIndex="1" />
+                              <TextField fx:id="txtNama" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              
+                              <!-- Row 2: Tempat Lahir -->
+                              <Label styleClass="form-label" text="Tempat Lahir" GridPane.rowIndex="2" />
+                              <TextField fx:id="txtTempatLahir" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              
+                              <!-- Row 3: Tanggal Lahir -->
+                              <Label styleClass="form-label" text="Tanggal Lahir" GridPane.rowIndex="3" />
+                              <DatePicker fx:id="dateTglLahir" prefHeight="38.0" prefWidth="570.0" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              
+                              <!-- Row 4: Jenis Kelamin -->
+                              <Label styleClass="form-label" text="Jenis Kelamin" GridPane.rowIndex="4" />
+                              <ComboBox fx:id="comboJenisKelamin" prefHeight="38.0" prefWidth="570.0" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              
+                              <!-- Row 5: NIK -->
+                              <Label styleClass="form-label" text="NIK" GridPane.rowIndex="5" />
+                              <TextField fx:id="txtNIK" promptText="16 digit NIK" styleClass="form-field nik-field" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              
+                              <!-- Row 6: Pekerjaan (BARU) -->
+                              <Label styleClass="form-label" text="Pekerjaan" GridPane.rowIndex="6" />
+                              <ComboBox fx:id="comboPekerjaan" prefHeight="38.0" prefWidth="570.0" promptText="Pilih Pekerjaan" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              
+                              <!-- Row 7: Alamat Domisili -->
+                              <Label styleClass="form-label" text="Alamat Domisili" GridPane.rowIndex="7" />
+                              <TextArea fx:id="txtAlamat" prefHeight="90.0" prefWidth="570.0" styleClass="form-field text-area" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                              
+                              <!-- Row 8: No. HP / WhatsApp -->
+                              <Label styleClass="form-label" text="No. HP / WhatsApp" GridPane.rowIndex="8" />
+                              <TextField fx:id="txtNoHp" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                              
+                              <!-- Row 9: Email -->
+                              <Label styleClass="form-label" text="Email" GridPane.rowIndex="9" />
+                              <TextField fx:id="txtEmail" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                              
+                              <!-- Row 10: Durasi Member -->
+                              <Label styleClass="form-label" text="Durasi Member" GridPane.rowIndex="10" />
+                              <ComboBox fx:id="comboDurasiMember" prefHeight="38.0" prefWidth="570.0" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                           </children>
+                           <padding>
+                              <Insets bottom="8.0" left="12.0" right="12.0" top="8.0" />
+                           </padding>
+                        </GridPane>
+                     </children>
+                     <padding>
+                        <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+                     </padding>
+                  </VBox>
+                  
+                  <!-- Panel Foto dan Informasi Membership -->
+                  <VBox prefHeight="640.0" prefWidth="480.0" spacing="15.0" styleClass="photo-box">
+                     <children>
+                        <!-- Foto Diri Section -->
+                        <VBox spacing="10.0" styleClass="photo-container">
+                           <children>
+                              <Label styleClass="photo-title" text="Foto Diri" />
+                              <VBox alignment="CENTER" spacing="12.0">
+                                 <children>
+                                    <ImageView fx:id="imgFotoDiri" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" styleClass="photo-imageview" />
+                                    <Button fx:id="btnPilihFoto" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" styleClass="upload-button" text="Ganti Foto" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </VBox>
+                        
+                        <!-- Informasi Membership -->
+                        <VBox spacing="10.0" styleClass="membership-info">
+                           <children>
+                              <Label styleClass="info-label" text="Informasi Membership" />
+                              <GridPane prefHeight="120.0" prefWidth="450.0" vgap="8.0">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="180.0" minWidth="10.0" prefWidth="140.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="320.0" minWidth="10.0" prefWidth="290.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label styleClass="info-sub-label" text="Durasi Member" />
+                                    <Label fx:id="lblDurasiMember" styleClass="info-value" text="-" GridPane.columnIndex="1" />
+                                    
+                                    <Label styleClass="info-sub-label" text="Status" GridPane.rowIndex="1" />
+                                    <Label fx:id="lblStatusMember" styleClass="info-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    
+                                    <Label styleClass="info-sub-label" text="Masa Berlaku" GridPane.rowIndex="2" />
+                                    <Label fx:id="lblMasaBerlaku" styleClass="info-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    
+                                    <Label styleClass="info-sub-label" text="Perpanjang" GridPane.rowIndex="3" />
+                                    <HBox alignment="CENTER_LEFT" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                       <children>
+                                          <ComboBox fx:id="comboPerpanjang" prefHeight="35.0" prefWidth="160.0" styleClass="form-field" />
+                                          <Button fx:id="btnPerpanjang" mnemonicParsing="false" prefHeight="35.0" prefWidth="100.0" styleClass="perpanjang-button" text="Apply" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                                 <padding>
+                                    <Insets left="6.0" right="6.0" />
+                                 </padding>
+                              </GridPane>
+                           </children>
+                        </VBox>
+                        
+                        <!-- Informasi Sistem -->
+                        <VBox spacing="10.0" styleClass="membership-info">
+                           <children>
+                              <Label styleClass="info-label" text="Informasi Sistem" />
+                              <GridPane prefHeight="70.0" prefWidth="450.0" vgap="6.0">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="180.0" minWidth="10.0" prefWidth="140.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="320.0" minWidth="10.0" prefWidth="290.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label styleClass="info-sub-label" text="Terakhir Update" />
+                                    <Label fx:id="lblLastUpdate" styleClass="info-value" text="-" GridPane.columnIndex="1" />
+                                    
+                                    <Label styleClass="info-sub-label" text="Ditangani Oleh" GridPane.rowIndex="1" />
+                                    <Label fx:id="lblAdmin" styleClass="info-value" text="System Admin" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="6.0" right="6.0" />
+                                 </padding>
+                              </GridPane>
+                           </children>
+                        </VBox>
+                        
+                        <!-- Tombol Aksi -->
+                        <HBox alignment="CENTER" spacing="12.0" styleClass="action-buttons">
+                           <children>
+                              <Button fx:id="btnUpdate" mnemonicParsing="false" prefHeight="45.0" prefWidth="160.0" styleClass="submit-button" text="UPDATE DATA" />
+                              <Button fx:id="btnReset" mnemonicParsing="false" prefHeight="45.0" prefWidth="120.0" styleClass="reset-button" text="RESET" />
+                           </children>
+                        </HBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+                     </padding>
+                  </VBox>
+               </HBox>
+               
+               <!-- Panel Informasi Tambahan -->
+               <Pane prefHeight="50.0" prefWidth="1316.0" styleClass="info-box">
+                  <children>
+                     <HBox alignment="CENTER" layoutX="10.0" layoutY="12.0" spacing="20.0">
+                        <children>
+                           <Label styleClass="info-note" text="💡 Informasi: Field NIK menggantikan foto KTP untuk kemudahan update data" />
+                           <Label styleClass="info-note" text="🔄 Pastikan data yang diupdate sudah benar sebelum menyimpan" />
+                        </children>
+                     </HBox>
+                  </children>
+               </Pane>
+
+               <!-- Spacer tambahan -->
+               <Pane prefHeight="30.0" prefWidth="1316.0" />
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+   <stylesheets>
+      <URL value="@update_member.css" />
+   </stylesheets>
+</Pane>

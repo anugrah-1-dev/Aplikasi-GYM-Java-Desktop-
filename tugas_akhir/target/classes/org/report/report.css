@@ -1,0 +1,80 @@
+.body {
+  -fx-background-color: #FAFAFA; /* Tetap bersih dan netral */
+}
+
+.bagian_atas {
+  -fx-background-color: #4d96c7; /* Hijau gelap elegan */
+}
+
+.btnback {
+  -fx-background-color: #4d96c7; /* Hijau stabil, tidak terlalu cerah */
+  -fx-text-fill: white;
+}
+
+.btncari {
+  -fx-background-color: #4d96c7; /* Hijau daun segar */
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+}
+
+.btnreset {
+  -fx-background-color: #BDBDBD; /* Abu muda netral */
+  -fx-text-fill: black;
+}
+
+.cmbpilih {
+  -fx-background-color: #FFFFFF;
+  -fx-background-radius: 5px;
+  -fx-border-color: #BDBDBD;
+  -fx-border-radius: 5px;
+}
+
+.table-view {
+  -fx-background-color: transparent;
+}
+
+.table-row-cell {
+  -fx-border-color: #E0E0E0;
+  -fx-border-width: 0px 1px 1px 1px;
+}
+
+.table-cell {
+  -fx-border-color: #E0E0E0;
+  -fx-border-width: 0px 1px 0px 1px;
+}
+
+.table-column {
+  -fx-border-color: transparent;
+}
+
+.table-view .column-header-background {
+  -fx-background-color: #c8cce6;  /* Hijau pastel, lembut */
+  -fx-background-radius: 10px 10px 0 0;
+}
+
+.table-view .column-header {
+  -fx-background-color: transparent;
+}
+
+.table-view .column-header .label {
+  -fx-text-fill: #4d96c7;  /* Serasi dengan header */
+  -fx-font-weight: bold;
+  -fx-font-size: 14px;
+}
+
+.btnexport {
+  -fx-background-color: #4d96c7; /* Hijau aksen */
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+}
+
+.btnprint {
+  -fx-background-color: #1976D2; /* Biru modern */
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+}
+
+.kembali {
+  -fx-background-color: #4d96c7; /* Samakan dengan header */
+  -fx-text-fill: white;
+}

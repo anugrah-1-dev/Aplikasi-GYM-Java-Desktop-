@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane xmlns="http://javafx.com/javafx/23.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.DashboardController"
+      prefHeight="650.0" prefWidth="1311.0"
+      styleClass="body" stylesheets="@dashboard.css">
+
+   <children>
+
+      <!-- Header -->
+      <Pane prefHeight="118.0" prefWidth="1311.0" styleClass="bagian_atas" stylesheets="@dashboard.css">
+         <children>
+            <ImageView fitHeight="94.0" fitWidth="114.0" layoutX="29.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icon/LOGO_PT_NIT-removebg-preview%204.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="155.0" layoutY="37.0" text="PT NUSWANTORO INFORMASI" textFill="WHITE">
+               <font>
+                  <Font name="Dubai Regular" size="24.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+
+      <!-- Pane untuk laporan -->
+      <Pane layoutX="516.0" layoutY="290.0" prefHeight="266.0" prefWidth="266.0" styleClass="report" stylesheets="@dashboard.css" />
+
+      <!-- Placeholder Panes -->
+      <Pane prefHeight="200.0" prefWidth="200.0" />
+      <Pane layoutX="682.0" layoutY="118.0" prefHeight="200.0" prefWidth="200.0" />
+
+      <!-- Tombol Aksi -->
+      <Button fx:id="myButton"
+              layoutX="192.0" layoutY="290.0"
+              mnemonicParsing="false"
+              prefHeight="260.0" prefWidth="275.0"
+              styleClass="buttonrprt" stylesheets="@dashboard.css"
+              text="Klik Saya"
+              onAction="#handleButtonClick"/>
+
+   </children>
+</Pane>

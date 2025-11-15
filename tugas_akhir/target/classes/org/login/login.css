@@ -1,0 +1,257 @@
+/* login.css - Modern Gym Login Theme untuk 1366x768 */
+
+/* ===== ROOT VARIABLES ===== */
+.root {
+  /* Color Palette dengan kontras tinggi */
+  -primary-blue: #1a5276;
+  -primary-dark: #1c2833;
+  -accent-orange: #e67e22;
+  -accent-teal: #16a085;
+  -success-green: #27ae60;
+  -warning-orange: #f39c12;
+  -error-red: #e74c3c;
+
+  /* Text Colors dengan kontras tinggi */
+  -text-white: #ffffff;
+  -text-light: #f8f9f9;
+  -text-dark: #2c3e50;
+  -text-muted: #85929e;
+
+  /* Background Colors */
+  -bg-dark: #1c2833;
+  -bg-light: rgba(255, 255, 255, 0.15);
+  -bg-form: rgba(28, 40, 51, 0.95);
+}
+
+/* ===== MAIN CONTAINER ===== */
+.login-container {
+  -fx-background-color: linear-gradient(
+    135deg,
+    #1c2833 0%,
+    #1a5276 50%,
+    #17202a 100%
+  );
+  -fx-background-size: 400% 400%;
+  -fx-padding: 15px;
+}
+
+/* ===== LOGO ===== */
+.logo {
+  -fx-effect: dropshadow(three-pass-box, rgba(230, 126, 34, 0.7), 12, 0, 0, 4);
+}
+
+/* ===== TYPOGRAPHY ===== */
+.main-title {
+  -fx-text-fill: -text-white;
+  -fx-font-weight: bold;
+  -fx-font-size: 36px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 8, 0, 2, 2);
+  -fx-font-family: "Segoe UI", "Arial Black", sans-serif;
+}
+
+.subtitle {
+  -fx-text-fill: -accent-orange;
+  -fx-font-weight: bold;
+  -fx-font-size: 18px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 6, 0, 1, 1);
+  -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.login-title {
+  -fx-text-fill: -text-white;
+  -fx-font-weight: bold;
+  -fx-font-size: 28px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 6, 0, 1, 1);
+  -fx-font-family: "Segoe UI", "Arial Black", sans-serif;
+}
+
+.form-label {
+  -fx-text-fill: -text-light;
+  -fx-font-weight: bold;
+  -fx-font-size: 13px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 3, 0, 1, 1);
+  -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.footer-text {
+  -fx-text-fill: rgba(255, 255, 255, 0.9);
+  -fx-font-size: 11px;
+  -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* ===== LOGIN BOX ===== */
+.login-box {
+  -fx-background-color: -bg-form;
+  -fx-background-radius: 15px;
+  -fx-border-radius: 15px;
+  -fx-border-color: rgba(230, 126, 34, 0.8);
+  -fx-border-width: 2px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.7), 20, 0, 0, 10);
+}
+
+.login-box:hover {
+  -fx-border-color: rgba(230, 126, 34, 1);
+  -fx-effect: dropshadow(three-pass-box, rgba(230, 126, 34, 0.4), 25, 0, 0, 12);
+}
+
+/* ===== FORM FIELDS ===== */
+.form-field {
+  -fx-background-color: rgba(255, 255, 255, 0.98);
+  -fx-background-radius: 8px;
+  -fx-border-radius: 8px;
+  -fx-border-color: rgba(255, 255, 255, 0.4);
+  -fx-border-width: 1.5px;
+  -fx-padding: 10px 12px;
+  -fx-font-size: 13px;
+  -fx-text-fill: -text-dark;
+  -fx-prompt-text-fill: #7b7d7d;
+  -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.form-field:hover {
+  -fx-background-color: white;
+  -fx-border-color: -accent-orange;
+  -fx-effect: dropshadow(three-pass-box, rgba(230, 126, 34, 0.3), 6, 0, 0, 2);
+}
+
+.form-field:focused {
+  -fx-background-color: white;
+  -fx-border-color: -accent-orange;
+  -fx-border-width: 2px;
+  -fx-effect: dropshadow(three-pass-box, rgba(230, 126, 34, 0.5), 8, 0, 0, 3);
+}
+
+/* ===== PASSWORD CHECKBOX ===== */
+.password-checkbox {
+  -fx-text-fill: -text-light;
+  -fx-font-size: 13px;
+  -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.password-checkbox .box {
+  -fx-background-color: rgba(255, 255, 255, 0.95);
+  -fx-border-color: rgba(255, 255, 255, 0.6);
+  -fx-border-radius: 3px;
+  -fx-border-width: 1.5px;
+  -fx-background-radius: 3px;
+}
+
+.password-checkbox:hover .box {
+  -fx-background-color: white;
+  -fx-border-color: -accent-orange;
+}
+
+.password-checkbox:selected .mark {
+  -fx-background-color: -accent-orange;
+}
+
+.password-checkbox:selected .box {
+  -fx-background-color: rgba(230, 126, 34, 0.15);
+  -fx-border-color: -accent-orange;
+}
+
+/* ===== LOGIN BUTTON ===== */
+.login-button {
+  -fx-background-color: linear-gradient(
+    to right,
+    #e67e22 0%,
+    #d35400 50%,
+    #e67e22 100%
+  );
+  -fx-background-radius: 10px;
+  -fx-border-radius: 10px;
+  -fx-text-fill: -text-white;
+  -fx-font-weight: bold;
+  -fx-font-size: 14px;
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(three-pass-box, rgba(230, 126, 34, 0.6), 8, 0, 0, 3);
+  -fx-border-color: rgba(255, 255, 255, 0.4);
+  -fx-border-width: 1.5px;
+  -fx-padding: 10px 0px;
+}
+
+.login-button:hover {
+  -fx-background-color: linear-gradient(
+    to right,
+    #f39c12 0%,
+    #e67e22 50%,
+    #d35400 100%
+  );
+  -fx-effect: dropshadow(three-pass-box, rgba(230, 126, 34, 0.8), 12, 0, 0, 5);
+  -fx-scale-x: 1.02;
+  -fx-scale-y: 1.02;
+  -fx-border-color: rgba(255, 255, 255, 0.6);
+}
+
+.login-button:pressed {
+  -fx-background-color: linear-gradient(
+    to right,
+    #ca6f1e 0%,
+    #ba4a00 50%,
+    #a04000 100%
+  );
+  -fx-effect: dropshadow(three-pass-box, rgba(230, 126, 34, 0.3), 4, 0, 0, 2);
+  -fx-scale-x: 0.99;
+  -fx-scale-y: 0.99;
+}
+
+.login-button:disabled {
+  -fx-background-color: #7f8c8d;
+  -fx-text-fill: #bdc3c7;
+  -fx-effect: none;
+}
+
+/* ===== BACKGROUND IMAGE ===== */
+.background-image {
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 15, 0, 0, 8);
+  -fx-opacity: 0.85;
+  -fx-border-color: rgba(230, 126, 34, 0.3);
+  -fx-border-width: 1.5px;
+  -fx-border-radius: 8px;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 1366px) {
+  .login-box {
+    -fx-pref-width: 380px;
+    -fx-pref-height: 380px;
+  }
+
+  .main-title {
+    -fx-font-size: 32px;
+  }
+
+  .subtitle {
+    -fx-font-size: 16px;
+  }
+  
+  .background-image {
+    -fx-fit-height: 400px;
+    -fx-fit-width: 600px;
+  }
+}
+
+/* ===== FOCUS INDICATORS ===== */
+.form-field:focused {
+  -fx-border-color: -accent-orange;
+  -fx-border-width: 2px;
+}
+
+.login-button:focused {
+  -fx-border-color: -accent-orange;
+  -fx-border-width: 2px;
+}
+
+/* ===== ERROR STATES ===== */
+.form-field:error {
+  -fx-border-color: -error-red;
+  -fx-border-width: 2px;
+  -fx-effect: dropshadow(three-pass-box, rgba(231, 76, 60, 0.4), 4, 0, 0, 2);
+}
+
+/* ===== SUCCESS STATES ===== */
+.form-field:success {
+  -fx-border-color: -success-green;
+  -fx-border-width: 2px;
+  -fx-effect: dropshadow(three-pass-box, rgba(39, 174, 96, 0.4), 4, 0, 0, 2);
+}

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="768.0" prefWidth="1366.0" styleClass="pane" stylesheets="@stok.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.StockManagementController">
+   <children>
+      <!-- Header -->
+      <Pane prefHeight="110.0" prefWidth="1366.0" styleClass="dashboard-header">
+         <children>
+            <ImageView fitHeight="60.0" fitWidth="95.0" layoutX="12.0" layoutY="25.0" preserveRatio="true">
+               <Image url="@../icon/logo.png" />
+            </ImageView>
+            
+            <Label layoutX="115.0" layoutY="25.0" styleClass="header-title" text="MANAJEMEN STOK SNACK" />
+            <Label layoutX="115.0" layoutY="60.0" styleClass="header-subtitle" text="Kelola Produk &amp; Stok Snack Bar" />
+            <Label fx:id="clockLabel" layoutX="1100.0" layoutY="40.0" styleClass="header-clock" />
+         </children>
+      </Pane>
+
+      <!-- Main Content -->
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutY="110.0" prefHeight="658.0" prefWidth="1366.0" styleClass="scroll-pane" vbarPolicy="AS_NEEDED">
+         <content>
+            <VBox spacing="15" styleClass="main-content" style="-fx-padding: 20;">
+               
+               <!-- Control Panel -->
+               <VBox spacing="12" styleClass="control-panel">
+                  <Label styleClass="section-title" text="Panel Kontrol" />
+                  
+                  <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 10;">
+                     <!-- Search Box -->
+                     <VBox spacing="5" prefWidth="350">
+                        <Label styleClass="control-label" text="Cari Produk" />
+                        <TextField fx:id="searchField" promptText="Cari berdasarkan nama atau ID produk..." styleClass="search-field" />
+                     </VBox>
+                     
+                     <!-- Category Filter -->
+                     <VBox spacing="5" prefWidth="200">
+                        <Label styleClass="control-label" text="Filter Kategori" />
+                        <ComboBox fx:id="categoryFilter" prefWidth="200" styleClass="category-filter" />
+                     </VBox>
+                     
+                     <!-- Action Buttons -->
+                     <VBox spacing="5" prefWidth="150">
+                        <Label styleClass="control-label" text="Aksi" />
+                        <Button fx:id="addProductButton" prefWidth="150" styleClass="add-button" text="+ Tambah Produk" />
+                     </VBox>
+                     
+                     <VBox spacing="5" prefWidth="120">
+                        <Label styleClass="control-label" text="Refresh" />
+                        <Button fx:id="refreshButton" prefWidth="120" styleClass="refresh-button" text="🔄 Refresh" />
+                     </VBox>
+                  </HBox>
+               </VBox>
+
+               <!-- Product Table -->
+               <VBox spacing="10" styleClass="table-container">
+                  <Label styleClass="section-title" text="Daftar Produk" />
+                  
+                  <TableView fx:id="productTable" styleClass="product-table" prefHeight="450">
+                     <columns>
+                        <TableColumn fx:id="colProductId" text="ID Produk" prefWidth="120" />
+                        <TableColumn fx:id="colProductName" text="Nama Produk" prefWidth="200" />
+                        <TableColumn fx:id="colCategory" text="Kategori" prefWidth="120" />
+                        <TableColumn fx:id="colPrice" text="Harga" prefWidth="120" />
+                        <TableColumn fx:id="colStock" text="Stok" prefWidth="80" />
+                        <TableColumn fx:id="colDescription" text="Deskripsi" prefWidth="250" />
+                        <TableColumn fx:id="colActions" text="Aksi" prefWidth="250" />
+                     </columns>
+                  </TableView>
+               </VBox>
+
+               <!-- Bottom Actions -->
+               <HBox spacing="15" alignment="CENTER" style="-fx-padding: 20 0 30 0;">
+                  <Button fx:id="backButton" prefHeight="40" prefWidth="150" styleClass="back-button" text="← Kembali" />
+               </HBox>
+
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>

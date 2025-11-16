@@ -1,4 +1,4 @@
-/* transaksi.css - MODERN GYM PAYMENT SYSTEM - SCROLL FIXED */
+/* transaksi.css - MODERN GYM PAYMENT SYSTEM - SCROLL FULLY FIXED */
 
 /* ===== VARIABLES & THEME ===== */
 .root {
@@ -24,7 +24,6 @@
     #1a5276,
     #17202a
   );
-  -fx-background-size: 400% 400%;
 }
 
 /* ===== HEADER STYLES ===== */
@@ -63,71 +62,76 @@
   -fx-font-size: 11px;
 }
 
-/* ===== SCROLLPANE - DIPERBAIKI ===== */
+/* ===== SCROLLPANE - FIXED COMPLETELY ===== */
 .scroll-pane {
   -fx-background-color: transparent;
   -fx-border-color: transparent;
   -fx-padding: 0;
   -fx-background-insets: 0;
+  -fx-min-height: 0;
+  -fx-pref-height: 658;
 }
 
-.scroll-pane .viewport {
+.scroll-pane > .viewport {
   -fx-background-color: transparent;
   -fx-background-insets: 0;
+  -fx-padding: 0;
 }
 
 .scroll-pane .scroll-bar:vertical {
   -fx-background-color: transparent;
-  -fx-pref-width: 12px;
+  -fx-pref-width: 14px;
   -fx-background-insets: 0;
+  -fx-padding: 2px 2px 2px 0;
 }
 
 .scroll-pane .scroll-bar:vertical .track {
-  -fx-background-color: rgba(255, 255, 255, 0.1);
+  -fx-background-color: rgba(255, 255, 255, 0.08);
   -fx-border-color: transparent;
-  -fx-background-radius: 6px;
+  -fx-background-radius: 7px;
   -fx-background-insets: 0;
 }
 
 .scroll-pane .scroll-bar:vertical .thumb {
   -fx-background-color: linear-gradient(to bottom, #1a5276, #154360);
-  -fx-background-radius: 6px;
-  -fx-border-radius: 6px;
+  -fx-background-radius: 7px;
+  -fx-border-radius: 7px;
   -fx-background-insets: 0;
 }
 
 .scroll-pane .scroll-bar:vertical .thumb:hover {
-  -fx-background-color: linear-gradient(to bottom, #154360, #1a5276);
+  -fx-background-color: linear-gradient(to bottom, #2874a6, #1a5276);
+}
+
+.scroll-pane .scroll-bar:vertical .thumb:pressed {
+  -fx-background-color: linear-gradient(to bottom, #154360, #0e293a);
 }
 
 .scroll-pane .scroll-bar:vertical .increment-button,
 .scroll-pane .scroll-bar:vertical .decrement-button {
   -fx-background-color: transparent;
-  -fx-padding: 2px;
-  -fx-background-insets: 0;
+  -fx-padding: 0;
+  -fx-pref-height: 0;
+  -fx-min-height: 0;
+  -fx-max-height: 0;
 }
 
 .scroll-pane .scroll-bar:vertical .increment-arrow,
 .scroll-pane .scroll-bar:vertical .decrement-arrow {
-  -fx-background-color: #1a5276;
-  -fx-padding: 2px;
-}
-
-.scroll-pane .scroll-bar:vertical .increment-arrow:hover,
-.scroll-pane .scroll-bar:vertical .decrement-arrow:hover {
-  -fx-background-color: #154360;
+  -fx-background-color: transparent;
+  -fx-padding: 0;
+  -fx-shape: "";
 }
 
 .scroll-pane .corner {
   -fx-background-color: transparent;
 }
 
-/* ===== MAIN CONTENT ===== */
+/* ===== MAIN CONTENT - FIXED HEIGHT ===== */
 .main-content {
   -fx-background-color: transparent;
-  -fx-padding: 20px;
   -fx-spacing: 20px;
-  -fx-background-insets: 0;
+  -fx-min-height: 0;
 }
 
 /* ===== INFO BOX ===== */
@@ -160,7 +164,7 @@
   -fx-line-spacing: 6px;
 }
 
-/* ===== FORM CONTAINER ===== */
+/* ===== FORM CONTAINER - NO MIN-HEIGHT ===== */
 .form-container {
   -fx-background-color: rgba(255, 255, 255, 0.95);
   -fx-background-radius: 15px;
@@ -168,8 +172,6 @@
   -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 12, 0, 0, 6);
   -fx-border-color: -success-green;
   -fx-border-width: 2px;
-  -fx-padding: 25px;
-  -fx-min-height: 900px;
 }
 
 /* ===== SECTION TITLES ===== */
@@ -287,7 +289,6 @@
   -fx-cursor: hand;
   -fx-padding: 12px 24px;
   -fx-effect: dropshadow(three-pass-box, rgba(26, 82, 118, 0.3), 6, 0, 0, 3);
-  -fx-transition: all 0.3s ease;
   -fx-border-color: #5dade2;
   -fx-border-width: 2px;
 }
@@ -314,7 +315,6 @@
   -fx-cursor: hand;
   -fx-padding: 12px 24px;
   -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 4, 0, 0, 1);
-  -fx-transition: all 0.3s ease;
   -fx-border-color: #bdc3c7;
   -fx-border-width: 1px;
 }
@@ -354,7 +354,6 @@
   -fx-font-weight: bold;
   -fx-text-fill: #2c3e50;
   -fx-padding: 8px 16px;
-  -fx-font-family: "Segoe UI", "Arial", sans-serif;
 }
 
 .payment-radio:selected .radio {
@@ -464,14 +463,12 @@
   -fx-text-fill: #27ae60;
   -fx-font-size: 11px;
   -fx-font-weight: bold;
-  -fx-font-family: "Segoe UI", "Arial", sans-serif;
   -fx-font-style: italic;
 }
 
 .payment-detail-text {
   -fx-font-size: 12px;
   -fx-text-fill: #1a5276;
-  -fx-font-family: "Segoe UI", "Arial", sans-serif;
   -fx-wrap-text: true;
   -fx-padding: 8px;
   -fx-background-color: #f8f9fa;
@@ -479,95 +476,6 @@
   -fx-border-radius: 6px;
   -fx-border-color: #e1e8ed;
   -fx-border-width: 1px;
-}
-
-/* ===== LAYOUT SPACING ===== */
-VBox {
-  -fx-spacing: 8px;
-}
-
-HBox {
-  -fx-spacing: 12px;
-}
-
-GridPane {
-  -fx-hgap: 15px;
-  -fx-vgap: 12px;
-}
-.flow-pane {
-  -fx-hgap: 10px;
-  -fx-vgap: 10px;
-}
-.tile-pane {
-  -fx-hgap: 10px;
-  -fx-vgap: 10px;
-}
-.stack-pane {
-  -fx-alignment: center;
-}
-.border-pane {
-  -fx-padding: 15px;
-}
-.anchor-pane {
-  -fx-padding: 15px;
-}
-.scroll-pane {
-  -fx-padding: 0;
-}
-.tab-pane {
-  -fx-padding: 10px;
-}
-.accordion {
-  -fx-padding: 10px;
-}
-.split-pane {
-  -fx-padding: 10px;
-}
-.tool-bar {
-  -fx-padding: 10px;
-}
-.menu-bar {
-  -fx-padding: 10px;
-}
-.context-menu {
-  -fx-padding: 10px;
-}
-.status-bar {
-  -fx-padding: 10px;
-}
-.dialog-pane {
-  -fx-padding: 20px;
-}
-.alert {
-  -fx-padding: 20px;
-}
-.tooltip {
-  -fx-padding: 8px 12px;
-}
-.pagination {
-  -fx-padding: 10px;
-}
-.table-view {
-  -fx-padding: 10px;
-}
-.tree-view {
-  -fx-padding: 10px;
-}
-.list-view {
-  -fx-padding: 10px;
-}
-.chart {
-  -fx-padding: 10px;
-}
-.web-view {
-  -fx-padding: 10px;
-}
-.media-view {
-  -fx-padding: 10px;
-}
-.pagination .page-information {
-  -fx-font-size: 12px;
-  -fx-text-fill: #2c3e50;
 }
 
 /* ===== USER INFO STYLES ===== */

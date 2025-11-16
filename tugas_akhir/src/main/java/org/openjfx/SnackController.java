@@ -21,12 +21,14 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import static com.mongodb.client.model.Filters.eq;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -63,6 +65,7 @@ import javax.print.attribute.standard.OrientationRequested;
 public class SnackController implements Initializable {
 
     @FXML private Label clockLabel;
+    @FXML private Label dateLabel;
     @FXML private TextField transactionIdField;
     @FXML private TextField customerNameField;
     @FXML private DatePicker transactionDateField;
@@ -82,6 +85,12 @@ public class SnackController implements Initializable {
     @FXML private Label paymentStatusLabel;
     @FXML private Button calculateChangeButton;
 
+    // Petugas fields
+    @FXML private Label petugasNameLabel;
+    @FXML private Label petugasRoleLabel;
+    @FXML private TextField petugasUsernameField;
+    @FXML private TextField petugasNamaField;
+
     // Data structures
     private Map<String, Integer> productQuantities;
     private Map<String, SnackProduct> productsMap;
@@ -96,10 +105,16 @@ public class SnackController implements Initializable {
     // Printer service
     private PrintService printerService;
 
+    // Petugas data
+    private Document currentPetugasData;
+    private MongoCollection<Document> loginCollection;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         testImageLoading();
         mongoDBService = MongoDBService.getInstance();
+        initializeLoginCollection();
+        loadCurrentPetugasData();
         initializeData();
         loadProductsFromDatabase();
         initializeClock();
@@ -109,6 +124,102 @@ public class SnackController implements Initializable {
         setupPaymentFields();
         populateProductGrid();
         initializePrinter();
+    }
+
+    private void initializeLoginCollection() {
+        try {
+            MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
+            MongoDatabase database = mongoClient.getDatabase("gym");
+            loginCollection = database.getCollection("login");
+            System.out.println("✅ Login collection initialized");
+        } catch (Exception e) {
+            System.err.println("❌ Error initializing login collection: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void loadCurrentPetugasData() {
+        try {
+            System.out.println("🔍 Loading current petugas data (ROLE: penjaga only)...");
+            
+            // Cari login aktif dengan role penjaga
+            Document activeLogin = loginCollection.find(
+                Filters.and(
+                    Filters.eq("status", "active"),
+                    Filters.eq("role", "penjaga")
+                )
+            ).sort(new Document("login_time", -1)).first();
+            
+            if (activeLogin != null) {
+                currentPetugasData = activeLogin;
+                System.out.println("✅ Found active penjaga login session");
+            } else {
+                // Cari login penjaga hari ini
+                String todayStart = LocalDate.now().toString() + "T00:00:00";
+                Document latestTodayLogin = loginCollection.find(
+                    Filters.and(
+                        Filters.gte("login_time", todayStart),
+                        Filters.eq("role", "penjaga")
+                    )
+                ).sort(new Document("login_time", -1)).first();
+                
+                if (latestTodayLogin != null) {
+                    currentPetugasData = latestTodayLogin;
+                    System.out.println("✅ Found latest penjaga login today");
+                } else {
+                    // Fallback: ambil login penjaga terakhir
+                    Document latestLogin = loginCollection.find(
+                        Filters.eq("role", "penjaga")
+                    ).sort(new Document("login_time", -1)).first();
+                    
+                    if (latestLogin != null) {
+                        currentPetugasData = latestLogin;
+                        System.out.println("✅ Using latest penjaga login as fallback");
+                    }
+                }
+            }
+            
+            if (currentPetugasData != null) {
+                String username = currentPetugasData.getString("username");
+                String role = currentPetugasData.getString("role");
+                String nama = currentPetugasData.getString("nama");
+                
+                if (!"penjaga".equalsIgnoreCase(role)) {
+                    System.out.println("⚠️ Data found but role is not 'penjaga': " + role);
+                    setDefaultPetugasData();
+                    return;
+                }
+                
+                System.out.println("✅ Petugas data loaded:");
+                System.out.println("   Username: " + username);
+                System.out.println("   Role: " + role);
+                System.out.println("   Nama: " + nama);
+                
+                Platform.runLater(() -> {
+                    petugasUsernameField.setText(username != null ? username : "-");
+                    petugasNamaField.setText(nama != null ? nama : "-");
+                    petugasNameLabel.setText(nama != null ? nama : "-");
+                    petugasRoleLabel.setText(role != null ? role : "-");
+                });
+            } else {
+                System.out.println("⚠️ No penjaga login found, using default");
+                setDefaultPetugasData();
+            }
+            
+        } catch (Exception e) {
+            System.err.println("❌ Error loading petugas data: " + e.getMessage());
+            e.printStackTrace();
+            setDefaultPetugasData();
+        }
+    }
+
+    private void setDefaultPetugasData() {
+        Platform.runLater(() -> {
+            petugasUsernameField.setText("penjaga");
+            petugasNamaField.setText("Petugas");
+            petugasNameLabel.setText("Petugas");
+            petugasRoleLabel.setText("penjaga");
+        });
     }
 
     private void initializePrinter() {
@@ -388,8 +499,12 @@ public class SnackController implements Initializable {
 
     private void initializeClock() {
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-            clockLabel.setText(LocalDateTime.now().format(formatter));
+            String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+            String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("EEEE, dd MMM yyyy"));
+            clockLabel.setText(time);
+            if (dateLabel != null) {
+                dateLabel.setText(date);
+            }
         }), new KeyFrame(Duration.seconds(1)));
         clock.setCycleCount(Animation.INDEFINITE);
         clock.play();
@@ -583,6 +698,17 @@ public class SnackController implements Initializable {
             transaction.setChange(changeAmount);
             transaction.setPaymentStatus("Completed");
 
+            // Set petugas info
+            if (currentPetugasData != null) {
+                transaction.setPetugasUsername(currentPetugasData.getString("username"));
+                transaction.setPetugasNama(currentPetugasData.getString("nama"));
+                transaction.setPetugasRole(currentPetugasData.getString("role"));
+            } else {
+                transaction.setPetugasUsername("penjaga");
+                transaction.setPetugasNama("Petugas");
+                transaction.setPetugasRole("penjaga");
+            }
+
             for (Map.Entry<String, Integer> entry : productQuantities.entrySet()) {
                 String productName = entry.getKey();
                 int quantity = entry.getValue();
@@ -698,6 +824,10 @@ public class SnackController implements Initializable {
             receipt.append("Pelanggan    : ").append(transaction.getCustomerName()).append("\n");
             receipt.append("Tanggal      : ").append(transaction.getTransactionDate()).append("\n");
             receipt.append("Waktu        : ").append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))).append("\n");
+            
+            // Info Petugas
+            String petugasNama = transaction.getPetugasNama() != null ? transaction.getPetugasNama() : "Unknown";
+            receipt.append("Petugas      : ").append(petugasNama).append("\n");
             receipt.append("--------------------------------\n");
             
             // Header item
@@ -801,6 +931,7 @@ public class SnackController implements Initializable {
         System.out.println("Pelanggan    : " + transaction.getCustomerName());
         System.out.println("Tanggal      : " + transaction.getTransactionDate());
         System.out.println("Waktu        : " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+        System.out.println("Petugas      : " + (transaction.getPetugasNama() != null ? transaction.getPetugasNama() : "Unknown"));
         System.out.println("---------------------------------");
         System.out.println("ITEM               QTY     TOTAL");
         System.out.println("---------------------------------");
@@ -964,6 +1095,9 @@ public class SnackController implements Initializable {
         private double cashGiven;
         private double change;
         private String paymentStatus;
+        private String petugasUsername;
+        private String petugasNama;
+        private String petugasRole;
 
         public TransactionSnack() {
             this.items = new HashMap<>();
@@ -1040,6 +1174,12 @@ public class SnackController implements Initializable {
         public void setChange(double change) { this.change = change; }
         public String getPaymentStatus() { return paymentStatus; }
         public void setPaymentStatus(String paymentStatus) { this.paymentStatus = paymentStatus; }
+        public String getPetugasUsername() { return petugasUsername; }
+        public void setPetugasUsername(String petugasUsername) { this.petugasUsername = petugasUsername; }
+        public String getPetugasNama() { return petugasNama; }
+        public void setPetugasNama(String petugasNama) { this.petugasNama = petugasNama; }
+        public String getPetugasRole() { return petugasRole; }
+        public void setPetugasRole(String petugasRole) { this.petugasRole = petugasRole; }
 
         @Override
         public String toString() {
@@ -1049,6 +1189,7 @@ public class SnackController implements Initializable {
                     ", totalPayment=" + totalPayment +
                     ", totalItems=" + totalItems +
                     ", tax=" + tax +
+                    ", petugasNama='" + petugasNama + '\'' +
                     '}';
         }
     }
@@ -1279,16 +1420,6 @@ public class SnackController implements Initializable {
             }
         }
 
-        public SnackProduct getProductByProductId(String productId) {
-            try {
-                Document doc = productCollection.find(eq("productId", productId)).first();
-                return doc != null ? documentToProduct(doc) : null;
-            } catch (Exception e) {
-                System.err.println("Error fetching product by ID: " + e.getMessage());
-                return null;
-            }
-        }
-
         private SnackProduct documentToProduct(Document doc) {
             SnackProduct product = new SnackProduct();
             
@@ -1348,7 +1479,10 @@ public class SnackController implements Initializable {
                     .append("status", transaction.getStatus())
                     .append("cashGiven", transaction.getCashGiven())
                     .append("change", transaction.getChange())
-                    .append("paymentStatus", transaction.getPaymentStatus());
+                    .append("paymentStatus", transaction.getPaymentStatus())
+                    .append("petugasUsername", transaction.getPetugasUsername())
+                    .append("petugasNama", transaction.getPetugasNama())
+                    .append("petugasRole", transaction.getPetugasRole());
 
                 InsertOneResult result = transactionCollection.insertOne(doc);
                 boolean success = result.wasAcknowledged();
@@ -1466,6 +1600,9 @@ public class SnackController implements Initializable {
             
             transaction.setStatus(doc.getString("status"));
             transaction.setPaymentStatus(doc.getString("paymentStatus"));
+            transaction.setPetugasUsername(doc.getString("petugasUsername"));
+            transaction.setPetugasNama(doc.getString("petugasNama"));
+            transaction.setPetugasRole(doc.getString("petugasRole"));
             
             return transaction;
         }

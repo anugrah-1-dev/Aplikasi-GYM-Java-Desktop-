@@ -322,8 +322,12 @@ public class TransactionController {
                     String status = doc.getString("status");
                     if (status == null) status = "N/A";
                     
-                    String petugas = doc.getString("petugas_username");
-                    if (petugas == null) petugas = "Kasir";
+                    // FIX: Ambil dari petugasNama dulu, baru fallback ke petugas_username
+                    String petugas = doc.getString("petugasNama");
+                    if (petugas == null) {
+                        petugas = doc.getString("petugas_username");
+                        if (petugas == null) petugas = "Kasir";
+                    }
                     
                     String type = "snack";
                     
@@ -331,7 +335,7 @@ public class TransactionController {
                         id, date, customer, products.toString(), totalQty, total, petugas, status, type, doc
                     ));
                     
-                    System.out.println("✅ Snack transaction added: " + id + " - " + products.toString());
+                    System.out.println("✅ Snack transaction added: " + id + " - " + products.toString() + " - Petugas: " + petugas);
                     
                 } catch (Exception e) {
                     System.err.println("❌ Error parsing snack transaction: " + e.getMessage());
@@ -587,6 +591,15 @@ public class TransactionController {
             details.append("Kembalian: Rp ").append(currencyFormat.format(change)).append("\n");
             
             details.append("Status: ").append(doc.getString("status")).append("\n");
+            
+            // Tampilkan nama petugas yang benar
+            String petugasNama = doc.getString("petugasNama");
+            if (petugasNama != null) {
+                details.append("Petugas: ").append(petugasNama).append("\n");
+            } else {
+                String petugasUsername = doc.getString("petugas_username");
+                details.append("Petugas: ").append(petugasUsername != null ? petugasUsername : "N/A").append("\n");
+            }
         }
         
         alert.setContentText(details.toString());

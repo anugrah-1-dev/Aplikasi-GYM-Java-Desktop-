@@ -17,23 +17,48 @@
 
 <AnchorPane prefHeight="768.0" prefWidth="1366.0" styleClass="pane" stylesheets="@snack.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.SnackController">
    <children>
+      <!-- Header Section -->
       <Pane prefHeight="110.0" prefWidth="1366.0" styleClass="dashboard-header">
          <children>
-            <ImageView fitHeight="60.0" fitWidth="95.0" layoutX="12.0" layoutY="25.0" preserveRatio="true">
-               <Image url="@../icon/logo.png" />
+            <!-- Logo -->
+            <ImageView fitHeight="85.0" fitWidth="105.0" layoutX="18.0" layoutY="12.0" preserveRatio="true">
+               <image>
+                  <Image url="@../icon/logo.png" />
+               </image>
             </ImageView>
             
-            <Label layoutX="115.0" layoutY="25.0" styleClass="header-title" text="SNACK BAR SYSTEM" />
-            <Label layoutX="115.0" layoutY="60.0" styleClass="header-subtitle" text="Sistem Pembelian Snack &amp; Minuman" />
-            <Label fx:id="clockLabel" layoutX="1100.0" layoutY="40.0" styleClass="header-clock" />
+            <VBox alignment="CENTER_LEFT" layoutX="125.0" layoutY="25.0" prefHeight="50.0" prefWidth="380.0">
+               <children>
+                  <Label styleClass="company-name" text="SNACK BAR SYSTEM" />
+                  <Label styleClass="company-subtitle" text="Sistem Pembelian Snack &amp; Minuman" />
+               </children>
+            </VBox>
+            
+            <!-- Info Petugas yang Login -->
+            <VBox alignment="CENTER_RIGHT" layoutX="800.0" layoutY="25.0" prefHeight="63.0" prefWidth="300.0" styleClass="user-info-box">
+               <children>
+                  <Label styleClass="user-info-label" text="Petugas:" />
+                  <Label fx:id="petugasNameLabel" styleClass="user-info-value" text="-" />
+                  <Label fx:id="petugasRoleLabel" styleClass="user-info-role" text="-" />
+               </children>
+            </VBox>
+            
+            <VBox alignment="CENTER_RIGHT" layoutX="1120.0" layoutY="25.0" prefHeight="63.0" prefWidth="142.0">
+               <children>
+                  <Label fx:id="clockLabel" styleClass="time-label" text="01:02:03" textAlignment="CENTER" />
+                  <Label fx:id="dateLabel" styleClass="date-label" text="Senin, 01 Jan 2024" textAlignment="CENTER" />
+               </children>
+            </VBox>
          </children>
       </Pane>
 
+      <!-- ScrollPane untuk Konten Utama -->
       <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutY="110.0" prefHeight="658.0" prefWidth="1366.0" styleClass="scroll-pane" vbarPolicy="AS_NEEDED" pannable="true">
          <content>
-            <VBox spacing="12" styleClass="main-content" style="-fx-padding: 15 20 30 20;">
+            <VBox spacing="12" styleClass="main-content">
                <children>
-                  <Pane styleClass="gambar">
+                  <!-- Info Section -->
+                  <Pane prefHeight="140.0" prefWidth="1316.0" styleClass="gambar">
                      <children>
                         <Label layoutX="30.0" layoutY="25.0" styleClass="info-title" text="Snack Bar Fitness Center" />
                         <Label layoutX="30.0" layoutY="55.0" styleClass="info-subtitle" text="Energi untuk Performa Terbaik" />
@@ -41,8 +66,31 @@
                      </children>
                   </Pane>
 
+                  <!-- Form Section -->
                   <VBox spacing="15" styleClass="form-box">
                      <children>
+                        <!-- Info Petugas yang Melayani -->
+                        <VBox spacing="10" styleClass="petugas-section">
+                           <Label styleClass="section-title" text="Petugas yang Melayani" />
+                           <GridPane hgap="15" vgap="10">
+                             <columnConstraints>
+                               <ColumnConstraints prefWidth="200" />
+                               <ColumnConstraints prefWidth="300" />
+                               <ColumnConstraints prefWidth="200" />
+                               <ColumnConstraints prefWidth="300" />
+                             </columnConstraints>
+                             <rowConstraints>
+                               <RowConstraints prefHeight="35" />
+                             </rowConstraints>
+                             
+                             <Label styleClass="input-label" text="Username" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                             <TextField fx:id="petugasUsernameField" editable="false" prefHeight="35.0" prefWidth="300.0" styleClass="petugas-field" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                             
+                             <Label styleClass="input-label" text="Nama Petugas" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                             <TextField fx:id="petugasNamaField" editable="false" prefHeight="35.0" prefWidth="300.0" styleClass="petugas-field" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+                           </GridPane>
+                        </VBox>
+
                         <Label styleClass="form-box-label" text="Data Transaksi" />
                         
                         <GridPane hgap="12" vgap="8">

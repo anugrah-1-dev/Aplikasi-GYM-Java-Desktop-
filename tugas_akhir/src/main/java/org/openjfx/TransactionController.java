@@ -1,270 +1,121 @@
 package org.openjfx;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.beans.property.SimpleIntegerProperty;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import javafx.util.Duration;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.bson.Document;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URL;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.time.LocalDate;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.stream.Collectors;
 
-// IMPORT APACHE POI YANG BENAR - GUNAKAN INI:
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Row; // ← INI DARI APACHE POI!
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+public class TransactionController {
 
-import org.bson.Document;
-import org.bson.types.ObjectId;
-
-// JANGAN GUNAKAN: import com.lowagie.text.Row;
-
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-
-public class TransactionController implements Initializable {
-    
-    // Header Elements - SESUAI FXML
-    @FXML private Label timeLabel;
     @FXML private Label guardNameLabel;
-    
-    // Statistics Labels - SESUAI FXML
+    @FXML private Label timeLabel;
     @FXML private Label totalTransactionsLabel;
     @FXML private Label revenueTodayLabel;
     @FXML private Label pendingTransactionsLabel;
     @FXML private Label averageTransactionLabel;
-    
-    // Filter Elements - SESUAI FXML
     @FXML private ComboBox<String> statusFilter;
     @FXML private ComboBox<String> dateFilter;
     @FXML private TextField searchField;
     @FXML private Label filterStatusLabel;
-    
-    // Table Elements - SESUAI FXML
     @FXML private TableView<TransactionData> transactionTable;
     @FXML private TableColumn<TransactionData, String> idColumn;
     @FXML private TableColumn<TransactionData, String> dateColumn;
     @FXML private TableColumn<TransactionData, String> customerColumn;
     @FXML private TableColumn<TransactionData, String> productColumn;
-    @FXML private TableColumn<TransactionData, Integer> quantityColumn;
+    @FXML private TableColumn<TransactionData, String> quantityColumn;
     @FXML private TableColumn<TransactionData, String> totalColumn;
+    @FXML private TableColumn<TransactionData, String> petugasColumn;
     @FXML private TableColumn<TransactionData, String> statusColumn;
-    
-    private ObservableList<TransactionData> allTransactions;
-    private ObservableList<TransactionData> filteredTransactions;
+
+    private MongoClient mongoClient;
     private MongoDatabase database;
-    private NumberFormat currencyFormat;
-    private Timeline clockTimeline;
-    
-    // Session tracking for shift recap
-    private LocalDateTime shiftStartTime;
-    private String currentGuardName = "penjaga";
-    private String currentGuardId = null;
-    
-    // Static method untuk set guard info dari login
-    private static String loggedInGuardName = null;
-    private static String loggedInGuardId = null;
-    
-    public static void setLoggedInGuard(String guardName, String guardId) {
-        loggedInGuardName = guardName;
-        loggedInGuardId = guardId;
-        System.out.println("✅ Guard info set: " + guardName + " (" + guardId + ")");
-    }
-    
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("✅ TransactionController initialized");
+    private ObservableList<TransactionData> allTransactions;
+    private Timer timeTimer;
+    private String currentGuardName = "Admin";
+    private final NumberFormat currencyFormat = new DecimalFormat("#,###");
+
+    @FXML
+    public void initialize() {
+        System.out.println("🔄 TransactionController initialized");
         
+        // Connect to MongoDB
+        connectToDatabase();
+        
+        // Setup table columns
+        setupTableColumns();
+        
+        // Setup filters
+        setupFilters();
+        
+        // Load initial data
+        loadAllTransactions();
+        
+        // Update statistics
+        updateStatistics();
+        
+        // Setup time updater
+        startTimeUpdater();
+        
+        // Setup guard name
+        guardNameLabel.setText("Penjaga: " + currentGuardName);
+        
+        // Setup search listener
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> filterTransactions());
+        
+        // Setup double-click to view details
+        setupTableDoubleClick();
+        
+        System.out.println("✅ Controller initialized successfully");
+        System.out.println("📊 Current guard: " + currentGuardName);
+        System.out.println("📋 Total transaksi: " + (allTransactions != null ? allTransactions.size() : 0));
+    }
+
+    private void connectToDatabase() {
         try {
-            // Initialize database connection
-            database = connectToDatabase();
-            if (database == null) {
-                showError("Koneksi Database Gagal", "Tidak dapat terhubung ke database MongoDB");
-                return;
-            }
-            
-            currencyFormat = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
-            
-            // Initialize collections
-            allTransactions = FXCollections.observableArrayList();
-            filteredTransactions = FXCollections.observableArrayList();
-            
-            // Set guard info from login
-            if (loggedInGuardName != null) {
-                currentGuardName = loggedInGuardName;
-                currentGuardId = loggedInGuardId;
-            }
-            
-            // Set shift start time
-            shiftStartTime = LocalDateTime.now();
-            
-            // Update guard name label
-            guardNameLabel.setText("Penjaga: " + currentGuardName);
-            
-            // Record shift start
-            recordShiftStart();
-            
-            // Setup clock
-            setupClock();
-            
-            // Setup table columns
-            setupTableColumns();
-            
-            // Setup filters
-            setupFilters();
-            
-            // Setup event handlers
-            setupEventHandlers();
-            
-            // Load transactions
-            loadAllTransactions();
-            
-            // Initial statistics update
-            updateStatistics();
-            
-            System.out.println("✅ Controller initialized successfully");
-            System.out.println("👤 Current guard: " + currentGuardName);
-            System.out.println("📊 Total transaksi dimuat: " + allTransactions.size());
-            
+            mongoClient = MongoClients.create("mongodb://localhost:27017");
+            database = mongoClient.getDatabase("gym");
+            System.out.println("✅ Connected to MongoDB");
         } catch (Exception e) {
-            System.err.println("❌ Initialization error: " + e.getMessage());
+            System.err.println("❌ Database connection error: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Database Error", 
+                     "Failed to connect to MongoDB: " + e.getMessage());
             e.printStackTrace();
-            showError("Error Inisialisasi", "Gagal menginisialisasi controller: " + e.getMessage());
         }
     }
-    
-    /**
-     * Record shift start to database
-     */
-    private void recordShiftStart() {
-        try {
-            MongoCollection<Document> shiftCollection = database.getCollection("active_shifts");
-            
-            // Check if there's already an active shift for this guard
-            Document existingShift = shiftCollection.find(
-                new Document("guard_name", currentGuardName)
-                    .append("shift_end", null)
-            ).first();
-            
-            if (existingShift == null) {
-                Document shiftDoc = new Document()
-                    .append("guard_name", currentGuardName)
-                    .append("guard_id", currentGuardId)
-                    .append("shift_start", Date.from(shiftStartTime.atZone(ZoneId.systemDefault()).toInstant()))
-                    .append("shift_end", null)
-                    .append("status", "active");
-                
-                shiftCollection.insertOne(shiftDoc);
-                System.out.println("✅ Shift start recorded for " + currentGuardName);
-            } else {
-                // Use existing shift start time
-                Date existingStart = existingShift.getDate("shift_start");
-                shiftStartTime = existingStart.toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDateTime();
-                System.out.println("✅ Continuing existing shift for " + currentGuardName);
-            }
-            
-        } catch (Exception e) {
-            System.err.println("❌ Error recording shift start: " + e.getMessage());
-        }
-    }
-    
-    /**
-     * Connect to MongoDB database
-     */
-    private MongoDatabase connectToDatabase() {
-        try {
-            // Try to get from MenuTransaksiController if available
-            try {
-                MongoDatabase db = MenuTransaksiController.MongoDBConnector.getDatabase();
-                if (db != null) {
-                    System.out.println("✅ Connected via MenuTransaksiController");
-                    return db;
-                }
-            } catch (Exception e) {
-                System.out.println("⚠️ MenuTransaksiController not available, using direct connection");
-            }
-            
-            // Direct connection to MongoDB
-            String connectionString = "mongodb://localhost:27017";
-            MongoClient mongoClient = MongoClients.create(connectionString);
-            MongoDatabase db = mongoClient.getDatabase("gym");
-            
-            System.out.println("✅ Connected to MongoDB directly");
-            return db;
-            
-        } catch (Exception e) {
-            System.err.println("❌ Database connection failed: " + e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
-    }
-    
-    private void setupClock() {
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        clockTimeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
-            timeLabel.setText(LocalDateTime.now().format(timeFormatter));
-        }));
-        clockTimeline.setCycleCount(Animation.INDEFINITE);
-        clockTimeline.play();
-    }
-    
+
     private void setupTableColumns() {
-        // Setup cell value factories - SESUAI DENGAN NAMA DI FXML
-        idColumn.setCellValueFactory(cellData -> cellData.getValue().idProperty());
-        dateColumn.setCellValueFactory(cellData -> cellData.getValue().dateProperty());
-        customerColumn.setCellValueFactory(cellData -> cellData.getValue().customerProperty());
-        productColumn.setCellValueFactory(cellData -> cellData.getValue().productProperty());
-        quantityColumn.setCellValueFactory(cellData -> cellData.getValue().quantityProperty().asObject());
-        totalColumn.setCellValueFactory(cellData -> cellData.getValue().totalProperty());
-        statusColumn.setCellValueFactory(cellData -> cellData.getValue().statusProperty());
+        idColumn.setCellValueFactory(data -> data.getValue().idProperty());
+        dateColumn.setCellValueFactory(data -> data.getValue().dateProperty());
+        customerColumn.setCellValueFactory(data -> data.getValue().customerProperty());
+        productColumn.setCellValueFactory(data -> data.getValue().productProperty());
+        quantityColumn.setCellValueFactory(data -> data.getValue().quantityProperty());
+        totalColumn.setCellValueFactory(data -> data.getValue().totalProperty());
+        petugasColumn.setCellValueFactory(data -> data.getValue().petugasProperty());
+        statusColumn.setCellValueFactory(data -> data.getValue().statusProperty());
         
-        // Center align quantity column
-        quantityColumn.setStyle("-fx-alignment: CENTER;");
-        
-        // Custom cell factory for status column with colors
+        // Style status column with colors
         statusColumn.setCellFactory(column -> new TableCell<TransactionData, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -274,1007 +125,674 @@ public class TransactionController implements Initializable {
                     setStyle("");
                 } else {
                     setText(item);
-                    String lowerItem = item.toLowerCase();
-                    if (lowerItem.equals("completed") || lowerItem.equals("selesai") || lowerItem.equals("sukses")) {
+                    if (item.equalsIgnoreCase("Completed") || item.equalsIgnoreCase("selesai")) {
                         setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold;");
-                    } else if (lowerItem.equals("pending")) {
+                    } else if (item.equalsIgnoreCase("Pending")) {
                         setStyle("-fx-text-fill: #f39c12; -fx-font-weight: bold;");
-                    } else if (lowerItem.equals("cancelled") || lowerItem.equals("dibatalkan") || lowerItem.equals("gagal")) {
-                        setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold;");
                     } else {
-                        setStyle("-fx-text-fill: #2c3e50;");
+                        setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold;");
                     }
                 }
             }
         });
-        
-        // Set table items
-        transactionTable.setItems(filteredTransactions);
-        System.out.println("✅ Table columns setup completed");
     }
-    
+
     private void setupFilters() {
-        // Status filter options
+        // Status filter
         statusFilter.setItems(FXCollections.observableArrayList(
-            "Semua Status", "Sukses", "Pending", "Gagal", "Dibatalkan", "Selesai"
+            "Semua Status", "Completed", "Pending", "Cancelled"
         ));
         statusFilter.setValue("Semua Status");
+        statusFilter.setOnAction(e -> filterTransactions());
         
-        // Date filter options
+        // Date filter
         dateFilter.setItems(FXCollections.observableArrayList(
-            "Semua Tanggal", "Hari Ini", "Shift Saya", "Minggu Ini", "Bulan Ini", "Bulan Lalu"
+            "Semua Tanggal", "Hari Ini", "Minggu Ini", "Bulan Ini"
         ));
-        dateFilter.setValue("Shift Saya"); // Default to current shift
-        
-        System.out.println("✅ Filters setup completed");
+        dateFilter.setValue("Semua Tanggal");
+        dateFilter.setOnAction(e -> filterTransactions());
     }
-    
-    private void loadAllTransactions() {
-        allTransactions.clear();
-        
-        try {
-            System.out.println("📥 Loading transactions from database...");
-            
-            loadSnackTransactions();
-            loadMembershipTransactions();
-            loadPenjagaTransactions();
-            
-            // Sort by date descending (newest first)
-            allTransactions.sort((t1, t2) -> {
-                try {
-                    LocalDateTime dt1 = parseDateTime(t1.getDate());
-                    LocalDateTime dt2 = parseDateTime(t2.getDate());
-                    return dt2.compareTo(dt1);
-                } catch (Exception e) {
-                    return 0;
-                }
-            });
-            
-            applyFilters();
-            
-            System.out.println("✅ Total transaksi dimuat: " + allTransactions.size());
-            System.out.println("✅ Filtered transaksi: " + filteredTransactions.size());
-            
-        } catch (Exception e) {
-            System.err.println("❌ Error loading transactions: " + e.getMessage());
-            e.printStackTrace();
-            showError("Error Memuat Data", "Gagal memuat data transaksi: " + e.getMessage());
-        }
-    }
-    
-    private void loadSnackTransactions() {
-        try {
-            MongoCollection<Document> snackCollection = database.getCollection("transaksi_snack");
-            long count = snackCollection.countDocuments();
-            System.out.println("📦 Loading " + count + " snack transactions...");
-            
-            for (Document doc : snackCollection.find()) {
-                try {
-                    TransactionData trans = new TransactionData();
-                    
-                    ObjectId objectId = doc.getObjectId("_id");
-                    String fullId = objectId.toHexString();
-                    trans.setId(fullId.substring(Math.max(0, fullId.length() - 8)).toUpperCase());
-                    trans.setFullId(fullId);
-                    trans.setType("snack");
-                    
-                    String dateStr = extractDate(doc, "transactionDate", "createdAt", "tanggal");
-                    trans.setDate(dateStr);
-                    
-                    String customerName = doc.getString("customerName");
-                    if (customerName == null || customerName.isEmpty()) {
-                        customerName = "Customer";
-                    }
-                    trans.setCustomer(customerName);
-                    
-                    List<Document> items = (List<Document>) doc.get("items");
-                    StringBuilder productList = new StringBuilder();
-                    int totalItems = 0;
-                    
-                    if (items != null && !items.isEmpty()) {
-                        for (int i = 0; i < Math.min(items.size(), 2); i++) {
-                            Document item = items.get(i);
-                            String productName = item.getString("productName");
-                            if (productName == null) productName = item.getString("name");
-                            if (productName == null) productName = "Product";
-                            
-                            int qty = getIntValue(item, "quantity", 1);
-                            totalItems += qty;
-                            
-                            if (i > 0) productList.append(", ");
-                            productList.append(productName).append(" (").append(qty).append(")");
-                        }
-                        if (items.size() > 2) {
-                            productList.append("... (+").append(items.size() - 2).append(" item)");
-                        }
-                    } else {
-                        productList.append("Snack");
-                        totalItems = getIntValue(doc, "totalItems", 1);
-                    }
-                    
-                    trans.setProduct(productList.toString());
-                    trans.setQuantity(totalItems);
-                    
-                    int totalPayment = getIntValue(doc, "totalPayment", 0);
-                    if (totalPayment == 0) totalPayment = getIntValue(doc, "subtotal", 0);
-                    trans.setTotal(currencyFormat.format(totalPayment));
-                    trans.setTotalAmount(totalPayment);
-                    
-                    String status = doc.getString("paymentStatus");
-                    if (status == null) status = doc.getString("status");
-                    if (status == null) status = "Completed";
-                    trans.setStatus(capitalizeFirst(status));
-                    
-                    allTransactions.add(trans);
-                    
-                } catch (Exception e) {
-                    System.err.println("❌ Error parsing snack transaction: " + e.getMessage());
+
+    private void setupTableDoubleClick() {
+        transactionTable.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                TransactionData selected = transactionTable.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    showTransactionDetails(selected);
                 }
             }
-            
-            System.out.println("✅ Loaded " + count + " snack transactions");
-            
-        } catch (Exception e) {
-            System.err.println("❌ Error loading snack transactions: " + e.getMessage());
-        }
+        });
     }
-    
-    private void loadMembershipTransactions() {
+
+    private void loadAllTransactions() {
+        System.out.println("📥 Loading transactions...");
+        allTransactions = FXCollections.observableArrayList();
+        
         try {
-            MongoCollection<Document> transCollection = database.getCollection("transactions");
-            long count = transCollection.countDocuments();
-            System.out.println("👤 Loading " + count + " membership transactions...");
+            // Load membership transactions
+            MongoCollection<Document> memberCollection = database.getCollection("transactions");
+            List<Document> memberDocs = memberCollection.find().into(new ArrayList<>());
             
-            for (Document doc : transCollection.find()) {
+            for (Document doc : memberDocs) {
                 try {
-                    TransactionData trans = new TransactionData();
+                    String id = doc.getString("non_member_id");
+                    if (id == null) id = "N/A";
                     
-                    ObjectId objectId = doc.getObjectId("_id");
-                    String fullId = objectId.toHexString();
-                    trans.setId(fullId.substring(Math.max(0, fullId.length() - 8)).toUpperCase());
-                    trans.setFullId(fullId);
-                    trans.setType("membership");
+                    String date = doc.getString("tanggal_transaksi");
+                    if (date == null) date = "N/A";
                     
-                    String dateStr = extractDate(doc, "tanggal_transaksi", "createdAt", "created_at");
-                    trans.setDate(dateStr);
-                    
-                    String customerName = doc.getString("nama_member");
-                    if (customerName == null || customerName.isEmpty()) {
-                        customerName = doc.getString("nama_non_member");
-                    }
-                    if (customerName == null || customerName.isEmpty()) {
-                        customerName = "Member";
-                    }
-                    trans.setCustomer(customerName);
+                    String customer = doc.getString("nama_non_member");
+                    if (customer == null) customer = "N/A";
                     
                     String paket = doc.getString("paket");
-                    int durasi = getIntValue(doc, "durasi_hari", 0);
-                    String jenisPembayaran = doc.getString("jenis_pembayaran");
+                    String jenis = doc.getString("jenis_pembayaran");
+                    String product = (paket != null ? paket : "N/A") + " - " + (jenis != null ? jenis : "N/A");
                     
-                    String product = "Membership";
-                    if (paket != null && !paket.isEmpty()) {
-                        product += " - " + paket;
-                    }
-                    if (durasi > 0) {
-                        product += " (" + durasi + " hari)";
-                    }
-                    if (jenisPembayaran != null && !jenisPembayaran.isEmpty() && !jenisPembayaran.equals("member")) {
-                        product += " [" + jenisPembayaran + "]";
-                    }
+                    int quantity = 1;
                     
-                    trans.setProduct(product);
-                    trans.setQuantity(1);
-                    
-                    int totalPayment = getIntValue(doc, "jumlah_dibayar", 0);
-                    if (totalPayment == 0) totalPayment = getIntValue(doc, "jumlah", 0);
-                    if (totalPayment == 0) totalPayment = getIntValue(doc, "biaya_member", 0);
-                    trans.setTotal(currencyFormat.format(totalPayment));
-                    trans.setTotalAmount(totalPayment);
+                    // Handle both Integer and Double for total
+                    int total = 0;
+                    Object totalObj = doc.get("jumlah_dibayar");
+                    if (totalObj instanceof Integer) {
+                        total = (Integer) totalObj;
+                    } else if (totalObj instanceof Double) {
+                        total = ((Double) totalObj).intValue();
+                    }
                     
                     String status = doc.getString("status");
-                    if (status == null) status = "Completed";
-                    trans.setStatus(capitalizeFirst(status));
+                    if (status == null) status = "N/A";
                     
-                    allTransactions.add(trans);
+                    String petugas = doc.getString("petugas_nama");
+                    if (petugas == null) petugas = "N/A";
                     
+                    String type = "membership";
+                    
+                    allTransactions.add(new TransactionData(
+                        id, date, customer, product, quantity, total, petugas, status, type, doc
+                    ));
                 } catch (Exception e) {
                     System.err.println("❌ Error parsing membership transaction: " + e.getMessage());
                 }
             }
             
-            System.out.println("✅ Loaded " + count + " membership transactions");
+            // Load snack transactions
+            MongoCollection<Document> snackCollection = database.getCollection("transaksi_snack");
+            List<Document> snackDocs = snackCollection.find().into(new ArrayList<>());
             
-        } catch (Exception e) {
-            System.err.println("❌ Error loading membership transactions: " + e.getMessage());
-        }
-    }
-    
-    private void loadPenjagaTransactions() {
-        try {
-            MongoCollection<Document> penjagaCollection = database.getCollection("penjaga");
-            long count = penjagaCollection.countDocuments();
-            System.out.println("🚪 Loading " + count + " non-member transactions...");
+            System.out.println("📦 Found " + snackDocs.size() + " snack documents");
             
-            for (Document doc : penjagaCollection.find()) {
+            for (Document doc : snackDocs) {
                 try {
-                    TransactionData trans = new TransactionData();
+                    System.out.println("\n=== Processing Snack Document ===");
+                    System.out.println("Raw Document: " + doc.toJson());
                     
-                    ObjectId objectId = doc.getObjectId("_id");
-                    String fullId = objectId.toHexString();
-                    trans.setId(fullId.substring(Math.max(0, fullId.length() - 8)).toUpperCase());
-                    trans.setFullId(fullId);
-                    trans.setType("penjaga");
+                    String id = doc.getString("transactionId");
+                    if (id == null) id = "N/A";
+                    System.out.println("ID: " + id);
                     
-                    String dateStr = extractDate(doc, "tanggal_masuk", "tanggal_transaksi", "createdAt");
-                    trans.setDate(dateStr);
-                    
-                    String customerName = doc.getString("nama_non_member");
-                    if (customerName == null || customerName.isEmpty()) {
-                        customerName = "Non Member";
-                    }
-                    trans.setCustomer(customerName);
-                    
-                    String jenisPembayaran = doc.getString("jenis_pembayaran");
-                    String paket = doc.getString("paket");
-                    String tipe = doc.getString("tipe");
-                    
-                    String product = "Non-Member";
-                    if (paket != null && !paket.isEmpty()) {
-                        product += " - " + paket;
-                    } else if (tipe != null && !tipe.isEmpty()) {
-                        product += " - " + tipe;
-                    } else if (jenisPembayaran != null && !jenisPembayaran.isEmpty()) {
-                        product += " - " + jenisPembayaran.replace("_", " ");
+                    // Handle Date object for transactionDate
+                    String date = "N/A";
+                    Object dateObj = doc.get("transactionDate");
+                    if (dateObj instanceof String) {
+                        date = (String) dateObj;
+                    } else if (dateObj instanceof Date) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        date = sdf.format((Date) dateObj);
                     }
                     
-                    trans.setProduct(product);
-                    trans.setQuantity(1);
+                    String customer = doc.getString("customerName");
+                    if (customer == null) customer = "N/A";
+                    System.out.println("Customer: " + customer);
                     
-                    int totalPayment = getIntValue(doc, "jumlah_dibayar", 0);
-                    if (totalPayment == 0) totalPayment = getIntValue(doc, "jumlah", 0);
-                    trans.setTotal(currencyFormat.format(totalPayment));
-                    trans.setTotalAmount(totalPayment);
+                    // Get product details - handle both List and Document types
+                    StringBuilder products = new StringBuilder();
+                    int totalQty = 0;
+                    
+                    Object itemsObj = doc.get("items");
+                    System.out.println("Items Type: " + (itemsObj != null ? itemsObj.getClass().getName() : "null"));
+                    System.out.println("Items Content: " + itemsObj);
+                    if (itemsObj instanceof List) {
+                        List<?> itemsList = (List<?>) itemsObj;
+                        boolean firstItem = true;
+                        for (Object itemObj : itemsList) {
+                            if (itemObj instanceof Document) {
+                                Document item = (Document) itemObj;
+                                Object qtyObj = item.get("quantity");
+                                int qty = 0;
+                                if (qtyObj instanceof Integer) {
+                                    qty = (Integer) qtyObj;
+                                } else if (qtyObj instanceof Double) {
+                                    qty = ((Double) qtyObj).intValue();
+                                }
+                                
+                                String prodName = item.getString("productName");
+                                if (prodName != null) {
+                                    if (!firstItem) products.append(", ");
+                                    products.append(prodName);
+                                    if (qty > 1) products.append(" x").append(qty);
+                                    totalQty += qty;
+                                    firstItem = false;
+                                }
+                            }
+                        }
+                    } else if (itemsObj instanceof Document) {
+                        Document items = (Document) itemsObj;
+                        int count = 0;
+                        for (String key : items.keySet()) {
+                            Object itemValue = items.get(key);
+                            if (itemValue instanceof Document) {
+                                Document item = (Document) itemValue;
+                                Object qtyObj = item.get("quantity");
+                                int qty = 0;
+                                if (qtyObj instanceof Integer) {
+                                    qty = (Integer) qtyObj;
+                                } else if (qtyObj instanceof Double) {
+                                    qty = ((Double) qtyObj).intValue();
+                                }
+                                
+                                String prodName = item.getString("productName");
+                                if (prodName != null) {
+                                    if (count > 0) products.append(", ");
+                                    products.append(prodName);
+                                    if (qty > 1) products.append(" x").append(qty);
+                                    totalQty += qty;
+                                    count++;
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Ensure we have valid product data
+                    if (products.length() == 0) {
+                        products.append("N/A");
+                    }
+                    if (totalQty == 0) {
+                        totalQty = 1; // Default to 1 if no quantity found
+                    }
+                    
+                    // Handle both Integer and Double for total
+                    int total = 0;
+                    Object totalObj = doc.get("totalPayment");
+                    if (totalObj instanceof Integer) {
+                        total = (Integer) totalObj;
+                    } else if (totalObj instanceof Double) {
+                        total = ((Double) totalObj).intValue();
+                    }
                     
                     String status = doc.getString("status");
-                    if (status == null) status = "selesai";
-                    trans.setStatus(capitalizeFirst(status));
+                    if (status == null) status = "N/A";
                     
-                    allTransactions.add(trans);
+                    String petugas = doc.getString("petugas_username");
+                    if (petugas == null) petugas = "Kasir";
+                    
+                    String type = "snack";
+                    
+                    allTransactions.add(new TransactionData(
+                        id, date, customer, products.toString(), totalQty, total, petugas, status, type, doc
+                    ));
+                    
+                    System.out.println("✅ Snack transaction added: " + id + " - " + products.toString());
                     
                 } catch (Exception e) {
-                    System.err.println("❌ Error parsing penjaga transaction: " + e.getMessage());
+                    System.err.println("❌ Error parsing snack transaction: " + e.getMessage());
+                    e.printStackTrace();
                 }
             }
             
-            System.out.println("✅ Loaded " + count + " non-member transactions");
-            
-        } catch (Exception e) {
-            System.err.println("❌ Error loading penjaga transactions: " + e.getMessage());
-        }
-    }
-    
-    private String extractDate(Document doc, String... fieldNames) {
-        for (String fieldName : fieldNames) {
-            Object dateObj = doc.get(fieldName);
-            if (dateObj != null) {
+            // Sort by date (newest first)
+            allTransactions.sort((t1, t2) -> {
                 try {
-                    if (dateObj instanceof Date) {
-                        Date date = (Date) dateObj;
-                        LocalDateTime dateTime = date.toInstant()
-                            .atZone(ZoneId.systemDefault())
-                            .toLocalDateTime();
-                        return dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
-                    } else if (dateObj instanceof String) {
-                        String dateStr = (String) dateObj;
-                        if (dateStr.contains("T")) {
-                            LocalDateTime dateTime = LocalDateTime.parse(dateStr.substring(0, 19));
-                            return dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
-                        }
-                        return dateStr;
-                    }
+                    return t2.getDate().compareTo(t1.getDate());
                 } catch (Exception e) {
-                    System.err.println("⚠️ Error parsing date from field " + fieldName + ": " + e.getMessage());
-                }
-            }
-        }
-        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
-    }
-    
-    private LocalDateTime parseDateTime(String dateStr) {
-        try {
-            if (dateStr.contains(" ")) {
-                return LocalDateTime.parse(dateStr, DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
-            } else {
-                return LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("dd-MM-yyyy")).atStartOfDay();
-            }
-        } catch (Exception e) {
-            return LocalDateTime.now();
-        }
-    }
-    
-    private int getIntValue(Document doc, String key, int defaultValue) {
-        Object value = doc.get(key);
-        if (value == null) return defaultValue;
-        if (value instanceof Integer) return (Integer) value;
-        if (value instanceof Double) return ((Double) value).intValue();
-        if (value instanceof Long) return ((Long) value).intValue();
-        if (value instanceof String) {
-            try {
-                return Integer.parseInt((String) value);
-            } catch (NumberFormatException e) {
-                return defaultValue;
-            }
-        }
-        return defaultValue;
-    }
-    
-    private String capitalizeFirst(String str) {
-        if (str == null || str.isEmpty()) return str;
-        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
-    }
-    
-    private void setupEventHandlers() {
-        statusFilter.setOnAction(e -> applyFilters());
-        dateFilter.setOnAction(e -> applyFilters());
-        searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
-        
-        transactionTable.setRowFactory(tv -> {
-            TableRow<TransactionData> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && !row.isEmpty()) {
-                    showTransactionDetails(row.getItem());
+                    return 0;
                 }
             });
-            return row;
-        });
+            
+            transactionTable.setItems(allTransactions);
+            System.out.println("✅ Loaded " + allTransactions.size() + " transactions");
+            
+        } catch (Exception e) {
+            System.err.println("❌ Load transactions error: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Load Error", 
+                     "Failed to load transactions: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
-    
-    private void applyFilters() {
-        filteredTransactions.clear();
-        
+
+    private void filterTransactions() {
         String statusValue = statusFilter.getValue();
         String dateValue = dateFilter.getValue();
-        String searchText = searchField.getText().toLowerCase().trim();
-        LocalDate now = LocalDate.now();
+        String searchText = searchField.getText().toLowerCase();
         
-        for (TransactionData trans : allTransactions) {
-            boolean matchStatus = statusValue.equals("Semua Status") || 
-                                 trans.getStatus().equalsIgnoreCase(statusValue);
-            
-            boolean matchDate = dateValue.equals("Semua Tanggal") || 
-                               checkDateFilter(trans.getDate(), dateValue, now);
-            
-            boolean matchSearch = searchText.isEmpty() ||
-                                 trans.getCustomer().toLowerCase().contains(searchText) ||
-                                 trans.getProduct().toLowerCase().contains(searchText) ||
-                                 trans.getId().toLowerCase().contains(searchText);
-            
-            if (matchStatus && matchDate && matchSearch) {
-                filteredTransactions.add(trans);
-            }
-        }
+        List<TransactionData> filtered = allTransactions.stream()
+            .filter(t -> {
+                // Status filter
+                if (!statusValue.equals("Semua Status")) {
+                    String status = t.getStatus();
+                    if (status == null || !status.equalsIgnoreCase(statusValue)) return false;
+                }
+                
+                // Date filter
+                if (!dateValue.equals("Semua Tanggal")) {
+                    if (!matchesDateFilter(t.getDate(), dateValue)) return false;
+                }
+                
+                // Search filter
+                if (!searchText.isEmpty()) {
+                    String id = t.getId() != null ? t.getId().toLowerCase() : "";
+                    String customer = t.getCustomer() != null ? t.getCustomer().toLowerCase() : "";
+                    String product = t.getProduct() != null ? t.getProduct().toLowerCase() : "";
+                    String petugas = t.getPetugas() != null ? t.getPetugas().toLowerCase() : "";
+                    
+                    return id.contains(searchText) || 
+                           customer.contains(searchText) || 
+                           product.contains(searchText) ||
+                           petugas.contains(searchText);
+                }
+                
+                return true;
+            })
+            .collect(Collectors.toList());
+        
+        transactionTable.setItems(FXCollections.observableArrayList(filtered));
+        filterStatusLabel.setText("Menampilkan " + filtered.size() + " dari " + 
+                                  allTransactions.size() + " transaksi");
         
         updateStatistics();
-        updateFilterStatus();
-        
-        System.out.println("🔍 Filter applied. Showing " + filteredTransactions.size() + " of " + allTransactions.size());
     }
-    
-    private boolean checkDateFilter(String dateStr, String filter, LocalDate now) {
+
+    private boolean matchesDateFilter(String dateStr, String filter) {
         try {
-            LocalDateTime transDateTime = parseDateTime(dateStr);
-            LocalDate transDate = transDateTime.toLocalDate();
+            if (dateStr == null || dateStr.equals("N/A")) return false;
+            
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date transDate = sdf.parse(dateStr.substring(0, 10));
+            Calendar transCal = Calendar.getInstance();
+            transCal.setTime(transDate);
+            
+            Calendar now = Calendar.getInstance();
             
             switch (filter) {
-                case "Hari Ini": 
-                    return transDate.equals(now);
-                case "Shift Saya":
-                    return transDateTime.isAfter(shiftStartTime);
-                case "Minggu Ini": 
-                    return transDate.isAfter(now.minusDays(7)) && !transDate.isAfter(now);
-                case "Bulan Ini": 
-                    return transDate.getMonth() == now.getMonth() && transDate.getYear() == now.getYear();
-                case "Bulan Lalu":
-                    LocalDate lastMonth = now.minusMonths(1);
-                    return transDate.getMonth() == lastMonth.getMonth() && transDate.getYear() == lastMonth.getYear();
-                default: 
+                case "Hari Ini":
+                    return transCal.get(Calendar.YEAR) == now.get(Calendar.YEAR) &&
+                           transCal.get(Calendar.DAY_OF_YEAR) == now.get(Calendar.DAY_OF_YEAR);
+                
+                case "Minggu Ini":
+                    return transCal.get(Calendar.YEAR) == now.get(Calendar.YEAR) &&
+                           transCal.get(Calendar.WEEK_OF_YEAR) == now.get(Calendar.WEEK_OF_YEAR);
+                
+                case "Bulan Ini":
+                    return transCal.get(Calendar.YEAR) == now.get(Calendar.YEAR) &&
+                           transCal.get(Calendar.MONTH) == now.get(Calendar.MONTH);
+                
+                default:
                     return true;
             }
         } catch (Exception e) {
-            return true;
+            return false;
         }
     }
-    
+
     private void updateStatistics() {
-        int totalTrans = filteredTransactions.size();
-        totalTransactionsLabel.setText(String.valueOf(totalTrans));
+        ObservableList<TransactionData> currentList = transactionTable.getItems();
         
-        int totalRevenue = filteredTransactions.stream()
-            .mapToInt(TransactionData::getTotalAmount)
-            .sum();
+        // Total transactions
+        totalTransactionsLabel.setText(String.valueOf(currentList.size()));
         
-        LocalDate today = LocalDate.now();
-        int revenueToday = filteredTransactions.stream()
+        // Revenue today
+        Calendar today = Calendar.getInstance();
+        int revenueToday = currentList.stream()
             .filter(t -> {
                 try {
-                    LocalDate transDate = parseDateTime(t.getDate()).toLocalDate();
-                    return transDate.equals(today);
+                    String dateStr = t.getDate();
+                    if (dateStr == null || dateStr.equals("N/A")) return false;
+                    
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Date transDate = sdf.parse(dateStr.substring(0, 10));
+                    Calendar transCal = Calendar.getInstance();
+                    transCal.setTime(transDate);
+                    return transCal.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
+                           transCal.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR);
                 } catch (Exception e) {
                     return false;
                 }
             })
-            .mapToInt(TransactionData::getTotalAmount)
+            .mapToInt(TransactionData::getTotalInt)
             .sum();
-        revenueTodayLabel.setText(currencyFormat.format(revenueToday));
+        revenueTodayLabel.setText("Rp " + currencyFormat.format(revenueToday));
         
-        long pendingCount = filteredTransactions.stream()
-            .filter(t -> t.getStatus().equalsIgnoreCase("Pending"))
+        // Pending transactions - handle null status
+        long pending = currentList.stream()
+            .filter(t -> {
+                String status = t.getStatus();
+                return status != null && status.equalsIgnoreCase("Pending");
+            })
             .count();
-        pendingTransactionsLabel.setText(String.valueOf(pendingCount));
+        pendingTransactionsLabel.setText(String.valueOf(pending));
         
-        int average = totalTrans > 0 ? totalRevenue / totalTrans : 0;
-        averageTransactionLabel.setText(currencyFormat.format(average));
+        // Average transaction
+        double average = currentList.isEmpty() ? 0 : 
+            currentList.stream()
+                .mapToInt(TransactionData::getTotalInt)
+                .average()
+                .orElse(0);
+        averageTransactionLabel.setText("Rp " + currencyFormat.format((int) average));
     }
-    
-    private void updateFilterStatus() {
-        StringBuilder sb = new StringBuilder("Menampilkan ");
-        sb.append(filteredTransactions.size()).append(" dari ")
-          .append(allTransactions.size()).append(" transaksi");
-        
-        if (!statusFilter.getValue().equals("Semua Status") || 
-            !dateFilter.getValue().equals("Semua Tanggal") || 
-            !searchField.getText().isEmpty()) {
-            sb.append(" (terfilter)");
-        }
-        
-        filterStatusLabel.setText(sb.toString());
-    }
-    
+
     private void showTransactionDetails(TransactionData transaction) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Detail Transaksi");
-        alert.setHeaderText("Detail Lengkap Transaksi");
+        alert.setHeaderText("Detail Transaksi: " + transaction.getId());
         
-        StringBuilder content = new StringBuilder();
-        content.append("ID Transaksi: ").append(transaction.getId()).append("\n");
-        content.append("Tipe: ").append(transaction.getType().toUpperCase()).append("\n\n");
-        content.append("Tanggal: ").append(transaction.getDate()).append("\n");
-        content.append("Pelanggan: ").append(transaction.getCustomer()).append("\n");
-        content.append("Produk: ").append(transaction.getProduct()).append("\n");
-        content.append("Jumlah: ").append(transaction.getQuantity()).append("\n");
-        content.append("Total Bayar: ").append(transaction.getTotal()).append("\n");
-        content.append("Status: ").append(transaction.getStatus()).append("\n");
+        StringBuilder details = new StringBuilder();
+        Document doc = transaction.getOriginalDocument();
         
-        alert.setContentText(content.toString());
+        if (transaction.getType().equals("membership")) {
+            details.append("Tipe: Membership\n");
+            details.append("ID Non-Member: ").append(doc.getString("non_member_id")).append("\n");
+            details.append("Nama: ").append(doc.getString("nama_non_member")).append("\n");
+            details.append("Paket: ").append(doc.getString("paket")).append("\n");
+            details.append("Jenis: ").append(doc.getString("jenis_pembayaran")).append("\n");
+            details.append("Tipe: ").append(doc.getString("tipe")).append("\n");
+            
+            Object jumlahObj = doc.get("jumlah");
+            int jumlah = jumlahObj instanceof Double ? ((Double) jumlahObj).intValue() : doc.getInteger("jumlah", 0);
+            details.append("Jumlah: Rp ").append(currencyFormat.format(jumlah)).append("\n");
+            
+            Object dibayarObj = doc.get("jumlah_dibayar");
+            int dibayar = dibayarObj instanceof Double ? ((Double) dibayarObj).intValue() : doc.getInteger("jumlah_dibayar", 0);
+            details.append("Dibayar: Rp ").append(currencyFormat.format(dibayar)).append("\n");
+            
+            Object kembalianObj = doc.get("kembalian");
+            int kembalian = kembalianObj instanceof Double ? ((Double) kembalianObj).intValue() : doc.getInteger("kembalian", 0);
+            details.append("Kembalian: Rp ").append(currencyFormat.format(kembalian)).append("\n");
+            
+            details.append("Status: ").append(doc.getString("status")).append("\n");
+            details.append("Petugas: ").append(doc.getString("petugas_nama")).append("\n");
+        } else {
+            details.append("Tipe: Snack/Minuman\n");
+            details.append("ID Transaksi: ").append(doc.getString("transactionId")).append("\n");
+            details.append("Pelanggan: ").append(doc.getString("customerName")).append("\n");
+            
+            Object itemsObj = doc.get("items");
+            details.append("\nProduk:\n");
+            if (itemsObj instanceof List) {
+                List<?> itemsList = (List<?>) itemsObj;
+                for (Object itemObj : itemsList) {
+                    if (itemObj instanceof Document) {
+                        Document item = (Document) itemObj;
+                        Object qtyObj = item.get("quantity");
+                        int qty = 0;
+                        if (qtyObj instanceof Integer) {
+                            qty = (Integer) qtyObj;
+                        } else if (qtyObj instanceof Double) {
+                            qty = ((Double) qtyObj).intValue();
+                        }
+                        details.append("  - ").append(item.getString("productName"))
+                               .append(" x").append(qty)
+                               .append("\n");
+                    }
+                }
+            } else if (itemsObj instanceof Document) {
+                Document items = (Document) itemsObj;
+                for (String key : items.keySet()) {
+                    Object itemValue = items.get(key);
+                    if (itemValue instanceof Integer) {
+                        int qty = (Integer) itemValue;
+                        details.append("  - ").append(key)
+                               .append(" x").append(qty)
+                               .append("\n");
+                    } else if (itemValue instanceof Double) {
+                        int qty = ((Double) itemValue).intValue();
+                        details.append("  - ").append(key)
+                               .append(" x").append(qty)
+                               .append("\n");
+                    } else if (itemValue instanceof Document) {
+                        Document item = (Document) itemValue;
+                        Object qtyObj = item.get("quantity");
+                        int qty = 0;
+                        if (qtyObj instanceof Integer) {
+                            qty = (Integer) qtyObj;
+                        } else if (qtyObj instanceof Double) {
+                            qty = ((Double) qtyObj).intValue();
+                        }
+                        String prodName = item.getString("productName");
+                        if (prodName != null) {
+                            details.append("  - ").append(prodName)
+                                   .append(" x").append(qty)
+                                   .append("\n");
+                        }
+                    }
+                }
+            }
+            
+            Object subtotalObj = doc.get("subtotal");
+            int subtotal = subtotalObj instanceof Double ? ((Double) subtotalObj).intValue() : doc.getInteger("subtotal", 0);
+            details.append("\nSubtotal: Rp ").append(currencyFormat.format(subtotal)).append("\n");
+            
+            Object taxObj = doc.get("tax");
+            int tax = taxObj instanceof Double ? ((Double) taxObj).intValue() : doc.getInteger("tax", 0);
+            details.append("Pajak: Rp ").append(currencyFormat.format(tax)).append("\n");
+            
+            Object totalObj = doc.get("totalPayment");
+            int total = totalObj instanceof Double ? ((Double) totalObj).intValue() : doc.getInteger("totalPayment", 0);
+            details.append("Total: Rp ").append(currencyFormat.format(total)).append("\n");
+            
+            Object cashObj = doc.get("cashGiven");
+            int cash = cashObj instanceof Double ? ((Double) cashObj).intValue() : doc.getInteger("cashGiven", 0);
+            details.append("Uang Diterima: Rp ").append(currencyFormat.format(cash)).append("\n");
+            
+            Object changeObj = doc.get("change");
+            int change = changeObj instanceof Double ? ((Double) changeObj).intValue() : doc.getInteger("change", 0);
+            details.append("Kembalian: Rp ").append(currencyFormat.format(change)).append("\n");
+            
+            details.append("Status: ").append(doc.getString("status")).append("\n");
+        }
+        
+        alert.setContentText(details.toString());
         alert.showAndWait();
     }
-    
+
     @FXML
     private void handleRefresh() {
         System.out.println("🔄 Refreshing data...");
         loadAllTransactions();
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Data Diperbarui");
-        alert.setHeaderText(null);
-        alert.setContentText("Data transaksi berhasil dimuat ulang!\nTotal: " + allTransactions.size() + " transaksi");
-        alert.showAndWait();
+        updateStatistics();
+        filterStatusLabel.setText("Data berhasil di-refresh!");
     }
-    
-    /**
-     * Export shift transactions to Excel
-     */
+
+    @FXML
+    private void handleViewShiftHistory() {
+        showAlert(Alert.AlertType.INFORMATION, "Riwayat Shift", 
+                 "Fitur riwayat shift akan segera tersedia!");
+    }
+
     @FXML
     private void handleExportExcel() {
-        // Filter only shift transactions
-        List<TransactionData> shiftTransactions = new ArrayList<>();
-        for (TransactionData trans : allTransactions) {
-            LocalDateTime transDateTime = parseDateTime(trans.getDate());
-            if (transDateTime.isAfter(shiftStartTime) || transDateTime.isEqual(shiftStartTime)) {
-                shiftTransactions.add(trans);
+        try {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Export to Excel");
+            fileChooser.setInitialFileName("Transaksi_" + 
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".xlsx");
+            fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Excel Files", "*.xlsx")
+            );
+            
+            File file = fileChooser.showSaveDialog(transactionTable.getScene().getWindow());
+            
+            if (file != null) {
+                exportToExcel(file);
+                showAlert(Alert.AlertType.INFORMATION, "Export Berhasil", 
+                         "Data berhasil diekspor ke:\n" + file.getAbsolutePath());
             }
-        }
-        
-        if (shiftTransactions.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Tidak Ada Data");
-            alert.setHeaderText(null);
-            alert.setContentText("Tidak ada transaksi selama shift ini untuk di-export.");
-            alert.showAndWait();
-            return;
-        }
-        
-        // File chooser for save location
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Simpan Rekap Excel");
-        fileChooser.setInitialFileName("Rekap_Shift_" + currentGuardName + "_" + 
-            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".xlsx");
-        fileChooser.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter("Excel Files", "*.xlsx")
-        );
-        
-        Stage stage = (Stage) transactionTable.getScene().getWindow();
-        File file = fileChooser.showSaveDialog(stage);
-        
-        if (file != null) {
-            try {
-                exportToExcel(shiftTransactions, file);
-                
-                // Also save to MongoDB
-                saveShiftRecap(shiftTransactions);
-                
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Export Berhasil");
-                alert.setHeaderText(null);
-                alert.setContentText("Rekap shift berhasil di-export ke:\n" + file.getAbsolutePath() + 
-                    "\n\nTotal Transaksi: " + shiftTransactions.size());
-                alert.showAndWait();
-                
-            } catch (Exception e) {
-                System.err.println("❌ Error exporting to Excel: " + e.getMessage());
-                e.printStackTrace();
-                showError("Error Export", "Gagal meng-export ke Excel: " + e.getMessage());
-            }
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Export Error", 
+                     "Failed to export: " + e.getMessage());
+            e.printStackTrace();
         }
     }
-    
-    /**
-     * Export transactions to Excel file
-     */
-    private void exportToExcel(List<TransactionData> transactions, File file) throws IOException {
+
+    private void exportToExcel(File file) throws Exception {
         Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("Rekap Shift");
+        Sheet sheet = workbook.createSheet("Transaksi");
         
-        // Create fonts
+        // Create header style
+        CellStyle headerStyle = workbook.createCellStyle();
         Font headerFont = workbook.createFont();
         headerFont.setBold(true);
-        headerFont.setFontHeightInPoints((short) 14);
-        
-        Font titleFont = workbook.createFont();
-        titleFont.setBold(true);
-        titleFont.setFontHeightInPoints((short) 12);
-        
-        // Create styles
-        CellStyle headerStyle = workbook.createCellStyle();
+        headerFont.setFontHeightInPoints((short) 12);
         headerStyle.setFont(headerFont);
-        headerStyle.setAlignment(HorizontalAlignment.CENTER);
         headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
         headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        headerStyle.setBorderBottom(BorderStyle.THIN);
+        headerStyle.setBorderTop(BorderStyle.THIN);
+        headerStyle.setBorderLeft(BorderStyle.THIN);
+        headerStyle.setBorderRight(BorderStyle.THIN);
         
-        CellStyle titleStyle = workbook.createCellStyle();
-        titleStyle.setFont(titleFont);
-        titleStyle.setAlignment(HorizontalAlignment.CENTER);
+        // Create header row
+        Row headerRow = sheet.createRow(0);
+        String[] columns = {"ID", "Tanggal", "Pelanggan", "Produk", "Jumlah", "Total", "Petugas", "Status", "Tipe"};
         
-        CellStyle tableHeaderStyle = workbook.createCellStyle();
-        tableHeaderStyle.setFont(titleFont);
-        tableHeaderStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
-        tableHeaderStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        tableHeaderStyle.setBorderBottom(BorderStyle.THIN);
-        tableHeaderStyle.setBorderTop(BorderStyle.THIN);
-        tableHeaderStyle.setBorderLeft(BorderStyle.THIN);
-        tableHeaderStyle.setBorderRight(BorderStyle.THIN);
-        
-        CellStyle cellStyle = workbook.createCellStyle();
-        cellStyle.setBorderBottom(BorderStyle.THIN);
-        cellStyle.setBorderTop(BorderStyle.THIN);
-        cellStyle.setBorderLeft(BorderStyle.THIN);
-        cellStyle.setBorderRight(BorderStyle.THIN);
-        
-        CellStyle currencyStyle = workbook.createCellStyle();
-        currencyStyle.cloneStyleFrom(cellStyle);
-        currencyStyle.setDataFormat(workbook.createDataFormat().getFormat("#,##0"));
-        
-        int rowNum = 0;
-        
-        // Title
-        Row titleRow = sheet.createRow(rowNum++);
-        Cell titleCell = titleRow.createCell(0);
-        titleCell.setCellValue("REKAP SHIFT TRANSAKSI");
-        titleCell.setCellStyle(headerStyle);
-        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 6));
-        
-        rowNum++;
-        
-        // Guard info
-        Row guardRow = sheet.createRow(rowNum++);
-        guardRow.createCell(0).setCellValue("Penjaga:");
-        guardRow.createCell(1).setCellValue(currentGuardName);
-        
-        Row startRow = sheet.createRow(rowNum++);
-        startRow.createCell(0).setCellValue("Mulai Shift:");
-        startRow.createCell(1).setCellValue(shiftStartTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
-        
-        Row endRow = sheet.createRow(rowNum++);
-        endRow.createCell(0).setCellValue("Akhir Shift:");
-        endRow.createCell(1).setCellValue(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
-        
-        rowNum++;
-        
-        // Statistics
-        int totalRevenue = transactions.stream().mapToInt(TransactionData::getTotalAmount).sum();
-        long snackCount = transactions.stream().filter(t -> t.getType().equals("snack")).count();
-        long membershipCount = transactions.stream().filter(t -> t.getType().equals("membership")).count();
-        long nonMemberCount = transactions.stream().filter(t -> t.getType().equals("penjaga")).count();
-        
-        int snackRevenue = transactions.stream().filter(t -> t.getType().equals("snack"))
-            .mapToInt(TransactionData::getTotalAmount).sum();
-        int membershipRevenue = transactions.stream().filter(t -> t.getType().equals("membership"))
-            .mapToInt(TransactionData::getTotalAmount).sum();
-        int nonMemberRevenue = transactions.stream().filter(t -> t.getType().equals("penjaga"))
-            .mapToInt(TransactionData::getTotalAmount).sum();
-        
-        Row statsHeaderRow = sheet.createRow(rowNum++);
-        Cell statsHeaderCell = statsHeaderRow.createCell(0);
-        statsHeaderCell.setCellValue("RINGKASAN");
-        statsHeaderCell.setCellStyle(titleStyle);
-        sheet.addMergedRegion(new CellRangeAddress(rowNum - 1, rowNum - 1, 0, 3));
-        
-        Row totalTransRow = sheet.createRow(rowNum++);
-        totalTransRow.createCell(0).setCellValue("Total Transaksi:");
-        totalTransRow.createCell(1).setCellValue(transactions.size());
-        
-        Row totalRevRow = sheet.createRow(rowNum++);
-        totalRevRow.createCell(0).setCellValue("Total Pendapatan:");
-        Cell revCell = totalRevRow.createCell(1);
-        revCell.setCellValue(totalRevenue);
-        revCell.setCellStyle(currencyStyle);
-        
-        rowNum++;
-        
-        // Category breakdown
-        Row categoryHeaderRow = sheet.createRow(rowNum++);
-        categoryHeaderRow.createCell(0).setCellValue("Kategori");
-        categoryHeaderRow.createCell(1).setCellValue("Jumlah");
-        categoryHeaderRow.createCell(2).setCellValue("Pendapatan");
-        for (int i = 0; i < 3; i++) {
-            categoryHeaderRow.getCell(i).setCellStyle(tableHeaderStyle);
+        for (int i = 0; i < columns.length; i++) {
+            org.apache.poi.ss.usermodel.Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerStyle);
         }
         
-        Row snackRow = sheet.createRow(rowNum++);
-        snackRow.createCell(0).setCellValue("Snack");
-        snackRow.createCell(1).setCellValue(snackCount);
-        Cell snackRevCell = snackRow.createCell(2);
-        snackRevCell.setCellValue(snackRevenue);
-        snackRevCell.setCellStyle(currencyStyle);
+        // Create data rows
+        ObservableList<TransactionData> data = transactionTable.getItems();
+        int rowNum = 1;
         
-        Row memberRow = sheet.createRow(rowNum++);
-        memberRow.createCell(0).setCellValue("Membership");
-        memberRow.createCell(1).setCellValue(membershipCount);
-        Cell memberRevCell = memberRow.createCell(2);
-        memberRevCell.setCellValue(membershipRevenue);
-        memberRevCell.setCellStyle(currencyStyle);
-        
-        Row nonMemberRow = sheet.createRow(rowNum++);
-        nonMemberRow.createCell(0).setCellValue("Non-Member");
-        nonMemberRow.createCell(1).setCellValue(nonMemberCount);
-        Cell nonMemberRevCell = nonMemberRow.createCell(2);
-        nonMemberRevCell.setCellValue(nonMemberRevenue);
-        nonMemberRevCell.setCellStyle(currencyStyle);
-        
-        rowNum += 2;
-        
-        // Transaction table header
-        Row tableHeaderRow = sheet.createRow(rowNum++);
-        Cell thCell1 = tableHeaderRow.createCell(0);
-        thCell1.setCellValue("DETAIL TRANSAKSI");
-        thCell1.setCellStyle(titleStyle);
-        sheet.addMergedRegion(new CellRangeAddress(rowNum - 1, rowNum - 1, 0, 6));
-        
-        Row columnHeaderRow = sheet.createRow(rowNum++);
-        String[] headers = {"ID", "Tanggal", "Pelanggan", "Produk", "Jumlah", "Total", "Status"};
-        for (int i = 0; i < headers.length; i++) {
-            Cell cell = columnHeaderRow.createCell(i);
-            cell.setCellValue(headers[i]);
-            cell.setCellStyle(tableHeaderStyle);
-        }
-        
-        // Transaction data
-        for (TransactionData trans : transactions) {
+        for (TransactionData transaction : data) {
             Row row = sheet.createRow(rowNum++);
-            
-            Cell cell0 = row.createCell(0);
-            cell0.setCellValue(trans.getId());
-            cell0.setCellStyle(cellStyle);
-            
-            Cell cell1 = row.createCell(1);
-            cell1.setCellValue(trans.getDate());
-            cell1.setCellStyle(cellStyle);
-            
-            Cell cell2 = row.createCell(2);
-            cell2.setCellValue(trans.getCustomer());
-            cell2.setCellStyle(cellStyle);
-            
-            Cell cell3 = row.createCell(3);
-            cell3.setCellValue(trans.getProduct());
-            cell3.setCellStyle(cellStyle);
-            
-            Cell cell4 = row.createCell(4);
-            cell4.setCellValue(trans.getQuantity());
-            cell4.setCellStyle(cellStyle);
-            
-            Cell cell5 = row.createCell(5);
-            cell5.setCellValue(trans.getTotalAmount());
-            cell5.setCellStyle(currencyStyle);
-            
-            Cell cell6 = row.createCell(6);
-            cell6.setCellValue(trans.getStatus());
-            cell6.setCellStyle(cellStyle);
+            row.createCell(0).setCellValue(transaction.getId());
+            row.createCell(1).setCellValue(transaction.getDate());
+            row.createCell(2).setCellValue(transaction.getCustomer());
+            row.createCell(3).setCellValue(transaction.getProduct());
+            row.createCell(4).setCellValue(transaction.getQuantity());
+            row.createCell(5).setCellValue(transaction.getTotal());
+            row.createCell(6).setCellValue(transaction.getPetugas());
+            row.createCell(7).setCellValue(transaction.getStatus());
+            row.createCell(8).setCellValue(transaction.getType());
         }
         
         // Auto-size columns
-        for (int i = 0; i < headers.length; i++) {
+        for (int i = 0; i < columns.length; i++) {
             sheet.autoSizeColumn(i);
         }
         
         // Write to file
-        try (FileOutputStream fileOut = new FileOutputStream(file)) {
-            workbook.write(fileOut);
+        try (FileOutputStream outputStream = new FileOutputStream(file)) {
+            workbook.write(outputStream);
         }
         
         workbook.close();
-        System.out.println("✅ Excel file created successfully: " + file.getAbsolutePath());
     }
-    
-    /**
-     * Save shift recap to MongoDB
-     */
-    private void saveShiftRecap(List<TransactionData> transactions) {
-        try {
-            MongoCollection<Document> rekapCollection = database.getCollection("rekap_shift");
-            
-            // Calculate statistics
-            int totalTransactions = transactions.size();
-            int totalRevenue = transactions.stream()
-                .mapToInt(TransactionData::getTotalAmount)
-                .sum();
-            
-            // Count by type
-            long snackCount = transactions.stream()
-                .filter(t -> t.getType().equals("snack"))
-                .count();
-            long membershipCount = transactions.stream()
-                .filter(t -> t.getType().equals("membership"))
-                .count();
-            long nonMemberCount = transactions.stream()
-                .filter(t -> t.getType().equals("penjaga"))
-                .count();
-            
-            // Revenue by type
-            int snackRevenue = transactions.stream()
-                .filter(t -> t.getType().equals("snack"))
-                .mapToInt(TransactionData::getTotalAmount)
-                .sum();
-            int membershipRevenue = transactions.stream()
-                .filter(t -> t.getType().equals("membership"))
-                .mapToInt(TransactionData::getTotalAmount)
-                .sum();
-            int nonMemberRevenue = transactions.stream()
-                .filter(t -> t.getType().equals("penjaga"))
-                .mapToInt(TransactionData::getTotalAmount)
-                .sum();
-            
-            // Create transaction list
-            List<Document> transactionList = new ArrayList<>();
-            for (TransactionData trans : transactions) {
-                Document transDoc = new Document()
-                    .append("id", trans.getFullId())
-                    .append("type", trans.getType())
-                    .append("date", trans.getDate())
-                    .append("customer", trans.getCustomer())
-                    .append("product", trans.getProduct())
-                    .append("quantity", trans.getQuantity())
-                    .append("total", trans.getTotalAmount())
-                    .append("status", trans.getStatus());
-                transactionList.add(transDoc);
-            }
-            
-            // Create recap document
-            Document rekapDoc = new Document()
-                .append("guard_name", currentGuardName)
-                .append("guard_id", currentGuardId)
-                .append("shift_start", Date.from(shiftStartTime.atZone(ZoneId.systemDefault()).toInstant()))
-                .append("shift_end", new Date())
-                .append("total_transactions", totalTransactions)
-                .append("total_revenue", totalRevenue)
-                .append("statistics", new Document()
-                    .append("snack", new Document()
-                        .append("count", snackCount)
-                        .append("revenue", snackRevenue))
-                    .append("membership", new Document()
-                        .append("count", membershipCount)
-                        .append("revenue", membershipRevenue))
-                    .append("non_member", new Document()
-                        .append("count", nonMemberCount)
-                        .append("revenue", nonMemberRevenue)))
-                .append("transactions", transactionList)
-                .append("created_at", new Date());
-            
-            // Insert to database
-            rekapCollection.insertOne(rekapDoc);
-            
-            // Update active shift status
-            updateShiftStatus();
-            
-            System.out.println("✅ Shift recap saved to MongoDB successfully");
-            
-        } catch (Exception e) {
-            System.err.println("❌ Error saving shift recap: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-    
-    /**
-     * Update shift status when recap is saved
-     */
-    private void updateShiftStatus() {
-        try {
-            MongoCollection<Document> shiftCollection = database.getCollection("active_shifts");
-            
-            Document filter = new Document("guard_name", currentGuardName)
-                .append("shift_end", null);
-            
-            Document update = new Document("$set", new Document()
-                .append("shift_end", new Date())
-                .append("status", "completed"));
-            
-            shiftCollection.updateOne(filter, update);
-            
-        } catch (Exception e) {
-            System.err.println("❌ Error updating shift status: " + e.getMessage());
-        }
-    }
-    
-    /**
-     * View shift history from database
-     */
-    @FXML
-    private void handleViewShiftHistory() {
-        try {
-            MongoCollection<Document> rekapCollection = database.getCollection("rekap_shift");
-            
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Riwayat Rekap Shift");
-            alert.setHeaderText("10 Rekap Shift Terakhir");
-            
-            StringBuilder content = new StringBuilder();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-            
-            int count = 0;
-            for (Document doc : rekapCollection.find().sort(new Document("created_at", -1)).limit(10)) {
-                count++;
-                
-                String guardName = doc.getString("guard_name");
-                Date shiftStart = doc.getDate("shift_start");
-                Date shiftEnd = doc.getDate("shift_end");
-                int totalTrans = doc.getInteger("total_transactions", 0);
-                int totalRev = doc.getInteger("total_revenue", 0);
-                
-                LocalDateTime startTime = shiftStart.toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDateTime();
-                LocalDateTime endTime = shiftEnd.toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDateTime();
-                
-                content.append(count).append(". ").append(guardName).append("\n");
-                content.append("   ").append(startTime.format(formatter))
-                       .append(" - ").append(endTime.format(formatter)).append("\n");
-                content.append("   Transaksi: ").append(totalTrans)
-                       .append(" | Pendapatan: ").append(currencyFormat.format(totalRev)).append("\n\n");
-            }
-            
-            if (count == 0) {
-                content.append("Belum ada riwayat rekap shift.");
-            }
-            
-            alert.setContentText(content.toString());
-            alert.showAndWait();
-            
-        } catch (Exception e) {
-            System.err.println("❌ Error loading shift history: " + e.getMessage());
-            showError("Error", "Gagal memuat riwayat shift: " + e.getMessage());
-        }
-    }
-    
-    /**
-     * Handle back button - return to main menu
-     */
+
     @FXML
     private void handleBack() {
         try {
-            // Stop clock timeline
-            if (clockTimeline != null) {
-                clockTimeline.stop();
+            if (timeTimer != null) {
+                timeTimer.cancel();
+            }
+            if (mongoClient != null) {
+                mongoClient.close();
             }
             
-            // Load main menu
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("menu_transaksi.fxml"));
-            Parent root = loader.load();
+            // Get current stage
+            javafx.stage.Stage stage = (javafx.stage.Stage) transactionTable.getScene().getWindow();
             
-            Stage stage = (Stage) transactionTable.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
+            // Try to load MenuTransaksi
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/menu_transaksi/menu_transaksi.fxml"));
+                javafx.scene.Parent root = loader.load();
+                javafx.scene.Scene scene = new javafx.scene.Scene(root);
+                stage.setScene(scene);
+                stage.show();
+                System.out.println("✅ Successfully returned to MenuTransaksi");
+            } catch (Exception loadError) {
+                System.err.println("❌ Failed to load MenuTransaksi: " + loadError.getMessage());
+                // If loading fails, just close the window
+                stage.hide();
+            }
             
-            System.out.println("✅ Returned to main menu");
-            
-        } catch (IOException e) {
-            System.err.println("❌ Error returning to main menu: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("❌ Error going back: " + e.getMessage());
             e.printStackTrace();
-            showError("Error", "Gagal kembali ke menu utama: " + e.getMessage());
         }
     }
-    
-    private void showError(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+
+    private void startTimeUpdater() {
+        timeTimer = new Timer(true);
+        timeTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+                    timeLabel.setText(LocalDateTime.now().format(formatter));
+                });
+            }
+        }, 0, 1000);
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
-        alert.setContentText(message);
+        alert.setContentText(content);
         alert.showAndWait();
     }
-    
-    /**
-     * Cleanup when controller is destroyed
-     */
-    public void cleanup() {
-        if (clockTimeline != null) {
-            clockTimeline.stop();
-        }
-    }
-}
 
-// ===== TRANSACTION DATA MODEL CLASS =====
-class TransactionData {
-    private final SimpleStringProperty id;
-    private String fullId;
-    private String type;
-    private final SimpleStringProperty date;
-    private final SimpleStringProperty customer;
-    private final SimpleStringProperty product;
-    private final SimpleIntegerProperty quantity;
-    private final SimpleStringProperty total;
-    private int totalAmount;
-    private final SimpleStringProperty status;
-    
-    public TransactionData() {
-        this.id = new SimpleStringProperty("");
-        this.date = new SimpleStringProperty("");
-        this.customer = new SimpleStringProperty("");
-        this.product = new SimpleStringProperty("");
-        this.quantity = new SimpleIntegerProperty(0);
-        this.total = new SimpleStringProperty("");
-        this.status = new SimpleStringProperty("");
+    // Inner class for transaction data
+    public static class TransactionData {
+        private final SimpleStringProperty id;
+        private final SimpleStringProperty date;
+        private final SimpleStringProperty customer;
+        private final SimpleStringProperty product;
+        private final SimpleStringProperty quantity;
+        private final SimpleStringProperty total;
+        private final SimpleStringProperty petugas;
+        private final SimpleStringProperty status;
+        private final String type;
+        private final int totalInt;
+        private final int quantityInt;
+        private final Document originalDocument;
+        
+        public TransactionData(String id, String date, String customer, String product, 
+                             int quantity, int total, String petugas, String status, String type, Document doc) {
+            this.id = new SimpleStringProperty(id != null ? id : "N/A");
+            this.date = new SimpleStringProperty(date != null ? date : "N/A");
+            this.customer = new SimpleStringProperty(customer != null ? customer : "N/A");
+            this.product = new SimpleStringProperty(product != null ? product : "N/A");
+            this.quantity = new SimpleStringProperty(String.valueOf(quantity));
+            this.total = new SimpleStringProperty("Rp " + new DecimalFormat("#,###").format(total));
+            this.petugas = new SimpleStringProperty(petugas != null ? petugas : "N/A");
+            this.status = new SimpleStringProperty(status != null ? status : "N/A");
+            this.type = type;
+            this.totalInt = total;
+            this.quantityInt = quantity;
+            this.originalDocument = doc;
+        }
+        
+        public SimpleStringProperty idProperty() { return id; }
+        public SimpleStringProperty dateProperty() { return date; }
+        public SimpleStringProperty customerProperty() { return customer; }
+        public SimpleStringProperty productProperty() { return product; }
+        public SimpleStringProperty quantityProperty() { return quantity; }
+        public SimpleStringProperty totalProperty() { return total; }
+        public SimpleStringProperty petugasProperty() { return petugas; }
+        public SimpleStringProperty statusProperty() { return status; }
+        
+        public String getId() { return id.get(); }
+        public String getDate() { return date.get(); }
+        public String getCustomer() { return customer.get(); }
+        public String getProduct() { return product.get(); }
+        public String getQuantity() { return String.valueOf(quantityInt); }
+        public String getTotal() { return total.get(); }
+        public String getPetugas() { return petugas.get(); }
+        public String getStatus() { return status.get(); }
+        public String getType() { return type; }
+        public int getTotalInt() { return totalInt; }
+        public Document getOriginalDocument() { return originalDocument; }
     }
-    
-    // Property methods for JavaFX binding
-    public SimpleStringProperty idProperty() { return id; }
-    public SimpleStringProperty dateProperty() { return date; }
-    public SimpleStringProperty customerProperty() { return customer; }
-    public SimpleStringProperty productProperty() { return product; }
-    public SimpleIntegerProperty quantityProperty() { return quantity; }
-    public SimpleStringProperty totalProperty() { return total; }
-    public SimpleStringProperty statusProperty() { return status; }
-    
-    // Getters
-    public String getId() { return id.get(); }
-    public String getFullId() { return fullId; }
-    public String getType() { return type; }
-    public String getDate() { return date.get(); }
-    public String getCustomer() { return customer.get(); }
-    public String getProduct() { return product.get(); }
-    public int getQuantity() { return quantity.get(); }
-    public String getTotal() { return total.get(); }
-    public int getTotalAmount() { return totalAmount; }
-    public String getStatus() { return status.get(); }
-    
-    // Setters
-    public void setId(String id) { this.id.set(id); }
-    public void setFullId(String fullId) { this.fullId = fullId; }
-    public void setType(String type) { this.type = type; }
-    public void setDate(String date) { this.date.set(date); }
-    public void setCustomer(String customer) { this.customer.set(customer); }
-    public void setProduct(String product) { this.product.set(product); }
-    public void setQuantity(int quantity) { this.quantity.set(quantity); }
-    public void setTotal(String total) { this.total.set(total); }
-    public void setTotalAmount(int totalAmount) { this.totalAmount = totalAmount; }
-    public void setStatus(String status) { this.status.set(status); }
 }

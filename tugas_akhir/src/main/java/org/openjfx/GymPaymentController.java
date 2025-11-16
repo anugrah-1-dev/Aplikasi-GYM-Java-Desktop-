@@ -98,59 +98,48 @@ public class GymPaymentController implements Initializable {
     @FXML private Label clockLabel;
     @FXML private Label dateLabel;
     
-    // Field baru untuk petugas
     @FXML private Label petugasNameLabel;
     @FXML private Label petugasRoleLabel;
     @FXML private TextField petugasUsernameField;
     @FXML private TextField petugasNamaField;
     
-    // MongoDB configurations
     private static final String CONNECTION_STRING = "mongodb://localhost:27017";
     private static final String DATABASE_NAME = "gym";
     private MongoClient mongoClient;
     private MongoDatabase database;
     
-    // MongoDB collections
     private MongoCollection<Document> dataMembersCollection;
     private MongoCollection<Document> hargaGymCollection;
     private MongoCollection<Document> transactionsCollection;
     private MongoCollection<Document> loginCollection;
     
-    // Data petugas yang sedang login
     private Document currentPetugasData;
     
-    // Data paket
     private Map<String, PackageInfo> memberPackages = new LinkedHashMap<>();
     private Map<String, PackageInfo> nonMemberPackages = new LinkedHashMap<>();
     
-    // Current member data
     private Document currentMemberData;
     
-    // Counter untuk ID non-member
     private AtomicInteger nonMemberCounter = new AtomicInteger(1);
     
-    // Variabel untuk scanner
     private StringBuilder barcodeBuffer = new StringBuilder();
     private long lastKeyTime = 0;
     private static final long SCANNER_TIMEOUT_MS = 50;
     private Timeline scannerTimeline;
     private boolean isScannerMode = false;
     
-    // Pattern untuk membersihkan barcode
     private static final Pattern VALID_MEMBER_ID_PATTERN = Pattern.compile("^[A-Za-z0-9\\-]{3,50}$");
     private static final Pattern EXTRACT_MEMBER_ID_PATTERN = Pattern.compile("([A-Za-z]{2,}-\\d{8}-\\d{6}-\\d{3,4})");
     private static final Pattern COMMON_BARCODE_PATTERNS = Pattern.compile("(?:\\d+[-]?\\d*[-]?)?([A-Za-z]{2,}-\\d{8}-\\d{6}-\\d{3,4})");
     
-    // KONSTANTA BIAYA DAN DISKON
     private static final double BIAYA_ADMIN = 30000.0;
     
-    // DISKON BERDASARKAN PEKERJAAN
-    private static final double DISKON_PELAJAR = 0.10; // 10%
-    private static final double DISKON_PNS = 0.10; // 10%
-    private static final double DISKON_TNI = 0.10; // 10%
-    private static final double DISKON_POLRI = 0.10; // 10%
-    private static final double DISKON_BUDAYA_ULAMA = 0.15; // 15%
-    private static final double DISKON_GURU = 0.20; // 20%
+    private static final double DISKON_PELAJAR = 0.10;
+    private static final double DISKON_PNS = 0.10;
+    private static final double DISKON_TNI = 0.10;
+    private static final double DISKON_POLRI = 0.10;
+    private static final double DISKON_BUDAYA_ULAMA = 0.15;
+    private static final double DISKON_GURU = 0.20;
     
     // ESC/POS Commands untuk printer thermal
     private static final byte[] ESC_INIT = {0x1B, 0x40};
@@ -163,14 +152,6 @@ public class GymPaymentController implements Initializable {
     private static final byte[] ESC_CUT = {0x1D, 0x56, 0x00};
     private static final byte[] ESC_FEED = {0x1B, 0x64, 0x02};
     
-    // Informasi WiFi
-    private static final String WIFI_INFO = 
-        "WiFi: BIFVIT24 FITNESS 5G\n" +
-        "Pass: MERDEKA45\n" +
-        "WiFi: BIFVIT24 FITNESS 4G\n" +
-        "Pass: MERDEKA45";
-    
-    // Class untuk menyimpan informasi paket
     private static class PackageInfo {
         double harga;
         int durasiHari;
@@ -219,7 +200,7 @@ public class GymPaymentController implements Initializable {
         
         try {
             initializeDatabase();
-            loadCurrentPetugasData(); // Load data petugas yang login
+            loadCurrentPetugasData();
             initializePackages();
             setupEventHandlers();
             setupUI();
@@ -239,30 +220,60 @@ public class GymPaymentController implements Initializable {
         }
     }
     
-    /**
-     * Method untuk memuat data petugas yang sedang login dari koleksi login
-     */
     private void loadCurrentPetugasData() {
         try {
-            System.out.println("🔍 Loading current petugas data...");
+            System.out.println("🔍 Loading current petugas data (ROLE: penjaga only)...");
             
-            // Ambil data login terbaru (asumsi data login terbaru adalah yang sedang aktif)
-            Document latestLogin = loginCollection.find()
-                .sort(new Document("login_time", -1))
-                .first();
+            Document activeLogin = loginCollection.find(
+                Filters.and(
+                    Filters.eq("status", "active"),
+                    Filters.eq("role", "penjaga")
+                )
+            ).sort(new Document("login_time", -1)).first();
             
-            if (latestLogin != null) {
-                currentPetugasData = latestLogin;
-                String username = latestLogin.getString("username");
-                String role = latestLogin.getString("role");
-                String nama = latestLogin.getString("nama");
+            if (activeLogin != null) {
+                currentPetugasData = activeLogin;
+                System.out.println("✅ Found active penjaga login session");
+            } else {
+                String todayStart = LocalDate.now().toString() + "T00:00:00";
+                Document latestTodayLogin = loginCollection.find(
+                    Filters.and(
+                        Filters.gte("login_time", todayStart),
+                        Filters.eq("role", "penjaga")
+                    )
+                ).sort(new Document("login_time", -1)).first();
+                
+                if (latestTodayLogin != null) {
+                    currentPetugasData = latestTodayLogin;
+                    System.out.println("✅ Found latest penjaga login today");
+                } else {
+                    Document latestLogin = loginCollection.find(
+                        Filters.eq("role", "penjaga")
+                    ).sort(new Document("login_time", -1)).first();
+                    
+                    if (latestLogin != null) {
+                        currentPetugasData = latestLogin;
+                        System.out.println("✅ Using latest penjaga login as fallback");
+                    }
+                }
+            }
+            
+            if (currentPetugasData != null) {
+                String username = currentPetugasData.getString("username");
+                String role = currentPetugasData.getString("role");
+                String nama = currentPetugasData.getString("nama");
+                
+                if (!"penjaga".equalsIgnoreCase(role)) {
+                    System.out.println("⚠️ Data found but role is not 'penjaga': " + role);
+                    setDefaultPetugasData();
+                    return;
+                }
                 
                 System.out.println("✅ Petugas data loaded:");
                 System.out.println("   Username: " + username);
                 System.out.println("   Role: " + role);
                 System.out.println("   Nama: " + nama);
                 
-                // Update UI dengan data petugas
                 Platform.runLater(() -> {
                     petugasUsernameField.setText(username != null ? username : "-");
                     petugasNamaField.setText(nama != null ? nama : "-");
@@ -270,25 +281,23 @@ public class GymPaymentController implements Initializable {
                     petugasRoleLabel.setText(role != null ? role : "-");
                 });
             } else {
-                System.out.println("⚠️ No login data found, using default values");
+                System.out.println("⚠️ No penjaga login found, using default");
                 setDefaultPetugasData();
             }
             
         } catch (Exception e) {
             System.err.println("❌ Error loading petugas data: " + e.getMessage());
+            e.printStackTrace();
             setDefaultPetugasData();
         }
     }
     
-    /**
-     * Set default data petugas jika tidak ada data login
-     */
     private void setDefaultPetugasData() {
         Platform.runLater(() -> {
-            petugasUsernameField.setText("admin");
-            petugasNamaField.setText("Administrator");
-            petugasNameLabel.setText("Administrator");
-            petugasRoleLabel.setText("Admin");
+            petugasUsernameField.setText("penjaga");
+            petugasNamaField.setText("Petugas");
+            petugasNameLabel.setText("Petugas");
+            petugasRoleLabel.setText("penjaga");
         });
     }
     
@@ -326,7 +335,7 @@ public class GymPaymentController implements Initializable {
             dataMembersCollection = getCollection("data_members");
             hargaGymCollection = getCollection("harga_gym");
             transactionsCollection = getCollection("transactions");
-            loginCollection = getCollection("login"); // Tambahan koleksi login
+            loginCollection = getCollection("login");
             
             System.out.println("Database collections initialized successfully");
             
@@ -355,9 +364,8 @@ public class GymPaymentController implements Initializable {
                 }
             }
             
-            // Debug login data
-            System.out.println("Login Documents:");
-            for (Document doc : loginCollection.find().limit(5)) {
+            System.out.println("Login Documents (ROLE: penjaga):");
+            for (Document doc : loginCollection.find(Filters.eq("role", "penjaga")).limit(5)) {
                 System.out.println("  " + doc.toJson());
             }
             
@@ -446,25 +454,18 @@ public class GymPaymentController implements Initializable {
                 LocalDate tanggalLahir = LocalDate.parse(tanggalLahirStr);
                 LocalDate today = LocalDate.now();
                 int age = java.time.Period.between(tanggalLahir, today).getYears();
-                System.out.println("🎂 Calculated member age: " + age + " years (DOB: " + tanggalLahirStr + ")");
+                System.out.println("🎂 Calculated member age: " + age + " years");
                 return age;
             } else {
-                System.out.println("⚠️ No date of birth found, assuming adult member");
+                System.out.println("⚠️ No date of birth found");
                 return 18;
             }
         } catch (Exception e) {
-            System.err.println("❌ Error calculating member age: " + e.getMessage());
+            System.err.println("❌ Error calculating age: " + e.getMessage());
             return 18;
         }
     }
     
-    // ==================== METHOD UNTUK MENGHITUNG DISKON ====================
-    
-    /**
-     * Menghitung persentase diskon berdasarkan pekerjaan member
-     * @param pekerjaan pekerjaan dari database
-     * @return persentase diskon (0.0 - 1.0)
-     */
     private double getDiscountPercentage(String pekerjaan) {
         if (pekerjaan == null || pekerjaan.trim().isEmpty()) {
             return 0.0;
@@ -472,41 +473,35 @@ public class GymPaymentController implements Initializable {
         
         String pekerjaanLower = pekerjaan.toLowerCase().trim();
         
-        // Pelajar/Mahasiswa - 10%
         if (pekerjaanLower.contains("pelajar") || pekerjaanLower.contains("mahasiswa") || 
             pekerjaanLower.contains("siswa") || pekerjaanLower.contains("student")) {
             System.out.println("💰 Diskon Pelajar: 10%");
             return DISKON_PELAJAR;
         }
         
-        // PNS - 10%
         if (pekerjaanLower.contains("pns") || pekerjaanLower.contains("pegawai negeri sipil")) {
             System.out.println("💰 Diskon PNS: 10%");
             return DISKON_PNS;
         }
         
-        // TNI - 10%
         if (pekerjaanLower.contains("tni") || pekerjaanLower.contains("tentara") || 
             pekerjaanLower.contains("militer")) {
             System.out.println("💰 Diskon TNI: 10%");
             return DISKON_TNI;
         }
         
-        // POLRI - 10%
         if (pekerjaanLower.contains("polri") || pekerjaanLower.contains("polisi") || 
             pekerjaanLower.contains("kepolisian")) {
             System.out.println("💰 Diskon POLRI: 10%");
             return DISKON_POLRI;
         }
         
-        // Guru - 20%
         if (pekerjaanLower.contains("guru") || pekerjaanLower.contains("pengajar") || 
             pekerjaanLower.contains("dosen") || pekerjaanLower.contains("teacher")) {
             System.out.println("💰 Diskon Guru: 20%");
             return DISKON_GURU;
         }
         
-        // Pelaku Budaya/Ulama - 15%
         if (pekerjaanLower.contains("pelaku budaya / ulama") || pekerjaanLower.contains("seniman") || 
             pekerjaanLower.contains("ustadz") || pekerjaanLower.contains("kyai") || 
             pekerjaanLower.contains("pendeta") || pekerjaanLower.contains("pastor") ||
@@ -515,13 +510,10 @@ public class GymPaymentController implements Initializable {
             return DISKON_BUDAYA_ULAMA;
         }
         
-        System.out.println("💰 Tidak ada diskon untuk pekerjaan: " + pekerjaan);
+        System.out.println("💰 Tidak ada diskon");
         return 0.0;
     }
     
-    /**
-     * Mendapatkan label diskon untuk ditampilkan di UI
-     */
     private String getDiscountLabel(double percentage) {
         if (percentage == 0.0) {
             return "Tidak ada diskon";
@@ -530,21 +522,11 @@ public class GymPaymentController implements Initializable {
         return String.format("✓ Diskon %d%% (berdasarkan pekerjaan)", percent);
     }
     
-    /**
-     * Menghitung total pembayaran dengan diskon dan biaya admin
-     */
     private PaymentCalculation calculatePaymentWithDiscount(double hargaPaket, String pekerjaan) {
         double discountPercentage = getDiscountPercentage(pekerjaan);
         double discountAmount = hargaPaket * discountPercentage;
         double hargaSetelahDiskon = hargaPaket - discountAmount;
         double totalWithAdmin = hargaSetelahDiskon + BIAYA_ADMIN;
-        
-        System.out.println("💵 PERHITUNGAN PEMBAYARAN:");
-        System.out.println("   Harga Paket: Rp " + String.format("%,d", (int) hargaPaket));
-        System.out.println("   Diskon (" + (int)(discountPercentage * 100) + "%): Rp " + String.format("%,d", (int) discountAmount));
-        System.out.println("   Harga Setelah Diskon: Rp " + String.format("%,d", (int) hargaSetelahDiskon));
-        System.out.println("   Biaya Admin: Rp " + String.format("%,d", (int) BIAYA_ADMIN));
-        System.out.println("   TOTAL: Rp " + String.format("%,d", (int) totalWithAdmin));
         
         return new PaymentCalculation(
             hargaPaket,
@@ -556,9 +538,6 @@ public class GymPaymentController implements Initializable {
         );
     }
     
-    /**
-     * Class untuk menyimpan hasil perhitungan pembayaran
-     */
     private static class PaymentCalculation {
         double hargaAsli;
         double persenDiskon;
@@ -578,89 +557,72 @@ public class GymPaymentController implements Initializable {
         }
     }
     
-    // ==================== END METHOD DISKON ====================
-    
     private void loadHargaFromDatabase() {
         try {
             System.out.println("📊 Loading packages from database...");
             
             Document memberHarga = hargaGymCollection.find(Filters.eq("jenis", "member")).first();
             if (memberHarga != null) {
-                System.out.println("✅ Found member pricing in database");
+                System.out.println("✅ Found member pricing");
                 
                 double biayaPelatihPerBulan = 200000;
                 
                 if (memberHarga.containsKey("1_bulan")) {
                     double harga1Bulan = getDoubleValue(memberHarga.get("1_bulan"));
                     memberPackages.put("1 Bulan", new PackageInfo("1 Bulan", harga1Bulan, 30, "bulan", "member", false, biayaPelatihPerBulan));
-                    System.out.println("✅ 1 Bulan: Rp " + harga1Bulan + " (30 hari)");
                 } else if (memberHarga.containsKey("i_bulan")) {
                     double harga1Bulan = getDoubleValue(memberHarga.get("i_bulan"));
                     memberPackages.put("1 Bulan", new PackageInfo("1 Bulan", harga1Bulan, 30, "bulan", "member", false, biayaPelatihPerBulan));
-                    System.out.println("✅ 1 Bulan (i_bulan): Rp " + harga1Bulan + " (30 hari)");
                 }
                 
                 if (memberHarga.containsKey("3_bulan")) {
                     double harga3Bulan = getDoubleValue(memberHarga.get("3_bulan"));
                     memberPackages.put("3 Bulan", new PackageInfo("3 Bulan", harga3Bulan, 90, "bulan", "member", false, biayaPelatihPerBulan));
-                    System.out.println("✅ 3 Bulan: Rp " + harga3Bulan + " (90 hari)");
                 }
                 
                 if (memberHarga.containsKey("6_bulan")) {
                     double harga6Bulan = getDoubleValue(memberHarga.get("6_bulan"));
                     memberPackages.put("6 Bulan", new PackageInfo("6 Bulan", harga6Bulan, 180, "bulan", "member", false, biayaPelatihPerBulan));
-                    System.out.println("✅ 6 Bulan: Rp " + harga6Bulan + " (180 hari)");
                 }
                 
                 if (memberHarga.containsKey("1_bulan")) {
                     double harga1Bulan = getDoubleValue(memberHarga.get("1_bulan"));
                     double totalWithTrainer1 = harga1Bulan * 2;
                     memberPackages.put("1 Bulan + Pelatih", new PackageInfo("1 Bulan + Pelatih", totalWithTrainer1, 30, "bulan", "member", true, biayaPelatihPerBulan));
-                    System.out.println("✅ 1 Bulan + Pelatih: Rp " + totalWithTrainer1 + " (30 hari)");
                 } else if (memberHarga.containsKey("i_bulan")) {
                     double harga1Bulan = getDoubleValue(memberHarga.get("i_bulan"));
                     double totalWithTrainer1 = harga1Bulan * 2;
                     memberPackages.put("1 Bulan + Pelatih", new PackageInfo("1 Bulan + Pelatih", totalWithTrainer1, 30, "bulan", "member", true, biayaPelatihPerBulan));
-                    System.out.println("✅ 1 Bulan + Pelatih (i_bulan): Rp " + totalWithTrainer1 + " (30 hari)");
                 }
                 
                 if (memberHarga.containsKey("3_bulan")) {
                     double harga3Bulan = getDoubleValue(memberHarga.get("3_bulan"));
                     double totalWithTrainer3 = harga3Bulan * 2;
                     memberPackages.put("3 Bulan + Pelatih", new PackageInfo("3 Bulan + Pelatih", totalWithTrainer3, 90, "bulan", "member", true, biayaPelatihPerBulan));
-                    System.out.println("✅ 3 Bulan + Pelatih: Rp " + totalWithTrainer3 + " (90 hari)");
                 }
                 
                 if (memberHarga.containsKey("6_bulan")) {
                     double harga6Bulan = getDoubleValue(memberHarga.get("6_bulan"));
                     double totalWithTrainer6 = harga6Bulan * 2;
                     memberPackages.put("6 Bulan + Pelatih", new PackageInfo("6 Bulan + Pelatih", totalWithTrainer6, 180, "bulan", "member", true, biayaPelatihPerBulan));
-                    System.out.println("✅ 6 Bulan + Pelatih: Rp " + totalWithTrainer6 + " (180 hari)");
                 }
                 
             } else {
-                System.out.println("⚠️ No member pricing found, using defaults based on image data");
                 setDefaultMemberPackages();
             }
             
             Document nonMemberRegular = hargaGymCollection.find(Filters.eq("jenis", "non_member_regular")).first();
             if (nonMemberRegular != null) {
-                System.out.println("✅ Found non-member regular pricing in database");
                 if (nonMemberRegular.containsKey("harian")) {
                     double hargaHarian = getDoubleValue(nonMemberRegular.get("harian"));
                     nonMemberPackages.put("Harian", new PackageInfo("Harian", hargaHarian, 1, "hari", "non_member_regular", false, 0));
-                    System.out.println("✅ Non-Member Regular Harian: Rp " + hargaHarian + " (1 hari)");
                 }
             } else {
-                System.out.println("⚠️ No non-member pricing found, using defaults");
                 setDefaultNonMemberPackages();
             }
             
-            System.out.println("📦 Total member packages loaded: " + memberPackages.size());
-            System.out.println("📦 Total non-member packages loaded: " + nonMemberPackages.size());
-            
         } catch (Exception e) {
-            System.err.println("❌ Error loading harga from database: " + e.getMessage());
+            System.err.println("❌ Error loading harga: " + e.getMessage());
             setDefaultMemberPackages();
             setDefaultNonMemberPackages();
         }
@@ -683,21 +645,16 @@ public class GymPaymentController implements Initializable {
     
     private void setDefaultMemberPackages() {
         double biayaPelatihPerBulan = 200000;
-        
-        System.out.println("⚠️ Using default member packages based on image data");
-        
         memberPackages.put("1 Bulan", new PackageInfo("1 Bulan", 250000.0, 30, "bulan", "member", false, biayaPelatihPerBulan));
         memberPackages.put("3 Bulan", new PackageInfo("3 Bulan", 675000.0, 90, "bulan", "member", false, biayaPelatihPerBulan));
         memberPackages.put("6 Bulan", new PackageInfo("6 Bulan", 1200000.0, 180, "bulan", "member", false, biayaPelatihPerBulan));
-        
-        memberPackages.put("1 Bulan + Pelatih", new PackageInfo("1 Bulan + Pelatih", 250000.0 * 2, 30, "bulan", "member", true, biayaPelatihPerBulan));
-        memberPackages.put("3 Bulan + Pelatih", new PackageInfo("3 Bulan + Pelatih", 675000.0 * 2, 90, "bulan", "member", true, biayaPelatihPerBulan));
-        memberPackages.put("6 Bulan + Pelatih", new PackageInfo("6 Bulan + Pelatih", 1200000.0 * 2, 180, "bulan", "member", true, biayaPelatihPerBulan));
+        memberPackages.put("1 Bulan + Pelatih", new PackageInfo("1 Bulan + Pelatih", 500000.0, 30, "bulan", "member", true, biayaPelatihPerBulan));
+        memberPackages.put("3 Bulan + Pelatih", new PackageInfo("3 Bulan + Pelatih", 1350000.0, 90, "bulan", "member", true, biayaPelatihPerBulan));
+        memberPackages.put("6 Bulan + Pelatih", new PackageInfo("6 Bulan + Pelatih", 2400000.0, 180, "bulan", "member", true, biayaPelatihPerBulan));
     }
     
     private void setDefaultNonMemberPackages() {
         nonMemberPackages.put("Harian", new PackageInfo("Harian", 50000.0, 1, "hari", "non_member_regular", false, 0));
-        System.out.println("⚠️ Using default non-member regular packages");
     }
     
     private void setupEventHandlers() {
@@ -732,19 +689,15 @@ public class GymPaymentController implements Initializable {
         }
         
         int currentAge = getMemberAge(currentMemberData);
-        System.out.println("📅 Member age: " + currentAge + " years");
-        
         packageComboBox.getItems().clear();
         
         if (currentAge < 15) {
-            System.out.println("👦 Member di bawah 15 tahun - HANYA paket dengan pelatih");
             for (String packageName : memberPackages.keySet()) {
                 if (packageName.contains("+ Pelatih")) {
                     packageComboBox.getItems().add(packageName);
                 }
             }
         } else {
-            System.out.println("👨 Member 15 tahun ke atas - semua paket available");
             packageComboBox.getItems().addAll(memberPackages.keySet());
         }
         
@@ -758,8 +711,6 @@ public class GymPaymentController implements Initializable {
     }
     
     private void setupBarcodeScanner() {
-        System.out.println("🔄 Setting up barcode scanner...");
-        
         barcodeBuffer.setLength(0);
         isScannerMode = false;
         
@@ -797,8 +748,6 @@ public class GymPaymentController implements Initializable {
             isScannerMode = newValue;
             scannerStatusLabel.setText(newValue ? "🔴 Scanner AKTIF" : "⚪ Scanner non-aktif");
         });
-        
-        System.out.println("✅ Barcode scanner setup completed");
     }
     
     private void processScannerInput(String scannedBarcode) {
@@ -814,7 +763,7 @@ public class GymPaymentController implements Initializable {
         } else {
             Platform.runLater(() -> {
                 barcodeField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
-                showAlert("Barcode Tidak Valid", "Format barcode tidak valid: " + cleanedBarcode);
+                showAlert("Barcode Tidak Valid", "Format barcode tidak valid");
             });
         }
     }
@@ -825,28 +774,21 @@ public class GymPaymentController implements Initializable {
         }
         
         String cleanedBarcode = rawBarcode.trim();
-        System.out.println("🔍 Raw barcode received: " + cleanedBarcode);
         
         if (isValidMemberId(cleanedBarcode)) {
-            System.out.println("✅ Barcode already valid: " + cleanedBarcode);
             return cleanedBarcode;
         }
         
         java.util.regex.Matcher matcher = EXTRACT_MEMBER_ID_PATTERN.matcher(cleanedBarcode);
         if (matcher.find()) {
-            String extractedId = matcher.group(1);
-            System.out.println("✅ Extracted member_id using pattern: " + extractedId);
-            return extractedId;
+            return matcher.group(1);
         }
         
         matcher = COMMON_BARCODE_PATTERNS.matcher(cleanedBarcode);
         if (matcher.find()) {
-            String extractedId = matcher.group(1);
-            System.out.println("✅ Extracted member_id from common pattern: " + extractedId);
-            return extractedId;
+            return matcher.group(1);
         }
         
-        System.out.println("🧹 Using original (trimmed) barcode: " + cleanedBarcode);
         return cleanedBarcode;
     }
     
@@ -876,9 +818,6 @@ public class GymPaymentController implements Initializable {
         long currentTime = System.currentTimeMillis();
         
         if (currentTime - lastKeyTime > SCANNER_TIMEOUT_MS) {
-            if (barcodeBuffer.length() > 0) {
-                System.out.println("🔄 Buffer reset");
-            }
             barcodeBuffer.setLength(0);
             isScannerMode = true;
         }
@@ -923,7 +862,7 @@ public class GymPaymentController implements Initializable {
             
         } catch (Exception e) {
             System.err.println("Error loading dashboard: " + e.getMessage());
-            showAlert("Error", "Gagal kembali ke dashboard: " + e.getMessage());
+            showAlert("Error", "Gagal kembali ke dashboard");
         }
     }
     
@@ -944,7 +883,7 @@ public class GymPaymentController implements Initializable {
                 clearMemberInfo();
                 Platform.runLater(() -> {
                     barcodeField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
-                    showAlert("Member Tidak Ditemukan", "Member dengan ID '" + cleanBarcode + "' tidak ditemukan.");
+                    showAlert("Member Tidak Ditemukan", "Member ID tidak ditemukan");
                 });
             }
         } catch (Exception e) {
@@ -971,12 +910,10 @@ public class GymPaymentController implements Initializable {
             membershipDurationField.setText(durasiMember != null ? durasiMember : "-");
             memberPekerjaanField.setText(pekerjaan != null && !pekerjaan.isEmpty() ? pekerjaan : "Tidak ada data");
             
-            // Update label diskon
             double discountPercentage = getDiscountPercentage(pekerjaan);
             String discountLabel = getDiscountLabel(discountPercentage);
             discountStatusLabel.setText(discountLabel);
             
-            // Ubah warna label berdasarkan diskon
             if (discountPercentage > 0) {
                 discountStatusLabel.setStyle("-fx-background-color: #d4edda; -fx-border-color: #28a745; -fx-text-fill: #155724;");
             } else {
@@ -1072,8 +1009,6 @@ public class GymPaymentController implements Initializable {
         paidAmountField.setPromptText("Masukkan jumlah uang yang dibayar");
         changeAmountField.setPromptText("Kembalian akan dihitung otomatis");
         changeAmountField.setEditable(false);
-        
-        System.out.println("✅ Change calculator setup completed");
     }
     
     private void calculateChange() {
@@ -1081,7 +1016,7 @@ public class GymPaymentController implements Initializable {
             String totalText = totalPaymentField.getText();
             String paidText = paidAmountField.getText();
             
-            if (totalText == null || totalText.isEmpty() || totalText.equals("")) {
+            if (totalText == null || totalText.isEmpty()) {
                 changeAmountField.setText("");
                 changeAmountField.setStyle("");
                 return;
@@ -1132,7 +1067,6 @@ public class GymPaymentController implements Initializable {
                     double hargaPaket = packageInfo.getHarga();
                     String pekerjaan = currentMemberData.getString("pekerjaan");
                     
-                    // Hitung dengan diskon dan biaya admin
                     PaymentCalculation calculation = calculatePaymentWithDiscount(hargaPaket, pekerjaan);
                     total = calculation.totalAkhir;
                     
@@ -1141,21 +1075,14 @@ public class GymPaymentController implements Initializable {
                         double biayaPelatih = packageInfo.getTotalBiayaPelatih();
                         double biayaMember = packageInfo.getBiayaMemberSaja();
                         
-                        // Hitung diskon untuk member saja (tidak untuk pelatih)
                         PaymentCalculation memberCalc = calculatePaymentWithDiscount(biayaMember, pekerjaan);
-                        PaymentCalculation pelatihCalc = calculatePaymentWithDiscount(biayaPelatih, null); // Tidak ada diskon untuk pelatih
+                        PaymentCalculation pelatihCalc = calculatePaymentWithDiscount(biayaPelatih, null);
                         
                         double totalSebelumAdmin = memberCalc.hargaSetelahDiskon + pelatihCalc.hargaSetelahDiskon;
                         total = totalSebelumAdmin + BIAYA_ADMIN;
                         
                         detail = String.format(
-                            "Paket %s (%d hari)\n" +
-                            "Biaya Member: Rp %,d\n" +
-                            "Diskon Member (%d%%): -Rp %,d\n" +
-                            "Biaya Pelatih (%d bulan): Rp %,d\n" +
-                            "Subtotal: Rp %,d\n" +
-                            "Biaya Admin: Rp %,d\n" +
-                            "TOTAL: Rp %,d",
+                            "Paket %s (%d hari)\nBiaya Member: Rp %,d\nDiskon Member (%d%%): -Rp %,d\nBiaya Pelatih (%d bulan): Rp %,d\nSubtotal: Rp %,d\nBiaya Admin: Rp %,d\nTOTAL: Rp %,d",
                             selectedPackage.replace(" + Pelatih", ""),
                             packageInfo.getDurasiHari(),
                             (int) biayaMember,
@@ -1169,12 +1096,7 @@ public class GymPaymentController implements Initializable {
                         );
                     } else {
                         detail = String.format(
-                            "Paket %s (%d hari)\n" +
-                            "Harga Normal: Rp %,d\n" +
-                            "Diskon (%d%%): -Rp %,d\n" +
-                            "Harga Setelah Diskon: Rp %,d\n" +
-                            "Biaya Admin: Rp %,d\n" +
-                            "TOTAL: Rp %,d",
+                            "Paket %s (%d hari)\nHarga Normal: Rp %,d\nDiskon (%d%%): -Rp %,d\nHarga Setelah Diskon: Rp %,d\nBiaya Admin: Rp %,d\nTOTAL: Rp %,d",
                             selectedPackage,
                             packageInfo.getDurasiHari(),
                             (int) calculation.hargaAsli,
@@ -1205,7 +1127,7 @@ public class GymPaymentController implements Initializable {
                 paymentDetailLabel.setText("Pilih paket untuk melihat detail");
             }
         } catch (Exception e) {
-            System.err.println("Error calculating total payment: " + e.getMessage());
+            System.err.println("Error calculating total: " + e.getMessage());
             totalPaymentField.setText("");
             paidAmountField.setText("");
             changeAmountField.setText("");
@@ -1233,7 +1155,7 @@ public class GymPaymentController implements Initializable {
             String paidText = paidAmountField.getText();
             
             if (paidText == null || paidText.isEmpty()) {
-                showAlert("Error Pembayaran", "Harap masukkan jumlah uang yang dibayar pelanggan!");
+                showAlert("Error Pembayaran", "Harap masukkan jumlah uang!");
                 paidAmountField.requestFocus();
                 return false;
             }
@@ -1247,11 +1169,7 @@ public class GymPaymentController implements Initializable {
             if (paid < total) {
                 double kurang = total - paid;
                 showAlert("Uang Tidak Cukup", 
-                    String.format("Uang yang dibayar tidak cukup!\n\n" +
-                                "Total: Rp %,d\n" +
-                                "Dibayar: Rp %,d\n" +
-                                "Kurang: Rp %,d\n\n" +
-                                "Harap masukkan jumlah yang tepat.",
+                    String.format("Uang tidak cukup!\n\nTotal: Rp %,d\nDibayar: Rp %,d\nKurang: Rp %,d",
                                 (int) total, (int) paid, (int) kurang));
                 paidAmountField.requestFocus();
                 return false;
@@ -1260,11 +1178,11 @@ public class GymPaymentController implements Initializable {
             return true;
             
         } catch (NumberFormatException e) {
-            showAlert("Error", "Format jumlah uang tidak valid!");
+            showAlert("Error", "Format jumlah tidak valid!");
             paidAmountField.requestFocus();
             return false;
         } catch (Exception e) {
-            showAlert("Error", "Terjadi kesalahan saat validasi pembayaran: " + e.getMessage());
+            showAlert("Error", "Terjadi kesalahan validasi");
             return false;
         }
     }
@@ -1282,7 +1200,7 @@ public class GymPaymentController implements Initializable {
         
         if (memberRadio.isSelected()) {
             if (barcodeField.getText().isEmpty()) {
-                showAlert("Error", "Harap masukkan member_id member");
+                showAlert("Error", "Harap masukkan member_id");
                 return false;
             }
             if (currentMemberData == null) {
@@ -1316,7 +1234,6 @@ public class GymPaymentController implements Initializable {
             
             String pekerjaan = currentMemberData.getString("pekerjaan");
             
-            // Hitung dengan diskon dan biaya admin
             PaymentCalculation calculation = calculatePaymentWithDiscount(hargaPaket, pekerjaan);
             double amount = calculation.totalAkhir;
             
@@ -1331,78 +1248,20 @@ public class GymPaymentController implements Initializable {
                 biayaMember, biayaPelatih, transactionDate, newExpiryDate, paidAmount, change,
                 pekerjaan, calculation.persenDiskon, calculation.nominalDiskon, BIAYA_ADMIN);
             
-            String confirmationMessage;
-            if (denganPelatih) {
-                int durasiBulan = durasiHari / 30;
-                confirmationMessage = String.format(
-                    "Pembayaran untuk %s berhasil!\n\n" +
-                    "Member ID: %s\n" +
-                    "Pekerjaan: %s\n" +
-                    "Paket: %s (%d hari)\n" +
-                    "Biaya Member: Rp %,d\n" +
-                    "Diskon (%d%%): -Rp %,d\n" +
-                    "Biaya Pelatih (%d bulan): Rp %,d\n" +
-                    "Biaya Admin: Rp %,d\n" +
-                    "Total: Rp %,d\n" +
-                    "Dibayar: Rp %,d\n" +
-                    "Kembalian: Rp %,d\n\n" +
-                    "Berlaku hingga: %s",
-                    getMemberName(currentMemberData),
-                    memberId,
-                    pekerjaan != null ? pekerjaan : "-",
-                    packageName.replace(" + Pelatih", ""),
-                    durasiHari,
-                    (int) biayaMember,
-                    (int) (calculation.persenDiskon * 100),
-                    (int) calculation.nominalDiskon,
-                    durasiBulan,
-                    (int) biayaPelatih,
-                    (int) BIAYA_ADMIN,
-                    (int) amount,
-                    (int) paidAmount,
-                    (int) change,
-                    newExpiryDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                );
-            } else {
-                confirmationMessage = String.format(
-                    "Pembayaran untuk %s berhasil!\n\n" +
-                    "Member ID: %s\n" +
-                    "Pekerjaan: %s\n" +
-                    "Paket: %s (%d hari)\n" +
-                    "Harga Normal: Rp %,d\n" +
-                    "Diskon (%d%%): -Rp %,d\n" +
-                    "Harga Setelah Diskon: Rp %,d\n" +
-                    "Biaya Admin: Rp %,d\n" +
-                    "Total: Rp %,d\n" +
-                    "Dibayar: Rp %,d\n" +
-                    "Kembalian: Rp %,d\n\n" +
-                    "Berlaku hingga: %s",
-                    getMemberName(currentMemberData),
-                    memberId,
-                    pekerjaan != null ? pekerjaan : "-",
-                    packageName,
-                    durasiHari,
-                    (int) calculation.hargaAsli,
-                    (int) (calculation.persenDiskon * 100),
-                    (int) calculation.nominalDiskon,
-                    (int) calculation.hargaSetelahDiskon,
-                    (int) BIAYA_ADMIN,
-                    (int) amount,
-                    (int) paidAmount,
-                    (int) change,
-                    newExpiryDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                );
-            }
+            String confirmationMessage = String.format(
+                "Pembayaran %s berhasil!\n\nMember ID: %s\nPaket: %s\nTotal: Rp %,d\nDibayar: Rp %,d\nKembalian: Rp %,d\n\nBerlaku: %s",
+                getMemberName(currentMemberData), memberId, packageName, (int) amount, (int) paidAmount, (int) change,
+                newExpiryDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
             
-            showConfirmationWithPrintOption("Pembayaran Member Berhasil", confirmationMessage, true, 
+            showConfirmationWithPrintOption("Pembayaran Berhasil", confirmationMessage, true, 
                 memberId, packageName, hargaPaket, amount, durasiHari, denganPelatih, biayaMember, biayaPelatih, 
                 transactionDate, newExpiryDate, paidAmount, change, pekerjaan, calculation.persenDiskon, 
                 calculation.nominalDiskon, BIAYA_ADMIN);
             
         } catch (Exception e) {
-            System.err.println("Error processing member payment: " + e.getMessage());
+            System.err.println("Error processing payment: " + e.getMessage());
             e.printStackTrace();
-            showAlert("Error", "Gagal memproses pembayaran member: " + e.getMessage());
+            showAlert("Error", "Gagal memproses pembayaran");
         }
     }
     
@@ -1411,51 +1270,29 @@ public class GymPaymentController implements Initializable {
         PackageInfo packageInfo = memberPackages.get(packageName);
         int durasiHari = packageInfo.getDurasiHari();
         
-        System.out.println("📅 Calculating expiry date for package: " + packageName);
-        System.out.println("📅 Start date: " + startDate);
-        System.out.println("📅 Duration days: " + durasiHari);
-        
         if (currentMemberData != null) {
             String currentExpiryStr = currentMemberData.getString("tanggal_berlaku_hingga_str");
             String status = currentMemberData.getString("status_keanggotaan");
             
-            System.out.println("📅 Current expiry from DB: " + currentExpiryStr);
-            System.out.println("📅 Current status: " + status);
-            
             if (currentExpiryStr != null && status != null && status.equalsIgnoreCase("Aktif")) {
                 try {
                     LocalDate currentExpiry = LocalDate.parse(currentExpiryStr);
-                    System.out.println("📅 Parsed current expiry: " + currentExpiry);
                     
                     if (currentExpiry.isAfter(startDate) || currentExpiry.isEqual(startDate)) {
-                        LocalDate newExpiry = currentExpiry.plusDays(durasiHari);
-                        System.out.println("📅 Extended from current expiry: " + newExpiry);
-                        return newExpiry;
-                    } else {
-                        System.out.println("📅 Current membership expired, starting from today");
+                        return currentExpiry.plusDays(durasiHari);
                     }
                 } catch (Exception e) {
-                    System.err.println("❌ Error parsing current expiry date: " + e.getMessage());
+                    System.err.println("Error parsing expiry: " + e.getMessage());
                 }
-            } else {
-                System.out.println("📅 No active membership found, starting from today");
             }
         }
         
-        LocalDate newExpiry = startDate.plusDays(durasiHari);
-        System.out.println("📅 New expiry from start date: " + newExpiry);
-        return newExpiry;
+        return startDate.plusDays(durasiHari);
     }
     
     private void updateMemberData(LocalDate newExpiryDate, int durasiHari, String packageName, boolean denganPelatih) {
         try {
             String memberId = currentMemberData.getString("member_id");
-            
-            System.out.println("🔄 Updating member data for: " + memberId);
-            System.out.println("🔄 New expiry date: " + newExpiryDate);
-            System.out.println("🔄 Duration: " + durasiHari + " days");
-            System.out.println("🔄 Package: " + packageName);
-            System.out.println("🔄 With Trainer: " + denganPelatih);
             
             Document updateDoc = new Document("$set", new Document()
                 .append("tanggal_berlaku_hingga_str", newExpiryDate.toString())
@@ -1465,19 +1302,13 @@ public class GymPaymentController implements Initializable {
                 .append("dengan_pelatih", denganPelatih)
                 .append("last_updated", new Date()));
             
-            System.out.println("📝 Update document: " + updateDoc.toJson());
+            dataMembersCollection.updateOne(Filters.eq("member_id", memberId), updateDoc);
             
-            var result = dataMembersCollection.updateOne(
-                Filters.eq("member_id", memberId),
-                updateDoc
-            );
-            
-            System.out.println("✅ Member data updated successfully");
-            System.out.println("✅ Modified count: " + result.getModifiedCount());
+            System.out.println("✅ Member data updated");
             
         } catch (Exception e) {
-            System.err.println("❌ Error updating member data: " + e.getMessage());
-            throw new RuntimeException("Gagal update data member: " + e.getMessage());
+            System.err.println("Error updating member: " + e.getMessage());
+            throw new RuntimeException("Gagal update member");
         }
     }
     
@@ -1486,9 +1317,9 @@ public class GymPaymentController implements Initializable {
                                          LocalDate transactionDate, LocalDate expiryDate, double paidAmount, double change,
                                          String pekerjaan, double persenDiskon, double nominalDiskon, double biayaAdmin) {
         try {
-            // Ambil data petugas
             String petugasUsername = currentPetugasData != null ? currentPetugasData.getString("username") : "unknown";
             String petugasNama = currentPetugasData != null ? currentPetugasData.getString("nama") : "Unknown";
+            String petugasRole = currentPetugasData != null ? currentPetugasData.getString("role") : "unknown";
             
             Document transaction = new Document()
                 .append("_id", new ObjectId())
@@ -1510,21 +1341,19 @@ public class GymPaymentController implements Initializable {
                 .append("kembalian", change)
                 .append("tanggal_transaksi", transactionDate.toString())
                 .append("tanggal_berlaku_hingga", expiryDate.toString())
-                .append("petugas_username", petugasUsername) // Tambahan field petugas
-                .append("petugas_nama", petugasNama) // Tambahan field petugas
+                .append("petugas_username", petugasUsername)
+                .append("petugas_nama", petugasNama)
+                .append("petugas_role", petugasRole)
                 .append("created_at", new Date())
                 .append("updated_at", new Date());
             
-            System.out.println("💾 Saving transaction to database...");
-            System.out.println("📝 Transaction data: " + transaction.toJson());
-            
             transactionsCollection.insertOne(transaction);
             
-            System.out.println("✅ Transaction saved successfully");
+            System.out.println("✅ Transaction saved");
             
         } catch (Exception e) {
-            System.err.println("❌ Error saving transaction: " + e.getMessage());
-            throw new RuntimeException("Gagal menyimpan transaksi: " + e.getMessage());
+            System.err.println("Error saving transaction: " + e.getMessage());
+            throw new RuntimeException("Gagal menyimpan transaksi");
         }
     }
     
@@ -1534,11 +1363,9 @@ public class GymPaymentController implements Initializable {
             String id = nonMemberIdField.getText();
             String packageName = packageComboBox.getValue();
             String tipe = nonMemberTypeComboBox.getValue();
-            double amount = 0.0;
-            String jenisPembayaran = "non_member_regular";
             
             PackageInfo packageInfo = nonMemberPackages.get(packageName);
-            amount = packageInfo.getHarga();
+            double amount = packageInfo.getHarga();
             
             LocalDate entryDate = nonMemberDateField.getValue();
             LocalDate transactionDate = transactionDateField.getValue();
@@ -1546,31 +1373,19 @@ public class GymPaymentController implements Initializable {
             double paidAmount = Double.parseDouble(paidAmountField.getText());
             double change = paidAmount - amount;
             
-            saveNonMemberTransactionToDatabase(id, name, packageName, tipe, jenisPembayaran, amount, entryDate, transactionDate, paidAmount, change);
+            saveNonMemberTransactionToDatabase(id, name, packageName, tipe, "non_member_regular", amount, entryDate, transactionDate, paidAmount, change);
             
-            String confirmationMessage = String.format("Pembayaran untuk %s berhasil!\n\n" +
-                            "ID: %s\n" +
-                            "Paket: %s - %s\n" +
-                            "Total: Rp %,d\n" +
-                            "Dibayar: Rp %,d\n" +
-                            "Kembalian: Rp %,d\n\n" +
-                            "Tanggal masuk: %s",
-                    name,
-                    id,
-                    packageName,
-                    tipe,
-                    (int) amount,
-                    (int) paidAmount,
-                    (int) change,
-                    entryDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            String confirmationMessage = String.format(
+                "Pembayaran %s berhasil!\n\nID: %s\nPaket: %s\nTotal: Rp %,d\nDibayar: Rp %,d\nKembalian: Rp %,d",
+                name, id, packageName, (int) amount, (int) paidAmount, (int) change);
             
-            showConfirmationWithPrintOption("Pembayaran Non-Member Berhasil", confirmationMessage, false,
+            showConfirmationWithPrintOption("Pembayaran Berhasil", confirmationMessage, false,
                 id, name, packageName, tipe, amount, entryDate, transactionDate, paidAmount, change);
             
         } catch (Exception e) {
-            System.err.println("Error processing non-member payment: " + e.getMessage());
+            System.err.println("Error processing non-member: " + e.getMessage());
             e.printStackTrace();
-            showAlert("Error", "Gagal memproses pembayaran non-member: " + e.getMessage());
+            showAlert("Error", "Gagal memproses pembayaran");
         }
     }
     
@@ -1578,9 +1393,9 @@ public class GymPaymentController implements Initializable {
                                                   String jenisPembayaran, double amount, LocalDate entryDate, 
                                                   LocalDate transactionDate, double paidAmount, double change) {
         try {
-            // Ambil data petugas
             String petugasUsername = currentPetugasData != null ? currentPetugasData.getString("username") : "unknown";
             String petugasNama = currentPetugasData != null ? currentPetugasData.getString("nama") : "Unknown";
+            String petugasRole = currentPetugasData != null ? currentPetugasData.getString("role") : "unknown";
             
             Document transaction = new Document()
                 .append("_id", new ObjectId())
@@ -1594,16 +1409,18 @@ public class GymPaymentController implements Initializable {
                 .append("kembalian", change)
                 .append("tanggal_masuk", entryDate.toString())
                 .append("tanggal_transaksi", transactionDate.toString())
-                .append("petugas_username", petugasUsername) // Tambahan field petugas
-                .append("petugas_nama", petugasNama) // Tambahan field petugas
+                .append("petugas_username", petugasUsername)
+                .append("petugas_nama", petugasNama)
+                .append("petugas_role", petugasRole)
                 .append("status", "selesai")
                 .append("created_at", new Date())
                 .append("updated_at", new Date());
             
             transactionsCollection.insertOne(transaction);
+            
         } catch (Exception e) {
             System.err.println("Error saving non-member transaction: " + e.getMessage());
-            throw new RuntimeException("Gagal menyimpan transaksi non-member: " + e.getMessage());
+            throw new RuntimeException("Gagal menyimpan transaksi");
         }
     }
 
@@ -1658,10 +1475,12 @@ public class GymPaymentController implements Initializable {
             // ========== HEADER ==========
             receipt.append(centerText("BISA GYM CENTER"));
             receipt.append(centerText("STRUK PEMBAYARAN MEMBER"));
+            receipt.append("==============================\n");
             
             String formattedDateTime = java.time.LocalDateTime.now().format(
                 DateTimeFormatter.ofPattern("dd/MM/yy HH:mm"));
-            receipt.append("Tanggal: ").append(formattedDateTime).append("\n\n");
+            receipt.append("Tanggal: ").append(formattedDateTime).append("\n");
+            receipt.append("==============================\n\n");
             
             // Info Member
             receipt.append("Member ID: ").append(memberId).append("\n");
@@ -1669,48 +1488,40 @@ public class GymPaymentController implements Initializable {
             if (pekerjaan != null && !pekerjaan.isEmpty()) {
                 receipt.append("Pekerjaan: ").append(shortenText(pekerjaan, 18)).append("\n");
             }
-            receipt.append("\n");
+            receipt.append("----------------------------\n");
             
             // Detail Paket
             receipt.append("Paket: ").append(packageName.replace(" + Pelatih", "")).append("\n");
-            receipt.append("Durasi: ").append(durasiHari).append(" hari\n\n");
+            receipt.append("Durasi: ").append(durasiHari).append(" hari\n");
+            receipt.append("----------------------------\n\n");
             
             // Biaya Breakdown
             if (denganPelatih) {
-                receipt.append("Biaya Member:\n");
-                receipt.append(formatCurrencyLine("", biayaMember));
-                receipt.append("Biaya Pelatih:\n");
-                receipt.append(formatCurrencyLine("", biayaPelatih));
+                receipt.append("Biaya Member:     ").append(formatCurrency(biayaMember)).append("\n");
+                if (nominalDiskon > 0) {
+                    receipt.append("Diskon (").append((int)(persenDiskon * 100)).append("%):     -").append(formatCurrency(nominalDiskon)).append("\n");
+                }
+                receipt.append("Biaya Pelatih:    ").append(formatCurrency(biayaPelatih)).append("\n");
             } else {
-                receipt.append("Harga Normal:\n");
-                receipt.append(formatCurrencyLine("", hargaAsli));
+                receipt.append("Harga Normal:     ").append(formatCurrency(hargaAsli)).append("\n");
+                if (nominalDiskon > 0) {
+                    receipt.append("Diskon (").append((int)(persenDiskon * 100)).append("%):     -").append(formatCurrency(nominalDiskon)).append("\n");
+                }
             }
             
-            // Diskon
-            if (nominalDiskon > 0) {
-                receipt.append("Diskon (").append((int)(persenDiskon * 100)).append("%):\n");
-                receipt.append(formatCurrencyLine("", -nominalDiskon));
-            }
-            
-            // Biaya Admin
-            receipt.append("Biaya Admin:\n");
-            receipt.append(formatCurrencyLine("", biayaAdmin));
-            
-            receipt.append("\n");
-            receipt.append("TOTAL:\n");
-            receipt.append(formatCurrencyLine("", totalBayar));
-            receipt.append("Dibayar:\n");
-            receipt.append(formatCurrencyLine("", paidAmount));
-            receipt.append("Kembalian:\n");
-            receipt.append(formatCurrencyLine("", change));
-            
-            // Garis pemisah
-            receipt.append("\n");
+            receipt.append("Biaya Admin:      ").append(formatCurrency(biayaAdmin)).append("\n");
             receipt.append("----------------------------\n");
+            
+            receipt.append("TOTAL:            ").append(formatCurrency(totalBayar)).append("\n");
+            receipt.append("Dibayar:          ").append(formatCurrency(paidAmount)).append("\n");
+            receipt.append("Kembalian:        ").append(formatCurrency(change)).append("\n");
+            
+            receipt.append("==============================\n");
             
             // Masa berlaku
             receipt.append("Berlaku hingga:\n");
-            receipt.append(expiryDate.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))).append("\n\n");
+            receipt.append(centerText(expiryDate.format(DateTimeFormatter.ofPattern("dd MMM yyyy")))).append("\n");
+            receipt.append("==============================\n\n");
             
             // Info Petugas
             String petugasNama = currentPetugasData != null ? currentPetugasData.getString("nama") : "Unknown";
@@ -1756,34 +1567,34 @@ public class GymPaymentController implements Initializable {
             // ========== HEADER ==========
             receipt.append(centerText("BISA GYM CENTER"));
             receipt.append(centerText("STRUK PEMBAYARAN NON-MEMBER"));
+            receipt.append("==============================\n");
             
             String formattedDateTime = java.time.LocalDateTime.now().format(
                 DateTimeFormatter.ofPattern("dd/MM/yy HH:mm"));
-            receipt.append("Tanggal: ").append(formattedDateTime).append("\n\n");
+            receipt.append("Tanggal: ").append(formattedDateTime).append("\n");
+            receipt.append("==============================\n\n");
             
             // Info Non-Member
             receipt.append("ID: ").append(id).append("\n");
-            receipt.append("Nama: ").append(shortenText(name, 20)).append("\n\n");
+            receipt.append("Nama: ").append(shortenText(name, 20)).append("\n");
+            receipt.append("----------------------------\n");
             
             // Detail Paket
             receipt.append("Paket: ").append(packageName).append("\n");
-            receipt.append("Tipe: ").append(tipe).append("\n\n");
+            receipt.append("Tipe: ").append(tipe).append("\n");
+            receipt.append("----------------------------\n\n");
             
             // Biaya
-            receipt.append("Biaya:\n");
-            receipt.append(formatCurrencyLine("", amount));
-            receipt.append("Dibayar:\n");
-            receipt.append(formatCurrencyLine("", paidAmount));
-            receipt.append("Kembalian:\n");
-            receipt.append(formatCurrencyLine("", change));
+            receipt.append("Biaya:            ").append(formatCurrency(amount)).append("\n");
+            receipt.append("Dibayar:          ").append(formatCurrency(paidAmount)).append("\n");
+            receipt.append("Kembalian:        ").append(formatCurrency(change)).append("\n");
             
-            // Garis pemisah
-            receipt.append("\n");
-            receipt.append("----------------------------\n");
+            receipt.append("==============================\n");
             
             // Tanggal masuk
             receipt.append("Tanggal Masuk:\n");
-            receipt.append(entryDate.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))).append("\n\n");
+            receipt.append(centerText(entryDate.format(DateTimeFormatter.ofPattern("dd MMM yyyy")))).append("\n");
+            receipt.append("==============================\n\n");
             
             // Info Petugas
             String petugasNama = currentPetugasData != null ? currentPetugasData.getString("nama") : "Unknown";
@@ -1820,23 +1631,8 @@ public class GymPaymentController implements Initializable {
         return text.substring(0, maxLength - 3) + "...";
     }
 
-    private String formatCurrencyLine(String label, double amount) {
-        String amountStr = String.format("Rp %,d", (int) amount);
-        
-        if (label == null || label.isEmpty()) {
-            return "  " + amountStr + "\n";
-        } else {
-            int totalLength = 28;
-            int labelLength = label.length();
-            int amountLength = amountStr.length();
-            int spaceNeeded = totalLength - labelLength - amountLength;
-            
-            if (spaceNeeded > 0) {
-                return label + " ".repeat(spaceNeeded) + amountStr + "\n";
-            } else {
-                return label + "\n" + " ".repeat(totalLength - amountLength) + amountStr + "\n";
-            }
-        }
+    private String formatCurrency(double amount) {
+        return String.format("Rp %,d", (int) amount);
     }
 
     private String centerText(String text) {
@@ -1924,44 +1720,52 @@ public class GymPaymentController implements Initializable {
         try {
             java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
             
+            // Initialize printer
             baos.write(ESC_INIT);
-            baos.write(new byte[]{0x1B, 0x74, 0x17});
             
+            // Set character code page
+            baos.write(new byte[]{0x1B, 0x74, 0x17}); // Code page UTF-8
+            
+            // Header dengan format khusus
             baos.write(ESC_ALIGN_CENTER);
             baos.write(ESC_BOLD_ON);
             baos.write(ESC_DOUBLE_ON);
-            baos.write("BISA GYM CENTER\n".getBytes(StandardCharsets.UTF_8));
-            baos.write(ESC_BOLD_OFF);
-            baos.write(ESC_DOUBLE_OFF);
-            
-            baos.write(ESC_BOLD_ON);
-            baos.write("STRUK PEMBAYARAN MEMBER\n".getBytes(StandardCharsets.UTF_8));
-            baos.write(ESC_BOLD_OFF);
-            
-            baos.write(ESC_ALIGN_LEFT);
-            baos.write(ESC_BOLD_OFF);
-            baos.write(ESC_DOUBLE_OFF);
-            
-            baos.write(new byte[]{0x1B, 0x33, 0x10});
-            
             String[] lines = content.split("\n");
+            
             for (String line : lines) {
-                if (line.contains("BISA GYM CENTER") || line.contains("STRUK PEMBAYARAN")) {
-                    continue;
-                }
-                
-                if (line.contains("TOTAL:") || line.contains("Dibayar:") || line.contains("Kembalian:")) {
+                if (line.contains("BISA GYM CENTER") && !line.contains("STRUK")) {
+                    baos.write(line.getBytes(StandardCharsets.UTF_8));
+                    baos.write("\n".getBytes(StandardCharsets.UTF_8));
+                } else if (line.contains("STRUK PEMBAYARAN")) {
+                    baos.write(ESC_DOUBLE_OFF);
                     baos.write(ESC_BOLD_ON);
-                }
-                
-                baos.write(line.getBytes(StandardCharsets.UTF_8));
-                baos.write("\n".getBytes(StandardCharsets.UTF_8));
-                
-                if (line.contains("TOTAL:") || line.contains("Dibayar:") || line.contains("Kembalian:")) {
+                    baos.write(line.getBytes(StandardCharsets.UTF_8));
+                    baos.write("\n".getBytes(StandardCharsets.UTF_8));
+                } else if (line.contains("==============================")) {
                     baos.write(ESC_BOLD_OFF);
+                    baos.write(ESC_ALIGN_LEFT);
+                    baos.write(line.getBytes(StandardCharsets.UTF_8));
+                    baos.write("\n".getBytes(StandardCharsets.UTF_8));
+                } else if (line.contains("TOTAL:") || line.contains("Dibayar:") || line.contains("Kembalian:")) {
+                    baos.write(ESC_BOLD_ON);
+                    baos.write(line.getBytes(StandardCharsets.UTF_8));
+                    baos.write("\n".getBytes(StandardCharsets.UTF_8));
+                    baos.write(ESC_BOLD_OFF);
+                } else if (line.contains("Terima Kasih") || line.contains("Selamat Berolahraga")) {
+                    baos.write(ESC_ALIGN_CENTER);
+                    baos.write(ESC_BOLD_ON);
+                    baos.write(line.getBytes(StandardCharsets.UTF_8));
+                    baos.write("\n".getBytes(StandardCharsets.UTF_8));
+                    baos.write(ESC_BOLD_OFF);
+                } else {
+                    baos.write(ESC_ALIGN_LEFT);
+                    baos.write(ESC_BOLD_OFF);
+                    baos.write(line.getBytes(StandardCharsets.UTF_8));
+                    baos.write("\n".getBytes(StandardCharsets.UTF_8));
                 }
             }
             
+            // Feed paper and cut
             baos.write(ESC_FEED);
             baos.write(ESC_CUT);
             
@@ -1970,6 +1774,7 @@ public class GymPaymentController implements Initializable {
         } catch (Exception e) {
             System.err.println("Error building ESC/POS receipt: " + e.getMessage());
             
+            // Fallback: print plain text
             try {
                 java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
                 baos.write(ESC_INIT);
@@ -2077,7 +1882,7 @@ public class GymPaymentController implements Initializable {
                 mongoClient.close();
                 System.out.println("Database connection closed");
             } catch (Exception e) {
-                System.err.println("Error closing database connection: " + e.getMessage());
+                System.err.println("Error closing connection: " + e.getMessage());
             }
         }
     }

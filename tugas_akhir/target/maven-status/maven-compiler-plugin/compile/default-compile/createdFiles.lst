@@ -5,9 +5,9 @@ org\openjfx\MemberControllerT$1.class
 org\openjfx\MemberControllerT$Member.class
 org\openjfx\StockManagementController$2.class
 org\openjfx\GymAbsenController$1.class
+org\openjfx\TransactionController$2.class
 org\openjfx\main.class
 org\openjfx\MenuTransaksiController$1.class
-org\openjfx\TransactionData.class
 org\openjfx\ReportExporter.class
 org\openjfx\GymUpdateController.class
 org\openjfx\MemberController.class
@@ -15,6 +15,7 @@ org\openjfx\GymPaymentController$PaymentCalculation.class
 org\openjfx\GymRegistrationController$2.class
 org\openjfx\MenuTransaksiController.class
 org\openjfx\GymAbsenController.class
+org\openjfx\TransactionController$TransactionData.class
 module-info.class
 org\openjfx\DashboardControllerAdmin.class
 org\openjfx\LoginController.class

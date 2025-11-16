@@ -149,12 +149,13 @@
                      <Label layoutX="12.0" layoutY="8.0" styleClass="section-title" text="Data Transaksi Terkini" />
                      <TableView fx:id="transactionTable" layoutX="14.0" layoutY="45.0" prefHeight="385.0" prefWidth="1286.0" styleClass="transaction-table">
                         <columns>
-                           <TableColumn fx:id="idColumn" prefWidth="80.0" text="ID" />
-                           <TableColumn fx:id="dateColumn" prefWidth="120.0" text="Tanggal" />
-                           <TableColumn fx:id="customerColumn" prefWidth="150.0" text="Pelanggan" />
-                           <TableColumn fx:id="productColumn" prefWidth="200.0" text="Produk" />
-                           <TableColumn fx:id="quantityColumn" prefWidth="100.0" text="Jumlah" />
-                           <TableColumn fx:id="totalColumn" prefWidth="120.0" text="Total" />
+                           <TableColumn fx:id="idColumn" prefWidth="70.0" text="ID" />
+                           <TableColumn fx:id="dateColumn" prefWidth="110.0" text="Tanggal" />
+                           <TableColumn fx:id="customerColumn" prefWidth="130.0" text="Pelanggan" />
+                           <TableColumn fx:id="productColumn" prefWidth="180.0" text="Produk" />
+                           <TableColumn fx:id="quantityColumn" prefWidth="80.0" text="Jumlah" />
+                           <TableColumn fx:id="totalColumn" prefWidth="110.0" text="Total" />
+                           <TableColumn fx:id="petugasColumn" prefWidth="120.0" text="Petugas" />
                            <TableColumn fx:id="statusColumn" prefWidth="100.0" text="Status" />
                         </columns>
                      </TableView>

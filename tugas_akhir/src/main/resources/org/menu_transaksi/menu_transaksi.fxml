@@ -36,7 +36,7 @@
          <graphic>
             <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../icon/tambah-snack.png" />
+                  <Image url="@../icon/stok.png" />
                </image>
             </ImageView>
          </graphic>
@@ -47,7 +47,7 @@
          <graphic>
             <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../icon/data-transaksi.png" />
+                  <Image url="@../icon/data.png" />
                </image>
             </ImageView>
          </graphic>

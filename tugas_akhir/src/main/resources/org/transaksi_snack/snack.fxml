@@ -53,7 +53,7 @@
       </Pane>
 
       <!-- ScrollPane untuk Konten Utama -->
-      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutY="110.0" prefHeight="658.0" prefWidth="1366.0" styleClass="scroll-pane" vbarPolicy="AS_NEEDED" pannable="true">
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutY="110.0" pannable="true" prefHeight="658.0" prefWidth="1366.0" styleClass="scroll-pane" vbarPolicy="AS_NEEDED">
          <content>
             <VBox spacing="12" styleClass="main-content">
                <children>
@@ -62,7 +62,7 @@
                      <children>
                         <Label layoutX="30.0" layoutY="25.0" styleClass="info-title" text="Snack Bar Fitness Center" />
                         <Label layoutX="30.0" layoutY="55.0" styleClass="info-subtitle" text="Energi untuk Performa Terbaik" />
-                        <Label layoutX="30.0" layoutY="85.0" styleClass="info-description" text="• Protein bar, minuman energi, dan snack sehat&#10;• Pembayaran cepat dan mudah&#10;• Stok real-time dan rekomendasi produk&#10;• Sistem transaksi terintegrasi" wrapText="true" />
+                        <Label layoutX="24.0" layoutY="70.0" prefHeight="63.0" prefWidth="471.0" styleClass="info-description" text="• Protein bar, minuman energi, dan snack sehat&#10;• Pembayaran cepat dan mudah" wrapText="true" />
                      </children>
                   </Pane>
 
@@ -105,7 +105,7 @@
                            
                            <VBox spacing="3" GridPane.columnIndex="0" GridPane.rowIndex="0">
                               <Label styleClass="form-box-sublabel" text="ID Transaksi Snack" />
-                              <HBox spacing="6" alignment="CENTER_LEFT">
+                              <HBox alignment="CENTER_LEFT" spacing="6">
                                  <TextField fx:id="transactionIdField" editable="false" prefHeight="32.0" prefWidth="240.0" styleClass="form-box-text-field-disabled" />
                                  <Button fx:id="generateIdButton" styleClass="generate-id-btn" text="Generate" />
                               </HBox>
@@ -125,7 +125,7 @@
                         <Label styleClass="form-box-label" text="Pilih Produk Snack" />
                         
                         <!-- Product Grid - Will be populated dynamically from Java -->
-                        <GridPane fx:id="productGrid" hgap="12" vgap="12" styleClass="product-grid">
+                        <GridPane fx:id="productGrid" hgap="12" styleClass="product-grid" vgap="12">
                            <columnConstraints>
                               <ColumnConstraints prefWidth="200" />
                               <ColumnConstraints prefWidth="200" />
@@ -136,7 +136,7 @@
                         
                         <VBox spacing="8" styleClass="summary-box">
                            <Label styleClass="form-box-label" text="Ringkasan Pembelian" />
-                           <HBox spacing="30" alignment="CENTER_LEFT">
+                           <HBox alignment="CENTER_LEFT" spacing="30">
                               <VBox prefWidth="160" spacing="3">
                                  <Label styleClass="summary-label" text="Subtotal" />
                                  <Label fx:id="subtotalLabel" styleClass="summary-value" text="Rp 0" />
@@ -161,32 +161,32 @@
                         <VBox spacing="12" styleClass="payment-section">
                            <Label styleClass="form-box-label" text="Pembayaran" />
                            
-                           <HBox spacing="15" alignment="CENTER_LEFT">
-                              <VBox spacing="5" prefWidth="450">
+                           <HBox alignment="CENTER_LEFT" spacing="15">
+                              <VBox prefWidth="450" spacing="5">
                                  <Label styleClass="form-box-sublabel" text="Uang Diberikan (Rp)" />
                                  <TextField fx:id="cashGivenField" prefHeight="35.0" promptText="Masukkan jumlah uang" styleClass="form-box-text-field" />
                               </VBox>
                               
-                              <VBox spacing="5" prefWidth="450">
+                              <VBox prefWidth="450" spacing="5">
                                  <Label styleClass="form-box-sublabel" text="Kembalian" />
                                  <TextField fx:id="changeField" editable="false" prefHeight="35.0" styleClass="form-box-text-field-change" />
                               </VBox>
                            </HBox>
                            
-                           <HBox spacing="15" alignment="CENTER_LEFT">
-                              <VBox spacing="5" prefWidth="450">
+                           <HBox alignment="CENTER_LEFT" spacing="15">
+                              <VBox prefWidth="450" spacing="5">
                                  <Label styleClass="form-box-sublabel" text="Status Pembayaran" />
                                  <Label fx:id="paymentStatusLabel" styleClass="payment-status-label" text="Menunggu Pembayaran" />
                               </VBox>
                               
-                              <VBox spacing="5" prefWidth="450">
+                              <VBox prefWidth="450" spacing="5">
                                  <Label styleClass="form-box-sublabel" text="Aksi" />
                                  <Button fx:id="calculateChangeButton" styleClass="calculate-change-btn" text="Hitung Kembalian" />
                               </VBox>
                            </HBox>
                         </VBox>
                         
-                        <HBox spacing="10" alignment="CENTER" styleClass="button-section">
+                        <HBox alignment="CENTER" spacing="10" styleClass="button-section">
                            <Button fx:id="processButton" prefHeight="38.0" prefWidth="120.0" styleClass="form-box-bayar" text="Bayar" />
                            <Button fx:id="resetButton" prefHeight="38.0" prefWidth="120.0" styleClass="form-box-reset" text="Reset" />
                            <Button fx:id="backButton" prefHeight="38.0" prefWidth="120.0" styleClass="form-box-kembali" text="Kembali" />

@@ -29,10 +29,20 @@
          </children>
       </Pane>
 
-      <!-- Main Content -->
-      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutY="110.0" prefHeight="658.0" prefWidth="1366.0" styleClass="scroll-pane" vbarPolicy="AS_NEEDED">
+      <!-- Main Content - SCROLL PANE DIPERBAIKI -->
+      <ScrollPane fitToWidth="true" 
+                  hbarPolicy="NEVER" 
+                  layoutY="110.0" 
+                  prefHeight="658.0" 
+                  prefWidth="1366.0"
+                  styleClass="scroll-pane" 
+                  vbarPolicy="AS_NEEDED"
+                  AnchorPane.bottomAnchor="0.0"
+                  AnchorPane.leftAnchor="0.0"
+                  AnchorPane.rightAnchor="0.0"
+                  AnchorPane.topAnchor="110.0">
          <content>
-            <VBox spacing="15" styleClass="main-content" style="-fx-padding: 20;">
+            <VBox spacing="15" styleClass="main-content">
                
                <!-- Control Panel -->
                <VBox spacing="12" styleClass="control-panel">
@@ -65,10 +75,10 @@
                </VBox>
 
                <!-- Product Table -->
-               <VBox spacing="10" styleClass="table-container">
+               <VBox spacing="10" styleClass="table-container" VBox.vgrow="ALWAYS">
                   <Label styleClass="section-title" text="Daftar Produk" />
                   
-                  <TableView fx:id="productTable" styleClass="product-table" prefHeight="450">
+                  <TableView fx:id="productTable" styleClass="product-table" VBox.vgrow="ALWAYS">
                      <columns>
                         <TableColumn fx:id="colProductId" text="ID Produk" prefWidth="120" />
                         <TableColumn fx:id="colProductName" text="Nama Produk" prefWidth="200" />

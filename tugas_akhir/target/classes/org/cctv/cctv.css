@@ -58,6 +58,19 @@
   -fx-font-weight: normal;
 }
 
+/* Back Button Styling */
+#imgKembali {
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 6, 0, 0, 2);
+}
+
+#imgKembali:hover {
+  -fx-opacity: 0.8;
+  -fx-effect: dropshadow(three-pass-box, rgba(230, 126, 34, 0.4), 8, 0, 0, 3);
+  -fx-scale-x: 1.05;
+  -fx-scale-y: 1.05;
+}
+
 /* ===== PANEL TOOLBAR ===== */
 .panel-toolbar {
   -fx-background-color: rgba(255, 255, 255, 0.95);
@@ -76,90 +89,155 @@
   -fx-font-family: "Segoe UI", "Arial", sans-serif;
 }
 
-/* ===== SCROLLPANE STYLING ===== */
+/* ===== SCROLLPANE STYLING - DIPERBAIKI UNTUK SCROLL HORIZONTAL ===== */
 .scroll-pane-tabel {
-  -fx-background-color: transparent;
-  -fx-border-color: transparent;
+  -fx-background-color: rgba(255, 255, 255, 0.95);
+  -fx-border-color: -accent-teal;
+  -fx-border-width: 2px;
+  -fx-border-radius: 12px;
+  -fx-background-radius: 12px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 12, 0, 0, 6);
   -fx-padding: 0;
-  -fx-background: transparent;
+  -fx-fit-to-width: false;
+  -fx-fit-to-height: false;
 }
 
-.scroll-pane-tabel .viewport {
+.scroll-pane-tabel > .viewport {
   -fx-background-color: transparent;
 }
 
-.scroll-pane-tabel .scroll-bar:vertical {
-  -fx-background-color: transparent;
-  -fx-pref-width: 10px;
+.scroll-pane-tabel > .corner {
+  -fx-background-color: #e9ecef;
+  -fx-background-radius: 0 0 10px 0;
 }
 
-.scroll-pane-tabel .scroll-bar:horizontal {
-  -fx-background-color: transparent;
-  -fx-pref-height: 10px;
+/* Scrollbar Vertikal (Kanan) - DIPERBAIKI */
+.scroll-pane-tabel > .scroll-bar:vertical {
+  -fx-background-color: #f8f9fa;
+  -fx-pref-width: 16px;
+  -fx-background-radius: 0 10px 10px 0;
+  -fx-opacity: 1;
+  -fx-visible: true;
 }
 
-.scroll-pane-tabel .scroll-bar:vertical .track {
-  -fx-background-color: rgba(255, 255, 255, 0.1);
+.scroll-pane-tabel > .scroll-bar:vertical .track {
+  -fx-background-color: #e9ecef;
   -fx-border-color: transparent;
-  -fx-background-radius: 5px;
+  -fx-background-radius: 8px;
+  -fx-border-radius: 8px;
 }
 
-.scroll-pane-tabel .scroll-bar:horizontal .track {
-  -fx-background-color: rgba(255, 255, 255, 0.1);
-  -fx-border-color: transparent;
-  -fx-background-radius: 5px;
-}
-
-.scroll-pane-tabel .scroll-bar:vertical .thumb {
+.scroll-pane-tabel > .scroll-bar:vertical .thumb {
   -fx-background-color: linear-gradient(to bottom, #1a5276, #154360);
-  -fx-background-radius: 5px;
-  -fx-border-radius: 5px;
+  -fx-background-radius: 8px;
+  -fx-border-radius: 8px;
+  -fx-background-insets: 2;
 }
 
-.scroll-pane-tabel .scroll-bar:horizontal .thumb {
-  -fx-background-color: linear-gradient(to right, #1a5276, #154360);
-  -fx-background-radius: 5px;
-  -fx-border-radius: 5px;
-}
-
-.scroll-pane-tabel .scroll-bar:vertical .thumb:hover {
+.scroll-pane-tabel > .scroll-bar:vertical .thumb:hover {
   -fx-background-color: linear-gradient(to bottom, #154360, #1a5276);
 }
 
-.scroll-pane-tabel .scroll-bar:horizontal .thumb:hover {
+.scroll-pane-tabel > .scroll-bar:vertical .thumb:pressed {
+  -fx-background-color: #0e3449;
+}
+
+/* Scrollbar Horizontal (Bawah) - DIPERBAIKI AGAR SELALU TERLIHAT */
+.scroll-pane-tabel > .scroll-bar:horizontal {
+  -fx-background-color: #f8f9fa;
+  -fx-pref-height: 16px;
+  -fx-background-radius: 0 0 10px 10px;
+  -fx-opacity: 1;
+  -fx-visible: true;
+}
+
+.scroll-pane-tabel > .scroll-bar:horizontal .track {
+  -fx-background-color: #e9ecef;
+  -fx-border-color: transparent;
+  -fx-background-radius: 8px;
+  -fx-border-radius: 8px;
+}
+
+.scroll-pane-tabel > .scroll-bar:horizontal .thumb {
+  -fx-background-color: linear-gradient(to right, #1a5276, #154360);
+  -fx-background-radius: 8px;
+  -fx-border-radius: 8px;
+  -fx-background-insets: 2;
+}
+
+.scroll-pane-tabel > .scroll-bar:horizontal .thumb:hover {
   -fx-background-color: linear-gradient(to right, #154360, #1a5276);
 }
 
-.scroll-pane-tabel .scroll-bar .increment-button,
-.scroll-pane-tabel .scroll-bar .decrement-button {
-  -fx-background-color: transparent;
-  -fx-padding: 1px;
+.scroll-pane-tabel > .scroll-bar:horizontal .thumb:pressed {
+  -fx-background-color: #0e3449;
 }
 
-.scroll-pane-tabel .scroll-bar .increment-arrow,
-.scroll-pane-tabel .scroll-bar .decrement-arrow {
+/* Scrollbar Buttons - Diperbaiki agar berfungsi */
+.scroll-pane-tabel > .scroll-bar > .increment-button,
+.scroll-pane-tabel > .scroll-bar > .decrement-button {
+  -fx-background-color: #d6dbdf;
+  -fx-padding: 4px;
+  -fx-border-color: #aeb6bf;
+  -fx-border-width: 1px;
+  -fx-background-radius: 4px;
+}
+
+.scroll-pane-tabel > .scroll-bar > .increment-button:hover,
+.scroll-pane-tabel > .scroll-bar > .decrement-button:hover {
+  -fx-background-color: #aeb6bf;
+}
+
+.scroll-pane-tabel
+  > .scroll-bar:vertical
+  > .increment-button
+  > .increment-arrow,
+.scroll-pane-tabel
+  > .scroll-bar:vertical
+  > .decrement-button
+  > .decrement-arrow {
   -fx-background-color: #1a5276;
   -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
+  -fx-padding: 3px;
 }
 
-.scroll-pane-tabel .scroll-bar:vertical .increment-arrow {
-  -fx-rotate: 0;
+.scroll-pane-tabel
+  > .scroll-bar:horizontal
+  > .increment-button
+  > .increment-arrow,
+.scroll-pane-tabel
+  > .scroll-bar:horizontal
+  > .decrement-button
+  > .decrement-arrow {
+  -fx-background-color: #1a5276;
+  -fx-shape: "M 0 0 L 4 4 L 0 8 Z";
+  -fx-padding: 3px;
 }
 
-.scroll-pane-tabel .scroll-bar:vertical .decrement-arrow {
-  -fx-rotate: 180;
+/* ===== TABLE STYLES - DIPERBAIKI UNTUK SCROLL HORIZONTAL ===== */
+.tabel-member {
+  -fx-background-color: white;
+  -fx-border-color: transparent;
+  -fx-padding: 0;
+  -fx-table-cell-border-color: transparent;
+  -fx-fixed-cell-size: 60;
 }
 
-.scroll-pane-tabel .scroll-bar:horizontal .increment-arrow {
-  -fx-rotate: 90;
+/* Table Header - Tetap terlihat saat di-scroll */
+.tabel-member .column-header-background {
+  -fx-background-color: linear-gradient(to bottom, #1a5276, #154360);
+  -fx-pref-height: 40px;
 }
 
-.scroll-pane-tabel .scroll-bar:horizontal .decrement-arrow {
-  -fx-rotate: 270;
-}
-
-.scroll-pane-tabel .corner {
+.tabel-member .column-header {
   -fx-background-color: transparent;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-font-size: 12px;
+  -fx-border-color: #154360;
+  -fx-alignment: CENTER;
+  -fx-padding: 10px 6px;
+  -fx-font-family: "Segoe UI", "Arial", sans-serif;
 }
 
 /* ===== FORM CONTROLS ===== */
@@ -263,7 +341,6 @@
   -fx-cursor: hand;
   -fx-padding: 8px 16px;
   -fx-effect: dropshadow(three-pass-box, rgba(26, 82, 118, 0.3), 6, 0, 0, 3);
-  -fx-transition: all 0.3s ease;
   -fx-border-color: #5dade2;
   -fx-border-width: 2px;
   -fx-pref-height: 35px;
@@ -296,7 +373,6 @@
   -fx-cursor: hand;
   -fx-font-family: "Segoe UI", "Arial", sans-serif;
   -fx-effect: dropshadow(three-pass-box, rgba(231, 76, 60, 0.3), 3, 0, 0, 1);
-  -fx-transition: all 0.3s ease;
   -fx-border-color: #e74c3c;
   -fx-border-width: 1px;
   -fx-min-width: 55px;
@@ -326,7 +402,6 @@
   -fx-cursor: hand;
   -fx-font-family: "Segoe UI", "Arial", sans-serif;
   -fx-effect: dropshadow(three-pass-box, rgba(26, 82, 118, 0.3), 3, 0, 0, 1);
-  -fx-transition: all 0.3s ease;
   -fx-border-color: #1a5276;
   -fx-border-width: 1px;
   -fx-min-width: 55px;
@@ -350,7 +425,6 @@
   -fx-cursor: hand;
   -fx-font-family: "Segoe UI", "Arial", sans-serif;
   -fx-effect: dropshadow(three-pass-box, rgba(22, 160, 133, 0.3), 3, 0, 0, 1);
-  -fx-transition: all 0.3s ease;
   -fx-border-color: #16a085;
   -fx-border-width: 1px;
   -fx-min-width: 55px;
@@ -363,44 +437,51 @@
   -fx-scale-y: 1.03;
 }
 
-/* ===== TABLE STYLES ===== */
+/* ===== TABLE STYLES - DIPERBAIKI ===== */
 .tabel-member {
-  -fx-background-color: rgba(255, 255, 255, 0.95);
-  -fx-background-radius: 12px;
-  -fx-border-radius: 12px;
-  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 12, 0, 0, 6);
-  -fx-border-color: -accent-teal;
-  -fx-border-width: 2px;
+  -fx-background-color: white;
+  -fx-border-color: transparent;
   -fx-padding: 0;
+  -fx-table-cell-border-color: transparent;
+  -fx-fixed-cell-size: 60;
 }
 
 /* Table Header */
-.tabel-member .column-header {
+.tabel-member .column-header-background {
   -fx-background-color: linear-gradient(to bottom, #1a5276, #154360);
-  -fx-text-fill: -text-light;
+}
+
+.tabel-member .column-header {
+  -fx-background-color: transparent;
+  -fx-text-fill: white;
   -fx-font-weight: bold;
   -fx-font-size: 12px;
-  -fx-border-color: #1a5276;
+  -fx-border-color: #154360;
   -fx-alignment: CENTER;
   -fx-padding: 10px 6px;
   -fx-font-family: "Segoe UI", "Arial", sans-serif;
 }
 
 .tabel-member .column-header .label {
-  -fx-text-fill: -text-light;
+  -fx-text-fill: white;
   -fx-font-weight: bold;
   -fx-font-family: "Segoe UI", "Arial", sans-serif;
   -fx-alignment: CENTER;
 }
 
+.tabel-member .filler {
+  -fx-background-color: linear-gradient(to bottom, #1a5276, #154360);
+}
+
 /* Table Rows */
 .tabel-member .table-row-cell {
-  -fx-border-color: #f1f2f6;
+  -fx-border-color: transparent;
   -fx-table-cell-border-color: #f1f2f6;
   -fx-alignment: CENTER-LEFT;
   -fx-font-family: "Segoe UI", "Arial", sans-serif;
   -fx-font-size: 12px;
   -fx-background-color: white;
+  -fx-cell-size: 60;
 }
 
 .tabel-member .table-row-cell:even {
@@ -412,12 +493,13 @@
 }
 
 .tabel-member .table-row-cell:selected {
-  -fx-background-color: linear-gradient(to bottom, #1a5276, #154360);
-  -fx-text-fill: -text-light;
+  -fx-background-color: #e3f2fd;
+  -fx-text-fill: #1a5276;
 }
 
 .tabel-member .table-row-cell:hover {
   -fx-background-color: #e3f2fd;
+  -fx-cursor: hand;
 }
 
 /* Table Cells */
@@ -428,16 +510,6 @@
   -fx-font-family: "Segoe UI", "Arial", sans-serif;
   -fx-text-fill: -text-dark;
   -fx-font-size: 12px;
-}
-
-/* Center alignment for specific columns */
-.tabel-member .table-cell:first-child, /* No */
-.tabel-member .table-cell:nth-child(2), /* Foto */
-.tabel-member .table-cell:nth-child(4), /* Jenis Kelamin */
-.tabel-member .table-cell:nth-child(7), /* Durasi */
-.tabel-member .table-cell:nth-child(10), /* Status */
-.tabel-member .table-cell:last-child /* Aksi */ {
-  -fx-alignment: CENTER;
 }
 
 /* ===== STATUS BADGES ===== */
@@ -484,14 +556,11 @@
 .image-view {
   -fx-cursor: hand;
   -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 6, 0, 0, 2);
-  -fx-transition: all 0.3s ease;
 }
 
 .image-view:hover {
   -fx-opacity: 0.8;
   -fx-effect: dropshadow(three-pass-box, rgba(230, 126, 34, 0.4), 8, 0, 0, 3);
-  -fx-scale-x: 1.05;
-  -fx-scale-y: 1.05;
 }
 
 /* Profile Image in Table */
@@ -518,66 +587,6 @@
   -fx-border-width: 2px;
 }
 
-/* ===== ANIMATIONS ===== */
-@keyframes fadeIn {
-  from {
-    -fx-opacity: 0;
-  }
-  to {
-    -fx-opacity: 1;
-  }
-}
-
-@keyframes slideIn {
-  from {
-    -fx-translate-y: 15px;
-    -fx-opacity: 0;
-  }
-  to {
-    -fx-translate-y: 0;
-    -fx-opacity: 1;
-  }
-}
-
-/* Apply animations */
-.tabel-member {
-  -fx-animation: fadeIn 0.8s ease, slideIn 0.6s ease;
-}
-
-.panel-toolbar {
-  -fx-animation: fadeIn 0.6s ease;
-}
-
-.scroll-pane-tabel {
-  -fx-animation: fadeIn 0.7s ease;
-}
-
-/* ===== RESPONSIVE ADJUSTMENTS ===== */
-@media (max-width: 1366px) {
-  .tabel-member .table-cell {
-    -fx-padding: 6px 4px;
-    -fx-font-size: 11px;
-  }
-
-  .button-delete,
-  .button-edit,
-  .button-view {
-    -fx-font-size: 9px;
-    -fx-padding: 4px 8px;
-    -fx-min-width: 50px;
-  }
-
-  .panel-toolbar {
-    -fx-padding: 8px;
-  }
-
-  .button-reset {
-    -fx-font-size: 11px;
-    -fx-padding: 6px 12px;
-    -fx-pref-width: 100px;
-  }
-}
-
 /* ===== TOOLTIP STYLING ===== */
 .tooltip {
   -fx-background-color: rgba(28, 40, 51, 0.9);
@@ -589,16 +598,6 @@
   -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 4, 0, 0, 1);
   -fx-font-family: "Segoe UI", "Arial", sans-serif;
   -fx-font-size: 11px;
-}
-
-/* ===== GLASS MORPHISM EFFECT ===== */
-.glass-pane {
-  -fx-background-color: rgba(255, 255, 255, 0.1);
-  -fx-background-radius: 12px;
-  -fx-border-color: rgba(255, 255, 255, 0.2);
-  -fx-border-width: 1px;
-  -fx-border-radius: 12px;
-  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 8, 0, 0, 4);
 }
 
 /* ===== LABEL STYLES ===== */
@@ -616,11 +615,6 @@
   -fx-text-fill: -text-dark;
 }
 
-/* ===== PROGRESS INDICATORS ===== */
-.progress-indicator {
-  -fx-progress-color: -accent-teal;
-}
-
 /* ===== EMPTY TABLE STYLING ===== */
 .tabel-member .placeholder .label {
   -fx-text-fill: #6c757d;
@@ -633,3 +627,9 @@
   -fx-background-color: #1a5276;
   -fx-pref-width: 1px;
 }
+
+.tabel-member .column-resize-line:hover {
+  -fx-background-color: #154360;
+}
+
+/* End of cctv.css */

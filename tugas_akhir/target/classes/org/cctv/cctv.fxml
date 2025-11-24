@@ -3,6 +3,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -55,54 +56,74 @@
          </children>
       </Pane>
 
-      <!-- Tabel Daftar Member -->
-      <TableView fx:id="tabelMember" layoutX="25.0" layoutY="195.0" prefHeight="540.0" prefWidth="1316.0" styleClass="tabel-member">
-         <columns>
-            <!-- Kolom No -->
-            <TableColumn fx:id="colNo" prefWidth="45.0" text="No" />
-            
-            <!-- Kolom Foto -->
-            <TableColumn fx:id="colFoto" prefWidth="70.0" text="Foto" />
-            
-            <!-- Kolom ID Member -->
-            <TableColumn fx:id="colMemberId" prefWidth="130.0" text="ID Member" />
-            
-            <!-- Kolom NIK -->
-            <TableColumn fx:id="colNIK" prefWidth="130.0" text="NIK" />
-            
-            <!-- Kolom Nama -->
-            <TableColumn fx:id="colNama" prefWidth="140.0" text="Nama Lengkap" />
-            
-            <!-- Kolom Jenis Kelamin -->
-            <TableColumn fx:id="colJenisKelamin" prefWidth="90.0" text="Jenis Kelamin" />
-            
-            <!-- Kolom Tanggal Lahir -->
-            <TableColumn fx:id="colTanggalLahir" prefWidth="110.0" text="Tanggal Lahir" />
-            
-            <!-- Kolom Email -->
-            <TableColumn fx:id="colEmail" prefWidth="180.0" text="Email" />
-            
-            <!-- Kolom Telepon -->
-            <TableColumn fx:id="colTelepon" prefWidth="110.0" text="No. HP" />
-            
-            <!-- Kolom Alamat -->
-            <TableColumn fx:id="colAlamat" prefWidth="180.0" text="Alamat Domisili" />
-            
-            <!-- Kolom Durasi Member -->
-            <TableColumn fx:id="colDurasiMember" prefWidth="90.0" text="Durasi" />
-            
-            <!-- Kolom Tanggal Daftar -->
-            <TableColumn fx:id="colTanggalDaftar" prefWidth="110.0" text="Tanggal Daftar" />
-            
-            <!-- Kolom Berlaku Hingga -->
-            <TableColumn fx:id="colBerlakuHingga" prefWidth="110.0" text="Berlaku Hingga" />
-            
-            <!-- Kolom Status -->
-            <TableColumn fx:id="colStatus" prefWidth="70.0" text="Status" />
-            
-            <!-- Kolom Aksi -->
-            <TableColumn fx:id="colAksi" prefWidth="90.0" text="Aksi" />
-         </columns>
-      </TableView>
+      <!-- ScrollPane untuk Tabel -->
+      <ScrollPane layoutX="25.0" layoutY="195.0" 
+                  prefHeight="548.0" 
+                  prefWidth="1316.0" 
+                  styleClass="scroll-pane-tabel" 
+                  hbarPolicy="ALWAYS" 
+                  vbarPolicy="AS_NEEDED"
+                  fitToHeight="false"
+                  fitToWidth="false"
+                  hvalue="0.0"
+                  vvalue="0.0"
+                  pannable="true">
+         <content>
+            <!-- Tabel Daftar Member -->
+            <TableView fx:id="tabelMember" 
+                       styleClass="tabel-member"
+                       prefHeight="540.0"
+                       minWidth="2000.0"
+                       prefWidth="2000.0"
+                       maxHeight="Infinity">
+               <columns>
+                  <!-- Kolom No -->
+                  <TableColumn fx:id="colNo" prefWidth="50.0" minWidth="50.0" maxWidth="60.0" text="No" sortable="false" />
+                  
+                  <!-- Kolom Foto -->
+                  <TableColumn fx:id="colFoto" prefWidth="75.0" minWidth="70.0" maxWidth="80.0" text="Foto" sortable="false" />
+                  
+                  <!-- Kolom ID Member -->
+                  <TableColumn fx:id="colMemberId" prefWidth="130.0" minWidth="120.0" maxWidth="150.0" text="ID Member" />
+                  
+                  <!-- Kolom NIK -->
+                  <TableColumn fx:id="colNIK" prefWidth="130.0" minWidth="120.0" maxWidth="150.0" text="NIK" />
+                  
+                  <!-- Kolom Nama -->
+                  <TableColumn fx:id="colNama" prefWidth="150.0" minWidth="140.0" maxWidth="200.0" text="Nama Lengkap" />
+                  
+                  <!-- Kolom Jenis Kelamin -->
+                  <TableColumn fx:id="colJenisKelamin" prefWidth="100.0" minWidth="90.0" maxWidth="120.0" text="Jenis Kelamin" />
+                  
+                  <!-- Kolom Tanggal Lahir -->
+                  <TableColumn fx:id="colTanggalLahir" prefWidth="120.0" minWidth="110.0" maxWidth="140.0" text="Tanggal Lahir" />
+                  
+                  <!-- Kolom Email -->
+                  <TableColumn fx:id="colEmail" prefWidth="180.0" minWidth="170.0" maxWidth="250.0" text="Email" />
+                  
+                  <!-- Kolom Telepon -->
+                  <TableColumn fx:id="colTelepon" prefWidth="120.0" minWidth="110.0" maxWidth="140.0" text="No. HP" />
+                  
+                  <!-- Kolom Alamat -->
+                  <TableColumn fx:id="colAlamat" prefWidth="180.0" minWidth="170.0" maxWidth="250.0" text="Alamat Domisili" />
+                  
+                  <!-- Kolom Durasi Member -->
+                  <TableColumn fx:id="colDurasiMember" prefWidth="90.0" minWidth="85.0" maxWidth="110.0" text="Durasi" />
+                  
+                  <!-- Kolom Tanggal Daftar -->
+                  <TableColumn fx:id="colTanggalDaftar" prefWidth="120.0" minWidth="110.0" maxWidth="140.0" text="Tanggal Daftar" />
+                  
+                  <!-- Kolom Berlaku Hingga -->
+                  <TableColumn fx:id="colBerlakuHingga" prefWidth="120.0" minWidth="110.0" maxWidth="140.0" text="Berlaku Hingga" />
+                  
+                  <!-- Kolom Status -->
+                  <TableColumn fx:id="colStatus" prefWidth="80.0" minWidth="75.0" maxWidth="100.0" text="Status" />
+                  
+                  <!-- Kolom Aksi -->
+                  <TableColumn fx:id="colAksi" prefWidth="100.0" minWidth="95.0" maxWidth="120.0" text="Aksi" sortable="false" />
+               </columns>
+            </TableView>
+         </content>
+      </ScrollPane>
    </children>
 </Pane>

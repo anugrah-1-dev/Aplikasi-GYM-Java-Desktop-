@@ -59,11 +59,13 @@
   -fx-font-family: "Consolas", "Monaco", monospace;
 }
 
-/* ===== SCROLLPANE ===== */
+/* ===== SCROLLPANE - DIPERBAIKI UNTUK SCROLL PENUH ===== */
 .scroll-pane {
   -fx-background-color: transparent;
   -fx-border-color: transparent;
   -fx-padding: 0;
+  -fx-fit-to-width: true;
+  -fx-fit-to-height: false;
 }
 
 .scroll-pane .viewport {
@@ -72,19 +74,19 @@
 
 .scroll-pane .scroll-bar:vertical {
   -fx-background-color: transparent;
-  -fx-pref-width: 10px;
+  -fx-pref-width: 12px;
 }
 
 .scroll-pane .scroll-bar:vertical .track {
   -fx-background-color: rgba(255, 255, 255, 0.1);
   -fx-border-color: transparent;
-  -fx-background-radius: 5px;
+  -fx-background-radius: 6px;
 }
 
 .scroll-pane .scroll-bar:vertical .thumb {
   -fx-background-color: linear-gradient(to bottom, #1a5276, #154360);
-  -fx-background-radius: 5px;
-  -fx-border-radius: 5px;
+  -fx-background-radius: 6px;
+  -fx-border-radius: 6px;
 }
 
 .scroll-pane .scroll-bar:vertical .thumb:hover {
@@ -94,20 +96,180 @@
 .scroll-pane .scroll-bar:vertical .increment-button,
 .scroll-pane .scroll-bar:vertical .decrement-button {
   -fx-background-color: transparent;
-  -fx-padding: 1px;
+  -fx-padding: 2px;
 }
 
 .scroll-pane .scroll-bar:vertical .increment-arrow,
 .scroll-pane .scroll-bar:vertical .decrement-arrow {
   -fx-background-color: #1a5276;
+  -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
+  -fx-padding: 2px;
 }
 
-/* ===== MAIN CONTENT ===== */
+/* ===== MAIN CONTENT - DIPERBAIKI ===== */
 .main-content {
   -fx-background-color: transparent;
-  -fx-padding: 15px 20px 30px 20px;
-  -fx-spacing: 12px;
+  -fx-padding: 20px 25px 30px 25px;
+  -fx-spacing: 15px;
+  -fx-min-height: 658px;
 }
+
+/* ===== CONTROL PANEL ===== */
+.control-panel {
+  -fx-background-color: rgba(255, 255, 255, 0.95);
+  -fx-background-radius: 12px;
+  -fx-border-radius: 12px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 4);
+  -fx-border-color: -success-green;
+  -fx-border-width: 2px;
+  -fx-padding: 15px;
+}
+
+.section-title {
+  -fx-text-fill: -primary-dark;
+  -fx-font-size: 18px;
+  -fx-font-weight: bold;
+  -fx-padding: 0 0 8px 0;
+}
+
+.control-label {
+  -fx-text-fill: -primary-blue;
+  -fx-font-size: 13px;
+  -fx-font-weight: bold;
+}
+
+/* ===== SEARCH FIELD ===== */
+.search-field {
+  -fx-background-color: #f8f9f9;
+  -fx-border-color: #bdc3c7;
+  -fx-border-radius: 8px;
+  -fx-background-radius: 8px;
+  -fx-padding: 8px 12px;
+  -fx-font-size: 13px;
+  -fx-pref-height: 36px;
+}
+
+.search-field:focused {
+  -fx-border-color: -accent-orange;
+  -fx-border-width: 2px;
+}
+
+/* ===== CATEGORY FILTER ===== */
+.category-filter {
+  -fx-background-color: #f8f9f9;
+  -fx-border-color: #bdc3c7;
+  -fx-border-radius: 8px;
+  -fx-background-radius: 8px;
+  -fx-pref-height: 36px;
+}
+
+.category-filter:focused {
+  -fx-border-color: -accent-orange;
+  -fx-border-width: 2px;
+}
+
+/* ===== BUTTON STYLES ===== */
+.add-button {
+  -fx-background-color: linear-gradient(to bottom, -success-green, #219653);
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-background-radius: 8px;
+  -fx-pref-height: 36px;
+  -fx-effect: dropshadow(three-pass-box, rgba(39, 174, 96, 0.3), 5, 0, 0, 2);
+}
+
+.add-button:hover {
+  -fx-background-color: linear-gradient(to bottom, #219653, -success-green);
+}
+
+.refresh-button {
+  -fx-background-color: linear-gradient(to bottom, -primary-blue, #154360);
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-background-radius: 8px;
+  -fx-pref-height: 36px;
+  -fx-effect: dropshadow(three-pass-box, rgba(26, 82, 118, 0.3), 5, 0, 0, 2);
+}
+
+.refresh-button:hover {
+  -fx-background-color: linear-gradient(to bottom, #154360, -primary-blue);
+}
+
+.back-button {
+  -fx-background-color: linear-gradient(to bottom, #95a5a6, #7f8c8d);
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-background-radius: 8px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 4, 0, 0, 1);
+}
+
+.back-button:hover {
+  -fx-background-color: linear-gradient(to bottom, #7f8c8d, #95a5a6);
+}
+
+/* ===== TABLE CONTAINER ===== */
+.table-container {
+  -fx-background-color: rgba(255, 255, 255, 0.95);
+  -fx-background-radius: 12px;
+  -fx-border-radius: 12px;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 4);
+  -fx-border-color: -accent-teal;
+  -fx-border-width: 2px;
+  -fx-padding: 15px;
+  -fx-min-height: 500px;
+}
+
+/* ===== PRODUCT TABLE ===== */
+.product-table {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+}
+
+.product-table .column-header-background {
+  -fx-background-color: linear-gradient(to bottom, -primary-blue, #154360);
+}
+
+.product-table .column-header {
+  -fx-background-color: transparent;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-font-size: 12px;
+  -fx-border-color: #154360;
+  -fx-alignment: CENTER;
+  -fx-padding: 10px 8px;
+}
+
+.product-table .table-row-cell {
+  -fx-border-color: transparent;
+  -fx-table-cell-border-color: #f1f2f6;
+  -fx-background-color: white;
+}
+
+.product-table .table-row-cell:even {
+  -fx-background-color: #f8f9fa;
+}
+
+.product-table .table-row-cell:odd {
+  -fx-background-color: white;
+}
+
+.product-table .table-row-cell:selected {
+  -fx-background-color: #e3f2fd;
+}
+
+.product-table .table-row-cell:hover {
+  -fx-background-color: #e3f2fd;
+}
+
+.product-table .table-cell {
+  -fx-padding: 8px 6px;
+  -fx-border-color: transparent;
+  -fx-alignment: CENTER-LEFT;
+  -fx-text-fill: -text-dark;
+  -fx-font-size: 12px;
+}
+
+/* ===== STYLES YANG SUDAH ADA (TETAP SAMA) ===== */
 
 /* ===== INFO BOX ===== */
 .gambar {
